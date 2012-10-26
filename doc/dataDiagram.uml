@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_burN0R-bEeKHbaoewW5bcg" name="Network Data Model">
+  <packagedElement xmi:type="uml:Package" xmi:id="_Eh_PUR-cEeKtSeVxNqbR2g" name="Package1"/>
+  <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_IYHPgB-gEeKQQLYttzo4PQ" name="String"/>
+  <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_M7BIEB-iEeKQQLYttzo4PQ" name="Int64"/>
+  <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_PPZ6oB-kEeKQQLYttzo4PQ" name="boolean"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_SPxN8B-cEeKtSeVxNqbR2g" name="UserData">
+    <ownedAttribute xmi:id="_0ar3wB-fEeKQQLYttzo4PQ" name="username" visibility="public" type="_IYHPgB-gEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_0ar3wR-fEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_0ar3wh-fEeKQQLYttzo4PQ" value="1"/>
+      <defaultValue xmi:type="uml:LiteralString" xmi:id="_-jxnoB-fEeKQQLYttzo4PQ">
+        <value xsi:nil="true"/>
+      </defaultValue>
+      <qualifier xmi:id="_0ar3wx-fEeKQQLYttzo4PQ" name="CopyOf_identifiant_1">
+        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_0ar3xB-fEeKQQLYttzo4PQ" value="1"/>
+        <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_0ar3xR-fEeKQQLYttzo4PQ" value="1"/>
+      </qualifier>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_MYQEIB-gEeKQQLYttzo4PQ" name="avatar" type="_IYHPgB-gEeKQQLYttzo4PQ">
+      <ownedComment xmi:id="_PF1rwB-gEeKQQLYttzo4PQ">
+        <body>http://download.eclipse.org/modeling/mdt/papyrus/updates/releases/maintenance/indigo</body>
+      </ownedComment>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_QaLogB-gEeKQQLYttzo4PQ" name="biography" type="_yKeTMB-gEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_SdOeUB-gEeKQQLYttzo4PQ" name="friends" type="_0ZZo4B-gEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_B-VGIB-kEeKQQLYttzo4PQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_B-QNoB-kEeKQQLYttzo4PQ"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_Sv7X4B-gEeKQQLYttzo4PQ" name="friendGroups" type="_YKRdgB-cEeKtSeVxNqbR2g">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_EL2GkB-kEeKQQLYttzo4PQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_ELsVkB-kEeKQQLYttzo4PQ"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_TBwHsB-gEeKQQLYttzo4PQ" name="followers" type="_0ZZo4B-gEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_HvksAB-kEeKQQLYttzo4PQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_HvXQoB-kEeKQQLYttzo4PQ"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_TtNfgB-gEeKQQLYttzo4PQ" name="posts" type="_5y1ywB-gEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_JbNHYB-kEeKQQLYttzo4PQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_JbFyoB-kEeKQQLYttzo4PQ"/>
+    </ownedAttribute>
+    <ownedAttribute xmi:id="_T-PlIB-gEeKQQLYttzo4PQ" name="private" type="_PPZ6oB-kEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_UVV2gB-gEeKQQLYttzo4PQ" name="key" type="_Yjk0sB-kEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_U1k1wB-gEeKQQLYttzo4PQ" name="customData" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_YKRdgB-cEeKtSeVxNqbR2g" name="Group">
+    <ownedAttribute xmi:id="_V9V5oB-hEeKQQLYttzo4PQ" name="name" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_WSN9cB-hEeKQQLYttzo4PQ" name="users" type="_0ZZo4B-gEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_YK8uwB-jEeKQQLYttzo4PQ" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_YK1aAB-jEeKQQLYttzo4PQ"/>
+    </ownedAttribute>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_yKeTMB-gEeKQQLYttzo4PQ" name="Biography">
+    <ownedAttribute xmi:id="_S4dzYB-hEeKQQLYttzo4PQ" name="firstname" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_TQxlsB-hEeKQQLYttzo4PQ" name="lastname" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_TlOLsB-hEeKQQLYttzo4PQ" name="birthdate" type="_M7BIEB-iEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_T6FBYB-hEeKQQLYttzo4PQ" name="description" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_0ZZo4B-gEeKQQLYttzo4PQ" name="UserSummary">
+    <ownedAttribute xmi:id="_XJAbgB-hEeKQQLYttzo4PQ" name="identifiant" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_Xb0CwB-hEeKQQLYttzo4PQ" name="username" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_5y1ywB-gEeKQQLYttzo4PQ" name="Post">
+    <ownedAttribute xmi:id="_RtDwMB-hEeKQQLYttzo4PQ" name="content" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+    <ownedAttribute xmi:id="_SG_TIB-hEeKQQLYttzo4PQ" name="date" type="_M7BIEB-iEeKQQLYttzo4PQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Yjk0sB-kEeKQQLYttzo4PQ" name="Key">
+    <ownedAttribute xmi:id="_pub-MB-kEeKQQLYttzo4PQ" name="publicKey" type="_IYHPgB-gEeKQQLYttzo4PQ"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_fGWvwB-lEeKQQLYttzo4PQ" name="biography_userData_1" memberEnd="_fGWvwR-lEeKQQLYttzo4PQ _fGVhoB-lEeKQQLYttzo4PQ">
+    <ownedEnd xmi:id="_fGVhoB-lEeKQQLYttzo4PQ" name="userData" type="_yKeTMB-gEeKQQLYttzo4PQ" association="_fGWvwB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fGVhoR-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fGVhoh-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_fGWvwR-lEeKQQLYttzo4PQ" name="biography" type="_SPxN8B-cEeKtSeVxNqbR2g" aggregation="composite" association="_fGWvwB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_fGWvwh-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_fGWvwx-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_t8JfUB-lEeKQQLYttzo4PQ" name="userData_key_1" memberEnd="_t8JfUR-lEeKQQLYttzo4PQ _t8IRMB-lEeKQQLYttzo4PQ">
+    <ownedEnd xmi:id="_t8JfUR-lEeKQQLYttzo4PQ" name="userData" type="_SPxN8B-cEeKtSeVxNqbR2g" aggregation="composite" association="_t8JfUB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_t8JfUh-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_t8JfUx-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_t8IRMB-lEeKQQLYttzo4PQ" name="key" type="_Yjk0sB-kEeKQQLYttzo4PQ" association="_t8JfUB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_t8IRMR-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_t8IRMh-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_v8PHwB-lEeKQQLYttzo4PQ" name="userData_userSummary_1" memberEnd="_v8PHwR-lEeKQQLYttzo4PQ _v8N5oB-lEeKQQLYttzo4PQ">
+    <ownedEnd xmi:id="_v8PHwR-lEeKQQLYttzo4PQ" name="userData" type="_SPxN8B-cEeKtSeVxNqbR2g" aggregation="shared" association="_v8PHwB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_v8PHwh-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_v8PHwx-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_v8N5oB-lEeKQQLYttzo4PQ" name="userSummary" type="_0ZZo4B-gEeKQQLYttzo4PQ" association="_v8PHwB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_v8N5oR-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_v8N5oh-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_wsRdkB-lEeKQQLYttzo4PQ" name="userData_group_1" memberEnd="_wsRdkR-lEeKQQLYttzo4PQ _wsQPcB-lEeKQQLYttzo4PQ">
+    <ownedEnd xmi:id="_wsRdkR-lEeKQQLYttzo4PQ" name="userData" type="_SPxN8B-cEeKtSeVxNqbR2g" aggregation="shared" association="_wsRdkB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wsRdkh-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wsRdkx-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_wsQPcB-lEeKQQLYttzo4PQ" name="group" type="_YKRdgB-cEeKtSeVxNqbR2g" association="_wsRdkB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_wsQPcR-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_wsQPch-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_xdVuIB-lEeKQQLYttzo4PQ" name="userData_post_1" memberEnd="_xdVuIR-lEeKQQLYttzo4PQ _xdVHEB-lEeKQQLYttzo4PQ">
+    <ownedEnd xmi:id="_xdVuIR-lEeKQQLYttzo4PQ" name="userData" type="_SPxN8B-cEeKtSeVxNqbR2g" aggregation="shared" association="_xdVuIB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_xdVuIh-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_xdVuIx-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_xdVHEB-lEeKQQLYttzo4PQ" name="post" type="_5y1ywB-gEeKQQLYttzo4PQ" association="_xdVuIB-lEeKQQLYttzo4PQ">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_xdVHER-lEeKQQLYttzo4PQ" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_xdVHEh-lEeKQQLYttzo4PQ" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Model>
