@@ -14,7 +14,7 @@ public class Header
 	public Header(Display display, Shell shell)
 	{
 		// Logo
-		Image logoImage = new Image(display, "images/oz-logo.png");
+		Image logoImage = new Image(display, "images/Oz-logo.png");
 		Label logoLabel = new Label(shell, SWT.NONE);
 		FormData logoLabelData = new FormData();
 		logoLabelData.left = new FormAttachment(0, 0);
