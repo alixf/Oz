@@ -12,11 +12,15 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+
 import modules.Module;
 
 public class Network extends Thread
@@ -37,8 +41,7 @@ public class Network extends Thread
 		try
 		{
 			listen();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
@@ -78,8 +81,7 @@ public class Network extends Thread
 					sc.configureBlocking(false);
 					sc.register(selector, SelectionKey.OP_READ, client);
 
-				}
-				else if (key.isReadable())
+				} else if (key.isReadable())
 				{
 					SocketChannel channel = (SocketChannel) key.channel();
 					Client client = (Client) key.attachment();
@@ -91,8 +93,7 @@ public class Network extends Thread
 					{
 						key.cancel();
 						m_clients.remove(client);
-					}
-					else
+					} else
 					// Execute command
 					{
 						bb.position(0);
@@ -132,22 +133,36 @@ public class Network extends Thread
 			// Create a fake connection to unblock the selector and exit
 			Socket socket = new Socket("localhost", m_port);
 			socket.close();
-		}
-		catch (UnknownHostException e)
+		} catch (UnknownHostException e)
 		{
 			e.printStackTrace();
-		}
-		catch (IOException e)
+		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
-	private boolean						m_run;
-	private int							m_port;
-	private int							m_receiveBufferSize;
-	private List<Client>				m_clients;
-	private Charset						m_charset;
-	private CharsetDecoder				m_decoder;
-	private Hashtable<String, Module>	m_commands;
+	public Map<String, String> parsePacket(String command) // TODO check errors
+	{
+		Pattern fieldsPattern = Pattern.compile("(?<!\\\\)" + m_separator);
+		String[] data = fieldsPattern.split(command);
+
+		Pattern paramsPattern = Pattern.compile("(?<!\\\\):");
+
+		Map<String, String> fields = new HashMap<String, String>();
+
+		for (int i = 1; i < data.length; i++)
+			fields.put(paramsPattern.split(data[i])[0], paramsPattern.split(data[i])[1]);
+
+		return fields;
+	}
+
+	private boolean m_run;
+	private int m_port;
+	private int m_receiveBufferSize;
+	private List<Client> m_clients;
+	private Charset m_charset;
+	private CharsetDecoder m_decoder;
+	private Hashtable<String, Module> m_commands;
+	private String m_separator;
 }

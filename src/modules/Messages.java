@@ -1,5 +1,7 @@
 package modules;
 
+import java.util.Map;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -54,8 +56,11 @@ public class Messages implements Module
 	public boolean executeCommand(String command, Client client)
 	{
 		client.getSocket();
+		System.out.println(command);
+		Map<String, String> fields = m_network.parsePacket(command);
+		System.out.println(fields.toString());
 
-		final String messageString = command;
+		final String messageString = fields.toString();
 
 		m_ui.getDisplay().asyncExec(new Runnable()
 		{
@@ -64,7 +69,6 @@ public class Messages implements Module
 				m_messagesWidget.addMessage(messageString);
 			}
 		});
-
 		return true;
 	}
 
@@ -99,16 +103,16 @@ public class Messages implements Module
 
 			m_messagesContainer = new Composite(m_scrollContainer, SWT.NONE);
 			m_messagesContainer.setLayout(new RowLayout(SWT.VERTICAL));
-			
+
 			m_scrollContainer.setContent(m_messagesContainer);
 			m_scrollContainer.setExpandHorizontal(true);
 			m_scrollContainer.setExpandVertical(true);
 
 			layout();
 
-			for(int i = 0; i <= 100; ++i)
+			for (int i = 0; i <= 100; ++i)
 			{
-				addMessage("message "+i);
+				addMessage("message " + i);
 			}
 		}
 
@@ -121,12 +125,12 @@ public class Messages implements Module
 			m_messagesContainer.layout();
 		}
 
-		ScrolledComposite	m_scrollContainer;
-		Composite 			m_messagesContainer;
-		Text				m_messagesInput;
+		ScrolledComposite m_scrollContainer;
+		Composite m_messagesContainer;
+		Text m_messagesInput;
 	}
 
-	private Network			m_network;
-	private UI				m_ui;
-	private MessagesWidget	m_messagesWidget;
+	private Network m_network;
+	private UI m_ui;
+	private MessagesWidget m_messagesWidget;
 }
