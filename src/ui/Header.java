@@ -2,23 +2,29 @@ package ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
-public class Header
+public class Header extends Composite
 {
-	public Header(Display display, Shell shell)
+	public Header(Shell shell)
 	{
-		m_display = display;
+		super(shell, SWT.NONE);
+
 		m_shell = shell;
+		m_display = shell.getDisplay();
+
+		setLayout(new FormLayout());
 
 		// Logo
 		Image logoImage = new Image(m_display, "images/Oz-logo.png");
-		Label logoLabel = new Label(m_shell, SWT.NONE);
+		Label logoLabel = new Label(this, SWT.NONE);
 		FormData logoLabelData = new FormData();
 		logoLabelData.left = new FormAttachment(0, 0);
 		logoLabelData.top = new FormAttachment(0, 0);
@@ -26,18 +32,18 @@ public class Header
 		logoLabel.setLayoutData(logoLabelData);
 
 		// Separator Label
-		m_separatorLabel = new Label(m_shell, SWT.HORIZONTAL | SWT.SEPARATOR);
+		m_separatorLabel = new Label(this, SWT.HORIZONTAL | SWT.SEPARATOR);
 		FormData separatorLabelData = new FormData();
 		separatorLabelData.left = new FormAttachment(0, 5);
 		separatorLabelData.right = new FormAttachment(100, -5);
 		separatorLabelData.top = new FormAttachment(logoLabel, 0, SWT.BOTTOM);
 		m_separatorLabel.setLayoutData(separatorLabelData);
-		
+
 		m_menuLeftAttachment = new FormAttachment(logoLabel, 5, SWT.RIGHT);
 
 		// Settings button
 		Image settingsImage = new Image(m_display, "images/gear.png");
-		Button settingsButton = new Button(m_shell, SWT.PUSH);
+		Button settingsButton = new Button(this, SWT.PUSH);
 		settingsButton.setImage(settingsImage);
 		FormData settingsButtonData = new FormData();
 		settingsButtonData.right = new FormAttachment(100, -5);
@@ -47,7 +53,7 @@ public class Header
 
 		// Logo
 		Image avatarImage = new Image(m_display, "images/avatar.png");
-		Label avatarLabel = new Label(m_shell, SWT.BORDER);
+		Label avatarLabel = new Label(this, SWT.BORDER);
 		FormData avatarLabelData = new FormData();
 		avatarLabelData.top = new FormAttachment(0, 7);
 		avatarLabelData.right = new FormAttachment(settingsButton, -100, SWT.LEFT);
@@ -55,7 +61,7 @@ public class Header
 		avatarLabel.setLayoutData(avatarLabelData);
 
 		// Name label
-		Label nameLabel = new Label(m_shell, SWT.NONE);
+		Label nameLabel = new Label(this, SWT.NONE);
 		nameLabel.setText("Name Name");
 		FormData nameLabelData = new FormData();
 		nameLabelData.left = new FormAttachment(avatarLabel, 6, SWT.RIGHT);
@@ -63,7 +69,7 @@ public class Header
 		nameLabel.setLayoutData(nameLabelData);
 
 		// Name label
-		m_usernameLabel = new Label(m_shell, SWT.NONE);
+		m_usernameLabel = new Label(this, SWT.NONE);
 		m_usernameLabel.setText("(username)");
 		FormData usernameLabelData = new FormData();
 		usernameLabelData.left = new FormAttachment(avatarLabel, 6, SWT.RIGHT);
@@ -71,18 +77,20 @@ public class Header
 		m_usernameLabel.setLayoutData(usernameLabelData);
 
 		// Status label
-		Label statusLabel = new Label(m_shell, SWT.NONE);
+		Label statusLabel = new Label(this, SWT.NONE);
 		statusLabel.setText("Online");
 		FormData statusLabelData = new FormData();
 		statusLabelData.left = new FormAttachment(avatarLabel, 6, SWT.RIGHT);
 		statusLabelData.top = new FormAttachment(0, 43);
 		statusLabel.setLayoutData(statusLabelData);
+
+		layout();
 	}
 
 	public Button addMenu(String name)
 	{
 		// Profile button
-		Button menuButton = new Button(m_shell, SWT.PUSH);
+		Button menuButton = new Button(this, SWT.PUSH);
 		menuButton.setText(name);
 		FormData profileButtonData = new FormData();
 		profileButtonData.top = new FormAttachment(0, 5);
@@ -90,7 +98,8 @@ public class Header
 		profileButtonData.bottom = new FormAttachment(m_separatorLabel, -5, SWT.TOP);
 		menuButton.setLayoutData(profileButtonData);
 		m_menuLeftAttachment = new FormAttachment(menuButton, 5, SWT.RIGHT);
-		
+		layout();
+
 		return menuButton;
 	}
 
@@ -99,9 +108,4 @@ public class Header
 	Label			m_separatorLabel;
 	FormAttachment	m_menuLeftAttachment;
 	Label			m_usernameLabel;
-	
-	public Label getNameLabel()
-	{
-		return m_usernameLabel;
-	}
 }

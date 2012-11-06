@@ -1,26 +1,51 @@
 package ui;
 
-import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.layout.*;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 public class UI
 {
 	public UI()
 	{
+		// Create display and layout
 		m_display = new Display();
 		m_shell = new Shell(m_display);
 
-		FormLayout layout = new FormLayout();
+		// Set window properties
 		m_shell.setText("Oz : Share your world");
-		m_shell.setLayout(layout);
+		Image logoImage = new Image(m_display, "images/Oz-logo.png");
+		m_shell.setImage(logoImage);
+		m_shell.setLayout(new FormLayout());
+		
+		// Create header widget
+		m_header = new Header(m_shell);
+		FormData headerLayoutData = new FormData();
+		headerLayoutData.left = new FormAttachment(0, 0);
+		headerLayoutData.top = new FormAttachment(0, 0);
+		headerLayoutData.right = new FormAttachment(100, 0);
+		m_header.setLayoutData(headerLayoutData);
 
-		m_header = new Header(m_display, m_shell);
+		// Create content widget
+		m_content = new Content(m_shell);
+		FormData contentLayoutData = new FormData();
+		contentLayoutData.left = new FormAttachment(0, 0);
+		contentLayoutData.top = new FormAttachment(m_header, 0, SWT.BOTTOM);
+		contentLayoutData.right = new FormAttachment(100, 0);
+		contentLayoutData.bottom = new FormAttachment(100, 0);
+		m_content.setLayoutData(contentLayoutData);
 
+		// Open window
 		m_shell.open();
 	}
 
 	public void run()
 	{
+		// Event loop
 		while (!m_shell.isDisposed())
 		{
 			if (!m_display.readAndDispatch())
@@ -28,38 +53,29 @@ public class UI
 		}
 		m_display.dispose();
 	}
-	
+
 	public Display getDisplay()
 	{
 		return m_display;
 	}
 
-	public void setDisplay(Display display)
-	{
-		m_display = display;
-	}
-	
 	public Shell getShell()
 	{
 		return m_shell;
 	}
 
-	public void setShell(Shell shell)
-	{
-		m_shell = shell;
-	}
-	
 	public Header getHeader()
 	{
 		return m_header;
 	}
-	
-	public Button addMenu(String name)
+
+	public Content getContent()
 	{
-		return m_header.addMenu(name);
+		return m_content;
 	}
-	
+
 	private Display	m_display;
 	private Shell	m_shell;
 	private Header	m_header;
+	private Content	m_content;
 }
