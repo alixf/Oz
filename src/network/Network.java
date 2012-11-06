@@ -130,8 +130,8 @@ public class Network extends Thread
 		try
 		{
 			// Create a fake connection to unblock the selector and exit
-			@SuppressWarnings("unused")
 			Socket socket = new Socket("localhost", m_port);
+			socket.close();
 		}
 		catch (UnknownHostException e)
 		{
