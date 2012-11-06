@@ -34,6 +34,7 @@ public class Network extends Thread
 		m_charset = Charset.forName("UTF-8");
 		m_decoder = m_charset.newDecoder();
 		m_commands = new Hashtable<String, Module>();
+		m_separator = "/";
 	}
 
 	public void run()
@@ -111,7 +112,8 @@ public class Network extends Thread
 
 	private boolean parseCommand(Client client, String command)
 	{
-		String commandCode = command.split(" ")[0];
+		Pattern fieldsPattern = Pattern.compile("(?<!\\\\)" + m_separator);
+		String commandCode = fieldsPattern.split(command)[0];
 
 		Module module = m_commands.get(commandCode);
 		if (module == null)
@@ -152,9 +154,25 @@ public class Network extends Thread
 		Map<String, String> fields = new HashMap<String, String>();
 
 		for (int i = 1; i < data.length; i++)
-			fields.put(paramsPattern.split(data[i])[0], paramsPattern.split(data[i])[1]);
+			fields.put(paramsPattern.split(data[i])[0].toLowerCase(), paramsPattern.split(data[i])[1]);
 
 		return fields;
+	}
+	
+	/**
+	 * @return the fields separator
+	 */
+	public String getSeparator()
+	{
+		return m_separator;
+	}
+
+	/**
+	 * @param m_separator the fields separator to set
+	 */
+	public void setSeparator(String separator)
+	{
+		m_separator = separator;
 	}
 
 	private boolean m_run;
@@ -165,4 +183,5 @@ public class Network extends Thread
 	private CharsetDecoder m_decoder;
 	private Hashtable<String, Module> m_commands;
 	private String m_separator;
+	
 }

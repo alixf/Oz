@@ -1,5 +1,8 @@
 package modules;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
@@ -56,17 +59,30 @@ public class Messages implements Module
 	public boolean executeCommand(String command, Client client)
 	{
 		client.getSocket();
-		System.out.println(command);
 		Map<String, String> fields = m_network.parsePacket(command);
-		System.out.println(fields.toString());
-
-		final String messageString = fields.toString();
+		
+		if(!fields.containsKey("content"))
+		{
+			System.out.println("The field \"content\" is missing"); //TODO error manager
+			return false;
+		}
+		if(!fields.containsKey("date"))
+		{
+			System.out.println("The field \"date\" is missing"); //TODO error manager
+			return false;
+		}
+		
+		final String messageString = fields.get("content");
+		Long messageTimestamp = Long.decode(fields.get("date"));
+		SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y 'à' k:m:s Z",new Locale("FRANCE"));
+		final String messageDate = frenchDateFormat.format(new Date(messageTimestamp));
 
 		m_ui.getDisplay().asyncExec(new Runnable()
 		{
 			public void run()
 			{
 				m_messagesWidget.addMessage(messageString);
+				m_messagesWidget.addMessage(messageDate);
 			}
 		});
 		return true;
@@ -109,11 +125,6 @@ public class Messages implements Module
 			m_scrollContainer.setExpandVertical(true);
 
 			layout();
-
-			for (int i = 0; i <= 100; ++i)
-			{
-				addMessage("message " + i);
-			}
 		}
 
 		public void addMessage(String message)
