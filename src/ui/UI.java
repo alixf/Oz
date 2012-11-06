@@ -1,9 +1,10 @@
 package ui;
+
 import org.eclipse.swt.widgets.*;
 import org.eclipse.swt.layout.*;
 
 public class UI
-{	
+{
 	public UI()
 	{
 		m_display = new Display();
@@ -14,10 +15,10 @@ public class UI
 		m_shell.setLayout(layout);
 
 		m_header = new Header(m_display, m_shell);
-		
+
 		m_shell.open();
 	}
-	
+
 	public void run()
 	{
 		while (!m_shell.isDisposed())
@@ -28,7 +29,37 @@ public class UI
 		m_display.dispose();
 	}
 	
-	private Display m_display;
-	private Shell m_shell;
-	private Header m_header;
+	public Display getDisplay()
+	{
+		return m_display;
+	}
+
+	public void setDisplay(Display display)
+	{
+		m_display = display;
+	}
+	
+	public Shell getShell()
+	{
+		return m_shell;
+	}
+
+	public void setShell(Shell shell)
+	{
+		m_shell = shell;
+	}
+	
+	public Header getHeader()
+	{
+		return m_header;
+	}
+	
+	public Button addMenu(String name)
+	{
+		return m_header.addMenu(name);
+	}
+	
+	private Display	m_display;
+	private Shell	m_shell;
+	private Header	m_header;
 }

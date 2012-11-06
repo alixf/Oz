@@ -4,12 +4,11 @@ import java.net.Socket;
 
 public class Client
 {
-	
-	
-	private Socket m_socket;
+
+	private Socket	m_socket;
 
 	/**
-	 * @return the m_socket
+	 * @return the socket
 	 */
 	public Socket getSocket()
 	{
@@ -17,7 +16,8 @@ public class Client
 	}
 
 	/**
-	 * @param m_socket the m_socket to set
+	 * @param m_socket
+	 *            the socket to set
 	 */
 	public void setSocket(Socket m_socket)
 	{
