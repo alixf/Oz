@@ -1,7 +1,9 @@
 package modules;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,7 +20,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import ui.UI;
@@ -58,33 +62,27 @@ public class Messages implements Module
 
 	public boolean executeCommand(String command, Client client)
 	{
-		client.getSocket();
 		Map<String, String> fields = m_network.parsePacket(command);
-		
-		if(!fields.containsKey("content"))
+
+		if (!fields.containsKey("content"))
 		{
-			System.out.println("The field \"content\" is missing"); //TODO error manager
+			System.err.println("The field \"content\" is missing"); // TODO error manager
 			return false;
 		}
-		if(!fields.containsKey("date"))
+		if (!fields.containsKey("date"))
 		{
-			System.out.println("The field \"date\" is missing"); //TODO error manager
+			System.err.println("The field \"date\" is missing"); // TODO error manager
 			return false;
 		}
-		
+
 		final String messageString = fields.get("content");
 		Long messageTimestamp = Long.decode(fields.get("date"));
-		SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y 'à' k:m:s Z",new Locale("FRANCE"));
+		SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y 'ï¿½' k:m:s Z", new Locale("FRANCE"));
 		final String messageDate = frenchDateFormat.format(new Date(messageTimestamp));
 
-		m_ui.getDisplay().asyncExec(new Runnable()
-		{
-			public void run()
-			{
-				m_messagesWidget.addMessage(messageString);
-				m_messagesWidget.addMessage(messageDate);
-			}
-		});
+		m_messagesWidget.addMessage(messageString);
+		m_messagesWidget.addMessage(messageDate);
+		
 		return true;
 	}
 
@@ -106,6 +104,18 @@ public class Messages implements Module
 			FontData fd = font.getFontData()[0];
 			fd.height *= 1.5;
 			m_messagesInput.setFont(new Font(getDisplay(), fd));
+			m_messagesInput.addListener(SWT.DefaultSelection, new Listener()
+			{
+				@Override
+				public void handleEvent(Event event)
+				{
+					if (m_messagesInput.getText().length() > 0)
+					{
+						sendMessage(m_messagesInput.getText());
+						m_messagesInput.setText("");
+					}
+				}
+			});
 
 			// Messages container
 			m_scrollContainer = new ScrolledComposite(this, SWT.V_SCROLL);
@@ -127,21 +137,51 @@ public class Messages implements Module
 			layout();
 		}
 
-		public void addMessage(String message)
+		public void sendMessage(String message)
 		{
-			Label newMessage = new Label(m_messagesContainer, SWT.BORDER);
-			newMessage.setText(message);
+			java.util.Date date = new java.util.Date();
 
-			m_scrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-			m_messagesContainer.layout();
+			HashMap<String, String> packetFields = new HashMap<String, String>();
+			packetFields.put("Content", message);
+			packetFields.put("Date", Long.toString(date.getTime()));
+
+			String packet = m_network.makePacket("MSG", packetFields);
+			try
+			{
+				m_network.send(packet, null);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+
+			SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y Ã  k:m:s Z", new Locale("FRANCE"));
+			final String messageDate = frenchDateFormat.format(new Date(date.getTime()));
+			addMessage(message);
+			addMessage(messageDate);
 		}
 
-		ScrolledComposite m_scrollContainer;
-		Composite m_messagesContainer;
-		Text m_messagesInput;
+		public void addMessage(final String message)
+		{
+			m_ui.getDisplay().asyncExec(new Runnable()
+			{
+				public void run()
+				{
+					Label newMessage = new Label(m_messagesContainer, SWT.BORDER);
+					newMessage.setText(message);
+		
+					m_scrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+					m_messagesContainer.layout();
+				}
+			});
+		}
+
+		ScrolledComposite	m_scrollContainer;
+		Composite			m_messagesContainer;
+		Text				m_messagesInput;
 	}
 
-	private Network m_network;
-	private UI m_ui;
-	private MessagesWidget m_messagesWidget;
+	private Network			m_network;
+	private UI				m_ui;
+	private MessagesWidget	m_messagesWidget;
 }
