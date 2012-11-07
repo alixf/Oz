@@ -39,7 +39,6 @@ public class Messages implements Module
 
 		// Create messages container
 		m_messagesWidget = new MessagesWidget(m_ui.getContent());
-		m_ui.getContent().show(m_messagesWidget);
 
 		// Create menu button
 		m_ui.getDisplay().asyncExec(new Runnable()
@@ -155,7 +154,7 @@ public class Messages implements Module
 				e.printStackTrace();
 			}
 
-			SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y à k:m:s Z", new Locale("FRANCE"));
+			SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y à k:m:s", new Locale("FRANCE"));
 			final String messageDate = frenchDateFormat.format(new Date(date.getTime()));
 			addMessage(message);
 			addMessage(messageDate);
