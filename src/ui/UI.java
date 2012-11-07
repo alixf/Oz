@@ -21,7 +21,7 @@ public class UI
 		Image logoImage = new Image(m_display, "images/Oz-logo.png");
 		m_shell.setImage(logoImage);
 		m_shell.setLayout(new FormLayout());
-		
+
 		// Create header widget
 		m_header = new Header(m_shell);
 		FormData headerLayoutData = new FormData();

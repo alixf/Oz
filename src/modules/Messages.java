@@ -61,28 +61,34 @@ public class Messages implements Module
 
 	public boolean executeCommand(String command, Client client)
 	{
-		Map<String, String> fields = m_network.parsePacket(command);
-
-		if (!fields.containsKey("content"))
+		String commandCode = command.split(m_network.getSeparator())[0];
+		if (commandCode == "MSG")
 		{
-			System.err.println("The field \"content\" is missing"); // TODO error manager
-			return false;
-		}
-		if (!fields.containsKey("date"))
-		{
-			System.err.println("The field \"date\" is missing"); // TODO error manager
-			return false;
+			Map<String, String> fields = m_network.parsePacket(command);
+
+			if (!fields.containsKey("content"))
+			{
+				System.err.println("The field \"content\" is missing"); // TODO error manager
+				return false;
+			}
+			if (!fields.containsKey("date"))
+			{
+				System.err.println("The field \"date\" is missing"); // TODO error manager
+				return false;
+			}
+
+			final String messageString = fields.get("content");
+			Long messageTimestamp = Long.decode(fields.get("date"));
+			SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y '�' k:m:s Z", new Locale("FRANCE"));
+			final String messageDate = frenchDateFormat.format(new Date(messageTimestamp));
+
+			m_messagesWidget.addMessage(messageString);
+			m_messagesWidget.addMessage(messageDate);
+
+			return true;
 		}
 
-		final String messageString = fields.get("content");
-		Long messageTimestamp = Long.decode(fields.get("date"));
-		SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y '�' k:m:s Z", new Locale("FRANCE"));
-		final String messageDate = frenchDateFormat.format(new Date(messageTimestamp));
-
-		m_messagesWidget.addMessage(messageString);
-		m_messagesWidget.addMessage(messageDate);
-		
-		return true;
+		return false;
 	}
 
 	private class MessagesWidget extends Composite
@@ -147,7 +153,7 @@ public class Messages implements Module
 			String packet = m_network.makePacket("MSG", packetFields);
 			try
 			{
-				m_network.send(packet, null);
+				m_network.send(packet, (Iterable<Client>) null);
 			}
 			catch (IOException e)
 			{
@@ -168,7 +174,7 @@ public class Messages implements Module
 				{
 					Label newMessage = new Label(m_messagesContainer, SWT.BORDER);
 					newMessage.setText(message);
-		
+
 					m_scrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 					m_messagesContainer.layout();
 				}
