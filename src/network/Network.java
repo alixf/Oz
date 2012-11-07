@@ -152,7 +152,6 @@ public class Network extends Thread
 
 	public void send(String packet, Iterable<Client> clientList) throws IOException
 	{
-		System.out.println("Sending "+packet+" to clients");
 		try
 		{
 			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
@@ -162,7 +161,6 @@ public class Network extends Thread
 			Iterator<Client> it = clientList.iterator();
 			while (it.hasNext())
 			{
-				System.out.println("sent : " + packet);
 				Client client = it.next();
 				client.getSocket().getChannel().write(bb);
 			}
@@ -181,7 +179,10 @@ public class Network extends Thread
 		Module module = m_commands.get(commandCode);
 		if (module == null)
 			return false;
-		module.executeCommand(command, client);
+		
+		// Execute command after getting rid the packet end character
+		module.executeCommand(command.substring(0, command.length()-m_separator.length()), client);
+		
 		return true;
 	}
 
@@ -192,12 +193,12 @@ public class Network extends Thread
 
 	private String escapePacketData(String str)
 	{
-		return escape(escape(str, m_separator), "\n");
+		return escape(escape(str, ":"), m_separator);
 	}
 
 	private String unescapePacketData(String str)
 	{
-		return unescape(unescape(str, "\n"), m_separator);
+		return unescape(unescape(str, m_separator), ":");
 	}
 
 	public Map<String, String> parsePacket(String command) // TODO check errors
@@ -217,31 +218,34 @@ public class Network extends Thread
 			{
 				String key = unescapePacketData(fieldsMembers[0].toLowerCase());
 
-				String value = "";
-				if (fieldsMembers.length > 1)
+				if(key.length() > 0)
 				{
-					value = unescapePacketData(fieldsMembers[1]);
-					for (int j = 1; j < fieldsMembers.length; j++)
-						value += (':' + unescapePacketData(fieldsMembers[i]));
+					String value = "";
+					if (fieldsMembers.length > 1)
+					{
+						value = unescapePacketData(fieldsMembers[1]);
+						for (int j = 2; j < fieldsMembers.length; j++)
+							value += (':' + unescapePacketData(fieldsMembers[j]));
+					}
+	
+					fields.put(key, value);
 				}
-
-				fields.put(key, value);
 			}
 		}
-
+		
 		return fields;
 	}
 
 	public String makePacket(String commandCode, Map<String, String> fields)
 	{
-		String res = escapePacketData(commandCode) + '\n';
+		String res = escapePacketData(commandCode) + m_separator;
 		for (Map.Entry<String, String> entry : fields.entrySet())
 		{
 			String key = entry.getKey();
 			String value = entry.getValue();
-			res += escapePacketData(key) + ':' + escapePacketData(value) + '\n';
+			res += escapePacketData(key) + ':' + escapePacketData(value) + m_separator;
 		}
-		res += '\n';
+		res += m_separator;
 
 		return res;
 	}
