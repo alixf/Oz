@@ -142,7 +142,7 @@ public class Network extends Thread
 	{
 		try
 		{
-			InetSocketAddress host = new InetSocketAddress(address, 4242);
+			InetSocketAddress host = new InetSocketAddress(address, m_port);
 			Socket socket = new Socket();
 			socket.connect(host);
 
