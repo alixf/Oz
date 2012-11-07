@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import modules.Module;
@@ -173,6 +174,20 @@ public class Network extends Thread
 	public void setSeparator(String separator)
 	{
 		m_separator = separator;
+	}
+	
+	public static String escape(String haystack, String needle)
+	{
+		Pattern patternNeedle = Pattern.compile(needle);
+		Matcher matcherNeedle = patternNeedle.matcher(haystack);
+		return matcherNeedle.replaceAll("\\\\"+needle);
+	}
+	
+	public static String unescape(String haystack, String needle)
+	{
+		Pattern patternNeedle = Pattern.compile("\\\\"+needle);
+		Matcher matcherNeedle = patternNeedle.matcher(haystack);
+		return matcherNeedle.replaceAll(needle);
 	}
 
 	private boolean m_run;
