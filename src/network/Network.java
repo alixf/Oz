@@ -1,6 +1,7 @@
 package network;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -137,7 +138,31 @@ public class Network extends Thread
 		}
 	}
 
-	private void send(String packet, Client client) throws IOException
+	public boolean send(String packet, String address) throws IOException
+	{
+		try
+		{
+			InetSocketAddress host = new InetSocketAddress(address, 4242);
+			Socket socket = new Socket();
+			socket.connect(host);
+
+			if (socket.isConnected())
+			{
+				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+				out.print(packet);
+				out.flush();
+				return true;
+			}
+			else
+				return false;
+		}
+		catch (UnknownHostException e)
+		{
+			return false;
+		}
+	}
+
+	public void send(String packet, Client client) throws IOException
 	{
 		try
 		{
@@ -179,10 +204,10 @@ public class Network extends Thread
 		Module module = m_commands.get(commandCode);
 		if (module == null)
 			return false;
-		
+
 		// Execute command after getting rid the packet end character
-		module.executeCommand(command.substring(0, command.length()-m_separator.length()), client);
-		
+		module.executeCommand(command.substring(0, command.length() - m_separator.length()), client);
+
 		return true;
 	}
 
@@ -218,7 +243,7 @@ public class Network extends Thread
 			{
 				String key = unescapePacketData(fieldsMembers[0].toLowerCase());
 
-				if(key.length() > 0)
+				if (key.length() > 0)
 				{
 					String value = "";
 					if (fieldsMembers.length > 1)
@@ -227,12 +252,12 @@ public class Network extends Thread
 						for (int j = 2; j < fieldsMembers.length; j++)
 							value += (':' + unescapePacketData(fieldsMembers[j]));
 					}
-	
+
 					fields.put(key, value);
 				}
 			}
 		}
-		
+
 		return fields;
 	}
 
