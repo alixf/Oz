@@ -118,23 +118,6 @@ public class Network extends Thread
 		System.out.println("Stopped listening to port " + m_port);
 	}
 
-	private boolean parseCommand(Client client, String command)
-	{
-		Pattern fieldsPattern = Pattern.compile("(?<!\\\\)" + m_separator);
-		String commandCode = fieldsPattern.split(command)[0];
-
-		Module module = m_commands.get(commandCode);
-		if (module == null)
-			return false;
-		module.executeCommand(command, client);
-		return true;
-	}
-
-	public boolean setCommand(String command, Module module)
-	{
-		return m_commands.put(command, module) != null;
-	}
-
 	public void stopListen()
 	{
 		m_run = false;
@@ -154,14 +137,67 @@ public class Network extends Thread
 		}
 	}
 
-	private String unescape(String str)
+	private void send(String packet, Client client) throws IOException
 	{
-		return str;
+		try
+		{
+			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
+			client.getSocket().getChannel().write(bb);
+		}
+		catch (CharacterCodingException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
-	private String escape(String str)
+	public void send(String packet, Iterable<Client> clientList) throws IOException
 	{
-		return str;
+		System.out.println("Sending "+packet+" to clients");
+		try
+		{
+			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
+
+			if (clientList == null)
+				clientList = m_clients;
+			Iterator<Client> it = clientList.iterator();
+			while (it.hasNext())
+			{
+				System.out.println("sent : " + packet);
+				Client client = it.next();
+				client.getSocket().getChannel().write(bb);
+			}
+		}
+		catch (CharacterCodingException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	private boolean parseCommand(Client client, String command)
+	{
+		Pattern fieldsPattern = Pattern.compile("(?<!\\\\)" + m_separator);
+		String commandCode = fieldsPattern.split(command)[0];
+
+		Module module = m_commands.get(commandCode);
+		if (module == null)
+			return false;
+		module.executeCommand(command, client);
+		return true;
+	}
+
+	public boolean setCommand(String command, Module module)
+	{
+		return m_commands.put(command, module) != null;
+	}
+
+	private String escapePacketData(String str)
+	{
+		return escape(escape(str, m_separator), "\n");
+	}
+
+	private String unescapePacketData(String str)
+	{
+		return unescape(unescape(str, "\n"), m_separator);
 	}
 
 	public Map<String, String> parsePacket(String command) // TODO check errors
@@ -179,14 +215,14 @@ public class Network extends Thread
 
 			if (fieldsMembers.length > 0)
 			{
-				String key = unescape(fieldsMembers[0].toLowerCase());
+				String key = unescapePacketData(fieldsMembers[0].toLowerCase());
 
 				String value = "";
 				if (fieldsMembers.length > 1)
 				{
-					value = unescape(fieldsMembers[1]);
+					value = unescapePacketData(fieldsMembers[1]);
 					for (int j = 1; j < fieldsMembers.length; j++)
-						value += (':' + unescape(fieldsMembers[i]));
+						value += (':' + unescapePacketData(fieldsMembers[i]));
 				}
 
 				fields.put(key, value);
@@ -198,51 +234,16 @@ public class Network extends Thread
 
 	public String makePacket(String commandCode, Map<String, String> fields)
 	{
-		String res = escape(commandCode) + '\n';
+		String res = escapePacketData(commandCode) + '\n';
 		for (Map.Entry<String, String> entry : fields.entrySet())
 		{
 			String key = entry.getKey();
 			String value = entry.getValue();
-			res += escape(key) + ':' + escape(value) + '\n';
+			res += escapePacketData(key) + ':' + escapePacketData(value) + '\n';
 		}
 		res += '\n';
 
 		return res;
-	}
-
-	private void send(String packet, Client client) throws IOException
-	{
-		try
-		{
-			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-			client.getSocket().getChannel().write(bb);
-		}
-		catch (CharacterCodingException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public void send(String packet, Iterable<Client> clientList) throws IOException
-	{
-		try
-		{
-			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-
-			if (clientList == null)
-				clientList = m_clients;
-			Iterator<Client> it = clientList.iterator();
-			while (it.hasNext())
-			{
-				System.out.println("TEST : " + packet);
-				Client client = it.next();
-				client.getSocket().getChannel().write(bb);
-			}
-		}
-		catch (CharacterCodingException e)
-		{
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -261,17 +262,17 @@ public class Network extends Thread
 	{
 		m_separator = separator;
 	}
-	
+
 	public static String escape(String haystack, String needle)
 	{
 		Pattern patternNeedle = Pattern.compile(needle);
 		Matcher matcherNeedle = patternNeedle.matcher(haystack);
-		return matcherNeedle.replaceAll("\\\\"+needle);
+		return matcherNeedle.replaceAll("\\\\" + needle);
 	}
-	
+
 	public static String unescape(String haystack, String needle)
 	{
-		Pattern patternNeedle = Pattern.compile("\\\\"+needle);
+		Pattern patternNeedle = Pattern.compile("\\\\" + needle);
 		Matcher matcherNeedle = patternNeedle.matcher(haystack);
 		return matcherNeedle.replaceAll(needle);
 	}
