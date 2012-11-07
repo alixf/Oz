@@ -15,6 +15,8 @@ public class Oz
 		m_network = new Network();
 		m_ui = new UI();
 		@SuppressWarnings("unused")
+		Contacts contacts = new Contacts(m_network, m_ui);
+		@SuppressWarnings("unused")
 		Messages messages = new Messages(m_network, m_ui);
 	}
 
