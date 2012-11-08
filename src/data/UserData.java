@@ -6,6 +6,7 @@ public class UserData
 {
 	public UserData()
 	{
+		setBiography(new Biography());
 	}
 
 	public String getUsername()
