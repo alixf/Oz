@@ -2,11 +2,10 @@ package network;
 
 import java.net.Socket;
 
+import data.UserData;
+
 public class Client
 {
-
-	private Socket	m_socket;
-
 	/**
 	 * @return the socket
 	 */
@@ -16,11 +15,24 @@ public class Client
 	}
 
 	/**
-	 * @param m_socket
+	 * @param socket
 	 *            the socket to set
 	 */
-	public void setSocket(Socket m_socket)
+	public void setSocket(Socket socket)
 	{
-		this.m_socket = m_socket;
+		m_socket = socket;
 	}
+	
+	public UserData getUserData()
+	{
+		return m_userData;
+	}
+
+	public void setUserData(UserData userData)
+	{
+		m_userData = userData;
+	}
+
+	private Socket		m_socket;
+	private UserData	m_userData;
 }

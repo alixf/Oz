@@ -11,9 +11,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+import data.UserData;
+
 public class Header extends Composite
 {
-	public Header(Shell shell)
+	public Header(Shell shell, UserData user)
 	{
 		super(shell, SWT.NONE);
 
@@ -62,7 +64,7 @@ public class Header extends Composite
 
 		// Name label
 		Label nameLabel = new Label(this, SWT.NONE);
-		nameLabel.setText("Name Name");
+		nameLabel.setText(user.getBiography().getFirstName()+" "+user.getBiography().getLastName());
 		FormData nameLabelData = new FormData();
 		nameLabelData.left = new FormAttachment(avatarLabel, 6, SWT.RIGHT);
 		nameLabelData.top = new FormAttachment(0, 10);
@@ -70,7 +72,7 @@ public class Header extends Composite
 
 		// Name label
 		m_usernameLabel = new Label(this, SWT.NONE);
-		m_usernameLabel.setText("(username)");
+		m_usernameLabel.setText("("+user.getUsername()+")");
 		FormData usernameLabelData = new FormData();
 		usernameLabelData.left = new FormAttachment(avatarLabel, 6, SWT.RIGHT);
 		usernameLabelData.top = new FormAttachment(0, 26);

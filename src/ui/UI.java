@@ -8,9 +8,11 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+import data.UserData;
+
 public class UI
 {
-	public UI()
+	public UI(UserData user)
 	{
 		// Create display and layout
 		m_display = new Display();
@@ -23,7 +25,7 @@ public class UI
 		m_shell.setLayout(new FormLayout());
 
 		// Create header widget
-		m_header = new Header(m_shell);
+		m_header = new Header(m_shell, user);
 		FormData headerLayoutData = new FormData();
 		headerLayoutData.left = new FormAttachment(0, 0);
 		headerLayoutData.top = new FormAttachment(0, 0);
