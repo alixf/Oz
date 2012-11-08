@@ -26,6 +26,7 @@ public class Contacts implements Module
 		m_network = network;
 		m_ui = ui;
 		m_network.setCommand("ADD", this);
+		m_network.setCommand("USER", this);
 
 		// Create messages container
 		m_contactsWidget = new ContactsWidget(m_ui.getContent());
@@ -53,21 +54,33 @@ public class Contacts implements Module
 	public boolean executeCommand(String command, Client client)
 	{
 		String commandCode = command.split(m_network.getSeparator())[0];
-		if (commandCode.equals("ADD"))
+
+		if(commandCode.equals("ADD") || commandCode.equals("USER"))
 		{
 			Map<String, String> fields = m_network.parsePacket(command);
 
-			if (!fields.containsKey("username"))
+			for (Map.Entry<String, String> entry : fields.entrySet())
 			{
-				System.err.println("The field \"username\" is missing"); // TODO error manager
-				return false;
+				String key = entry.getKey();
+				String value = entry.getValue();
+				
+				if(key == "username")
+					client.getUserData().setUsername(value);
+				if(key == "avatar")
+					client.getUserData().setAvatar(value);
+				if(key == "biographyFirstName")
+					client.getUserData().getBiography().setFirstName(value);
+				if(key == "biographyLastName")
+					client.getUserData().getBiography().setLastName(value);
 			}
-
-			System.out.println("Adding : " + fields.get("username"));
+		}
+		if (commandCode.equals("ADD"))
+		{
+			System.out.println("Adding : " + client.getUserData().getUsername());
 
 			return true;
 		}
-
+		
 		return false;
 	}
 
@@ -101,6 +114,7 @@ public class Contacts implements Module
 
 			Button addButton = new Button(this, SWT.PUSH);
 			addButton.setText("Ajouter un contact");
+
 			addButton.addSelectionListener(new SelectionAdapter()
 			{
 				public void widgetSelected(SelectionEvent e)
