@@ -7,25 +7,27 @@ public class Oz
 {
 	public static void main(String[] args)
 	{
-		Oz oz = new Oz();
+		int port = (args.length > 0) ? Integer.parseInt(args[0]) : 4242;
+
+		Oz oz = new Oz(port);
 		oz.run();
 	}
 
-	public Oz()
+	public Oz(int port)
 	{
 		// Create user profile
-		//TODO Load this from file maybe (encrypted with password, would act as a login)
+		// TODO Load this from file maybe (encrypted with password, would act as a login)
 		UserData user = new UserData();
 		user.setUsername("Jim");
 		user.getBiography().setFirstName("Jim");
 		user.getBiography().setLastName("Raynor");
-
-		m_network = new Network();
+		
+		m_network = new Network(port);
 		m_ui = new UI(user);
 		@SuppressWarnings("unused")
-		Contacts contacts = new Contacts(m_network, m_ui);
+		Contacts contacts = new Contacts(m_network, m_ui, user);
 		@SuppressWarnings("unused")
-		Messages messages = new Messages(m_network, m_ui);
+		Messages messages = new Messages(m_network, m_ui, user);
 	}
 
 	public void run()

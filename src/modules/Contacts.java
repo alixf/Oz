@@ -1,8 +1,6 @@
 package modules;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -15,16 +13,19 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import data.UserData;
+
 import ui.UI;
 import network.Client;
 import network.Network;
 
 public class Contacts implements Module
 {
-	public Contacts(Network network, UI ui)
+	public Contacts(Network network, UI ui, UserData user)
 	{
 		m_network = network;
 		m_ui = ui;
+		m_user = user;
 		m_network.setCommand("ADD", this);
 		m_network.setCommand("USER", this);
 
@@ -51,58 +52,54 @@ public class Contacts implements Module
 	}
 
 	@Override
-	public boolean executeCommand(String command, Client client)
+	public boolean executeCommand(String command, final Client client)
 	{
 		String commandCode = command.split(m_network.getSeparator())[0];
 
-		if(commandCode.equals("ADD") || commandCode.equals("USER"))
-		{
-			Map<String, String> fields = m_network.parsePacket(command);
-
-			for (Map.Entry<String, String> entry : fields.entrySet())
-			{
-				String key = entry.getKey();
-				String value = entry.getValue();
-				
-				if(key == "username")
-					client.getUserData().setUsername(value);
-				if(key == "avatar")
-					client.getUserData().setAvatar(value);
-				if(key == "biographyFirstName")
-					client.getUserData().getBiography().setFirstName(value);
-				if(key == "biographyLastName")
-					client.getUserData().getBiography().setLastName(value);
-			}
-		}
+		if (commandCode.equals("ADD") || commandCode.equals("USER"))
+			client.setUserData(m_network.parsePacket(command, UserData.class));
 		if (commandCode.equals("ADD"))
 		{
-			System.out.println("Adding : " + client.getUserData().getUsername());
-
-			return true;
+			m_ui.getDisplay().asyncExec(new Runnable()
+			{
+				public void run()
+				{
+					Label newContactLabel = new Label(m_contactsWidget, SWT.BORDER);
+					newContactLabel.setText(client.getUserData().getUsername());
+					m_contactsWidget.layout();
+				}
+			});
 		}
 		
-		return false;
+		return true;
 	}
 
-	public boolean addContact(String address)
+	public Client addContact(final String address)
 	{
-		HashMap<String, String> fields = new HashMap<String, String>();
-		fields.put("username", "Hello");
-		String packet = m_network.makePacket("ADD", fields);
+		String packet = m_network.makePacket("ADD", m_user);
 
 		try
 		{
-			if (m_network.send(packet, address))
+			Client client = m_network.createClient(address);
+			client.getUserData().setUsername(address);
+			if(client != null)
 			{
-				return true;
+				System.out.println("sending data");
+				m_network.send(packet, client);
+
+				System.out.println("adding label");
+				Label newContactLabel = new Label(m_contactsWidget, SWT.BORDER);
+				newContactLabel.setText(client.getUserData().getUsername());
+				m_contactsWidget.layout();
 			}
+			return client;
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 
-		return false;
+		return null;
 	}
 
 	class ContactsWidget extends Composite
@@ -112,66 +109,93 @@ public class Contacts implements Module
 			super(parent, SWT.NONE);
 			setLayout(new RowLayout(SWT.VERTICAL));
 
+			// Add button
 			Button addButton = new Button(this, SWT.PUSH);
 			addButton.setText("Ajouter un contact");
+			// Extends adapter to make a closure for contactsWidget to be passed in the callback
+			class CustomAdapter extends SelectionAdapter
+			{
+				public CustomAdapter(ContactsWidget contactsWidget)
+				{
+					m_contactsWidget = contactsWidget;
+				}
 
-			addButton.addSelectionListener(new SelectionAdapter()
+				public void widgetSelected(SelectionEvent e)
+				{
+					AddContactWindow addWindow = new AddContactWindow(m_contactsWidget);
+					addWindow.run();
+				}
+			}
+			addButton.addSelectionListener(new CustomAdapter(this));
+		}
+	}
+
+	class AddContactWindow
+	{
+		public AddContactWindow(ContactsWidget contactsWidget)
+		{
+			m_addContactShell = new Shell(m_ui.getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
+			m_addContactShell.setText("Ajouter un contact");
+			m_addContactShell.setLayout(new RowLayout(SWT.VERTICAL));
+			RowData layoutData = new RowData();
+			layoutData.width = 200;
+
+			Label addressLabel = new Label(m_addContactShell, SWT.CENTER);
+			addressLabel.setText("Adresse du contact :");
+			addressLabel.setLayoutData(layoutData);
+			final Text addressText = new Text(m_addContactShell, SWT.SINGLE | SWT.BORDER);
+			addressText.setLayoutData(layoutData);
+			Button confirmButton = new Button(m_addContactShell, SWT.CENTER);
+			confirmButton.setText("Valider");
+			confirmButton.setLayoutData(layoutData);
+			confirmButton.addSelectionListener(new SelectionAdapter()
 			{
 				public void widgetSelected(SelectionEvent e)
 				{
-					final Shell addContactShell = new Shell(m_ui.getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
-					addContactShell.setText("Ajouter un contact");
-					addContactShell.setLayout(new RowLayout(SWT.VERTICAL));
-					RowData layoutData = new RowData();
-					layoutData.width = 200;
-
-					Label addressLabel = new Label(addContactShell, SWT.CENTER);
-					addressLabel.setText("Adresse du contact :");
-					addressLabel.setLayoutData(layoutData);
-					final Text addressText = new Text(addContactShell, SWT.SINGLE | SWT.BORDER);
-					addressText.setLayoutData(layoutData);
-					Button confirmButton = new Button(addContactShell, SWT.CENTER);
-					confirmButton.setText("Valider");
-					confirmButton.setLayoutData(layoutData);
-					confirmButton.addSelectionListener(new SelectionAdapter()
+					Client client = addContact(addressText.getText());
+					if (client != null)
 					{
-						public void widgetSelected(SelectionEvent e)
-						{
-							if (addContact(addressText.getText()))
-							{
-								addContactShell.close();
-							}
-							else
-							{
-								// TODO Display error
-							}
-						}
-					});
-					Button cancelButton = new Button(addContactShell, SWT.CENTER);
-					cancelButton.setText("Annuler");
-					cancelButton.setLayoutData(layoutData);
-					cancelButton.addSelectionListener(new SelectionAdapter()
+						m_addContactShell.close();
+						/*
+						Label newContactLabel = new Label(m_addContactShell, SWT.BORDER);
+						newContactLabel.setText(client.getUserData().getUsername());
+						*/
+					}
+					else
 					{
-						public void widgetSelected(SelectionEvent e)
-						{
-							addContactShell.close();
-						}
-					});
-
-					addContactShell.pack();
-					addContactShell.open();
-
-					while (!addContactShell.isDisposed())
-					{
-						if (!addContactShell.getDisplay().readAndDispatch())
-							addContactShell.getDisplay().sleep();
+						// TODO Display error
 					}
 				}
 			});
+			Button cancelButton = new Button(m_addContactShell, SWT.CENTER);
+			cancelButton.setText("Annuler");
+			cancelButton.setLayoutData(layoutData);
+			cancelButton.addSelectionListener(new SelectionAdapter()
+			{
+				public void widgetSelected(SelectionEvent e)
+				{
+					m_addContactShell.close();
+				}
+			});
+
+			m_addContactShell.pack();
+			m_addContactShell.open();
 		}
+
+		public void run()
+		{
+			while (!m_addContactShell.isDisposed())
+			{
+				if (!m_addContactShell.getDisplay().readAndDispatch())
+					m_addContactShell.getDisplay().sleep();
+			}
+		}
+
+		Shell	m_addContactShell;
 	}
 
 	Network			m_network;
 	UI				m_ui;
+	UserData		m_user;
 	ContactsWidget	m_contactsWidget;
 }

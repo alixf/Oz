@@ -2,6 +2,10 @@ package data;
 
 public class UserSummary
 {
+	public UserSummary()
+	{
+	}
+	
 	public UserSummary(String username, String address)
 	{
 		setUsername(username);

@@ -1,7 +1,6 @@
 package network;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,31 +15,31 @@ import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.concurrent.locks.ReentrantLock;
+
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
 import modules.Module;
 
 public class Network extends Thread
 {
-	public Network()
+	public Network(int port)
 	{
 		m_run = true;
-		m_port = 4242;
+		m_port = port;
 		m_receiveBufferSize = 1000;
 		m_clients = new LinkedList<Client>();
 		m_charset = Charset.forName("UTF-8");
 		m_decoder = m_charset.newDecoder();
 		m_encoder = m_charset.newEncoder();
 		m_commands = new Hashtable<String, Module>();
-		m_separator = "/";
+		m_separator = " ";
 	}
 
 	public void run()
@@ -65,14 +64,14 @@ public class Network extends Thread
 		System.out.println("Listening to port " + m_port);
 
 		// Create selector
-		Selector selector = Selector.open();
+		m_selector = Selector.open();
 		ssc.configureBlocking(false);
-		ssc.register(selector, SelectionKey.OP_ACCEPT);
+		ssc.register(m_selector, SelectionKey.OP_ACCEPT);
 
 		while (m_run)
 		{
-			selector.select();
-			Set<SelectionKey> keys = selector.selectedKeys();
+			m_selector.select();
+			Set<SelectionKey> keys = m_selector.selectedKeys();
 			Iterator<SelectionKey> it = keys.iterator();
 			while (it.hasNext())
 			{
@@ -83,11 +82,12 @@ public class Network extends Thread
 					Client client = new Client();
 					client.setSocket(socket.accept());
 					m_clients.add(client);
+					System.out.println("accept : there is now " + m_clients.size() + " clients");
 
 					// Register client socket
 					SocketChannel sc = client.getSocket().getChannel();
 					sc.configureBlocking(false);
-					sc.register(selector, SelectionKey.OP_READ, client);
+					sc.register(m_selector, SelectionKey.OP_READ, client);
 
 				}
 				else if (key.isReadable())
@@ -107,7 +107,10 @@ public class Network extends Thread
 					// Execute command
 					{
 						bb.position(0);
-						String command = m_decoder.decode(bb).toString().substring(0, readSize - 1);
+						String command = m_decoder.decode(bb).toString().substring(0, readSize);
+						
+						System.out.println("main : " + command);
+						
 						parseCommand(client, command);
 					}
 				}
@@ -137,31 +140,59 @@ public class Network extends Thread
 			e.printStackTrace();
 		}
 	}
-
-	public boolean send(String packet, String address) throws IOException
+	
+	public Client createClient(String address)
 	{
+		String[] addressParts = address.split(":");
+		address = addressParts[0];
+		int port = (addressParts.length > 1) ? Integer.parseInt(addressParts[1]) : m_port;
+
 		try
 		{
-			InetSocketAddress host = new InetSocketAddress(address, m_port);
-			Socket socket = new Socket();
-			socket.connect(host);
+			System.out.println("trying to connect ...");
+			InetSocketAddress host = new InetSocketAddress(address, port);
+			SocketChannel channel = SocketChannel.open(host);
+			channel.configureBlocking(false);
+			Socket socket = channel.socket();
 
-			if (socket.isConnected())
+			if(socket.isConnected())
 			{
-				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-				out.print(packet);
-				out.flush();
-				return true;
+				System.out.println("connected ...");
+				// Create client
+				Client client = new Client();
+				client.setSocket(socket);
+				m_clients.add(client);
+				System.out.println("add : there is now " + m_clients.size() + " clients");
+
+				System.out.println("test");
+				
+				// Register client socket
+				final ReentrantLock selectorLock = new ReentrantLock();
+				selectorLock.lock();
+				try
+				{
+					m_selector.wakeup();
+					channel.register(m_selector, SelectionKey.OP_READ, client);
+				}
+				finally
+				{
+				    selectorLock.unlock();
+				}
+
+				return client;
 			}
-			else
-				return false;
 		}
 		catch (UnknownHostException e)
 		{
-			return false;
+			return null;
 		}
+		catch (IOException e)
+		{
+			return null;
+		}
+		return null;
 	}
-
+	
 	public void send(String packet, Client client) throws IOException
 	{
 		try
@@ -187,6 +218,8 @@ public class Network extends Thread
 			while (it.hasNext())
 			{
 				Client client = it.next();
+
+				System.out.println("sending to "+client.getUserData().getUsername());
 				client.getSocket().getChannel().write(bb);
 			}
 		}
@@ -196,17 +229,19 @@ public class Network extends Thread
 		}
 	}
 
-	private boolean parseCommand(Client client, String command)
+	private boolean parseCommand(Client client, String packet)
 	{
-		Pattern fieldsPattern = Pattern.compile("(?<!\\\\)" + m_separator);
-		String commandCode = fieldsPattern.split(command)[0];
-
-		Module module = m_commands.get(commandCode);
+		System.out.println("parseCommand : "+packet);
+		System.out.println();
+		
+		Module module = m_commands.get(getCommand(packet));
 		if (module == null)
+		{
+			System.out.println("no module set for command "+getCommand(packet));
 			return false;
-
-		// Execute command after getting rid the packet end character
-		module.executeCommand(command.substring(0, command.length() - m_separator.length()), client);
+		}
+		
+		module.executeCommand(packet, client);
 
 		return true;
 	}
@@ -216,63 +251,21 @@ public class Network extends Thread
 		return m_commands.put(command, module) != null;
 	}
 
-	private String escapePacketData(String str)
+	public String getCommand(String packet)
 	{
-		return escape(escape(str, ":"), m_separator);
+		return packet.split(m_separator)[0];
+	}
+	
+	public <T> T parsePacket(String packet, Class<T> c) // TODO check errors
+	{
+		String command = packet.split(m_separator)[0];
+		String data = packet.substring(command.length()+1);
+		return (T) new JSONDeserializer<T>().use(null, c).deserialize(data);
 	}
 
-	private String unescapePacketData(String str)
+	public String makePacket(String command, Object data)
 	{
-		return unescape(unescape(str, m_separator), ":");
-	}
-
-	public Map<String, String> parsePacket(String command) // TODO check errors
-	{
-		Pattern fieldsPattern = Pattern.compile("(?<!\\\\)" + m_separator);
-		String[] lines = fieldsPattern.split(command);
-
-		Pattern paramsPattern = Pattern.compile("(?<!\\\\):");
-
-		Map<String, String> fields = new HashMap<String, String>();
-
-		for (int i = 1; i < lines.length; i++)
-		{
-			String[] fieldsMembers = paramsPattern.split(lines[i]);
-
-			if (fieldsMembers.length > 0)
-			{
-				String key = unescapePacketData(fieldsMembers[0].toLowerCase());
-
-				if (key.length() > 0)
-				{
-					String value = "";
-					if (fieldsMembers.length > 1)
-					{
-						value = unescapePacketData(fieldsMembers[1]);
-						for (int j = 2; j < fieldsMembers.length; j++)
-							value += (':' + unescapePacketData(fieldsMembers[j]));
-					}
-
-					fields.put(key, value);
-				}
-			}
-		}
-
-		return fields;
-	}
-
-	public String makePacket(String commandCode, Map<String, String> fields)
-	{
-		String res = escapePacketData(commandCode) + m_separator;
-		for (Map.Entry<String, String> entry : fields.entrySet())
-		{
-			String key = entry.getKey();
-			String value = entry.getValue();
-			res += escapePacketData(key) + ':' + escapePacketData(value) + m_separator;
-		}
-		res += m_separator;
-
-		return res;
+		return command + " " +  new JSONSerializer().exclude("*.class").serialize(data);
 	}
 
 	/**
@@ -291,24 +284,16 @@ public class Network extends Thread
 	{
 		m_separator = separator;
 	}
-
-	public static String escape(String haystack, String needle)
+	
+	public Iterable<Client> getClients()
 	{
-		Pattern patternNeedle = Pattern.compile(needle);
-		Matcher matcherNeedle = patternNeedle.matcher(haystack);
-		return matcherNeedle.replaceAll("\\\\" + needle);
-	}
-
-	public static String unescape(String haystack, String needle)
-	{
-		Pattern patternNeedle = Pattern.compile("\\\\" + needle);
-		Matcher matcherNeedle = patternNeedle.matcher(haystack);
-		return matcherNeedle.replaceAll(needle);
+		return m_clients;
 	}
 
 	private boolean						m_run;
 	private int							m_port;
 	private int							m_receiveBufferSize;
+	private Selector 					m_selector;
 	private List<Client>				m_clients;
 	private Charset						m_charset;
 	private CharsetDecoder				m_decoder;

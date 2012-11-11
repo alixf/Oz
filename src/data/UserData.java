@@ -3,7 +3,7 @@ package data;
 import java.util.List;
 
 public class UserData
-{
+{	
 	public UserData()
 	{
 		setBiography(new Biography());
@@ -69,18 +69,22 @@ public class UserData
 		m_followers = followers;
 	}
 
-	public List<Post> getPosts()
+	public List<Message> getPosts()
 	{
 		return m_posts;
 	}
 
-	public void setPosts(List<Post> posts)
+	public void setPosts(List<Message> posts)
 	{
 		m_posts = posts;
 	}
 
-	public class Biography
+	public static class Biography
 	{
+		public Biography()
+		{
+		}
+		
 		public String getFirstName()
 		{
 			return m_firstName;
@@ -133,5 +137,5 @@ public class UserData
 	private List<UserSummary>	m_friends;
 	private List<Group>			m_friendGroups;
 	private List<UserSummary>	m_followers;
-	private List<Post>			m_posts;
+	private List<Message>			m_posts;
 }

@@ -6,6 +6,11 @@ import data.UserData;
 
 public class Client
 {
+	public Client()
+	{
+		m_userData = new UserData();
+	}
+
 	/**
 	 * @return the socket
 	 */
@@ -22,7 +27,7 @@ public class Client
 	{
 		m_socket = socket;
 	}
-	
+
 	public UserData getUserData()
 	{
 		return m_userData;

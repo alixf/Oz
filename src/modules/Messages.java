@@ -3,9 +3,7 @@ package modules;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -25,21 +23,27 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import data.Message;
+import data.UserData;
+
 import ui.UI;
 import network.Client;
 import network.Network;
 
 public class Messages implements Module
 {
-	public Messages(Network network, UI ui)
+	public Messages(Network network, UI ui, UserData user)
 	{
 		m_network = network;
 		m_ui = ui;
+		m_user = user;
 		m_network.setCommand("MSG", this);
 
 		// Create messages container
 		m_messagesWidget = new MessagesWidget(m_ui.getContent());
 
+		m_dateFormat = new SimpleDateFormat("'Le' d/M/y à k:m:s", new Locale("FRANCE"));
+		
 		// Create menu button
 		m_ui.getDisplay().asyncExec(new Runnable()
 		{
@@ -61,30 +65,13 @@ public class Messages implements Module
 
 	public boolean executeCommand(String command, Client client)
 	{
-		String commandCode = command.split(m_network.getSeparator())[0];
-		if (commandCode == "MSG")
+		String commandCode = m_network.getCommand(command);
+		if (commandCode.equals("MSG"))
 		{
-			Map<String, String> fields = m_network.parsePacket(command);
-
-			if (!fields.containsKey("content"))
-			{
-				System.err.println("The field \"content\" is missing"); // TODO error manager
-				return false;
-			}
-			if (!fields.containsKey("date"))
-			{
-				System.err.println("The field \"date\" is missing"); // TODO error manager
-				return false;
-			}
-
-			final String messageString = fields.get("content");
-			Long messageTimestamp = Long.decode(fields.get("date"));
-			SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y '�' k:m:s Z", new Locale("FRANCE"));
-			final String messageDate = frenchDateFormat.format(new Date(messageTimestamp));
-
-			m_messagesWidget.addMessage(messageString);
-			m_messagesWidget.addMessage(messageDate);
-
+			Message message = m_network.parsePacket(command, Message.class);
+			
+			m_messagesWidget.addMessage(client.getUserData(), message);
+			
 			return true;
 		}
 
@@ -142,41 +129,39 @@ public class Messages implements Module
 			layout();
 		}
 
-		public void sendMessage(String message)
+		public void sendMessage(String messageContent)
 		{
-			java.util.Date date = new java.util.Date();
 
-			HashMap<String, String> packetFields = new HashMap<String, String>();
-			packetFields.put("Content", message);
-			packetFields.put("Date", Long.toString(date.getTime()));
-
-			String packet = m_network.makePacket("MSG", packetFields);
+			Message message = new Message(messageContent, new java.util.Date().getTime());
+			String packet = m_network.makePacket("MSG", message);
+			
 			try
 			{
-				m_network.send(packet, (Iterable<Client>) null);
+				m_network.send(packet, m_network.getClients());
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
 			}
-
-			SimpleDateFormat frenchDateFormat = new SimpleDateFormat("'Le' d/M/y à k:m:s", new Locale("FRANCE"));
-			final String messageDate = frenchDateFormat.format(new Date(date.getTime()));
-			addMessage(message);
-			addMessage(messageDate);
+			
+			addMessage(m_user, message);
 		}
 
-		public void addMessage(final String message)
+		public void addMessage(final UserData userData, final Message message)
 		{
+			System.out.println("addMessage : "+message.getContent());
 			m_ui.getDisplay().asyncExec(new Runnable()
 			{
 				public void run()
 				{
 					Label newMessage = new Label(m_messagesContainer, SWT.BORDER);
-					newMessage.setText(message);
+					newMessage.setText(userData.getUsername()+" - "+message.getContent()+" - "+m_dateFormat.format(new Date(message.getDate())));
 
 					m_scrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 					m_messagesContainer.layout();
+					
+					m_scrollContainer.getVerticalBar().setSelection(m_scrollContainer.getVerticalBar().getMaximum());
+					m_scrollContainer.layout();
 				}
 			});
 		}
@@ -188,5 +173,7 @@ public class Messages implements Module
 
 	private Network			m_network;
 	private UI				m_ui;
+	private UserData		m_user;
 	private MessagesWidget	m_messagesWidget;
+	private SimpleDateFormat m_dateFormat;
 }

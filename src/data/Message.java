@@ -1,8 +1,12 @@
 package data;
 
-public class Post
+public class Message
 {
-	public Post(String content, long date)
+	public Message()
+	{	
+	}
+	
+	public Message(String content, long date)
 	{
 		setContent(content);
 		setDate(date);
