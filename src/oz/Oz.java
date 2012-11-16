@@ -11,7 +11,7 @@ public class Oz
 {
 	public static void main(String[] args)
 	{
-		int port = (args.length > 0) ? Integer.parseInt(args[0]) : 4242;
+		int port = (args.length > 0) ? Integer.parseInt(args[0]) : 0;
 
 		Oz oz = new Oz(port);
 		oz.run();
@@ -21,13 +21,14 @@ public class Oz
 	{
 		/*
 		 * Create user profile
+		 * TODO Load this from file maybe (encrypted with password, would act as a login)
 		 */
-		// TODO Load this from file maybe (encrypted with password, would act as a login)
+
 		UserData user = new UserData();
 		user.setUsername("Jim");
 		user.getBiography().setFirstName("Jim");
 		user.getBiography().setLastName("Raynor");
-		user.setAvatar("avatar.png");
+		user.setAvatar("images/avatar.png");
 
 		/*
 		 * Load settings
@@ -36,21 +37,24 @@ public class Oz
 		try
 		{
 			settings.load("settings.ozs");
-			System.out.println(settings.getNetworkPort());
+			if (port > 0)
+				settings.setNetworkPort(port);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 
+		/*
+		 * Modules
+		 */
 		m_network = new Network(settings);
 		m_ui = new UI(user);
+		Files files = new Files(m_network);
 		@SuppressWarnings("unused")
-		Contacts contacts = new Contacts(m_network, m_ui, user);
+		Contacts contacts = new Contacts(m_network, m_ui, user, files);
 		@SuppressWarnings("unused")
 		Messages messages = new Messages(m_network, m_ui, user);
-		@SuppressWarnings("unused")
-		Files files = new Files(m_network);
 	}
 
 	public void run()

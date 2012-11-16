@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
@@ -19,15 +20,16 @@ import oz.ui.UI;
 import oz.network.Client;
 import oz.network.Network;
 
-public class Contacts implements Module
+public class Contacts implements Module, Files.Observer
 {
-	public Contacts(Network network, UI ui, UserData user)
+	public Contacts(Network network, UI ui, UserData user, Files files)
 	{
 		m_network = network;
 		m_ui = ui;
 		m_user = user;
+		m_files = files;
 		m_contactLabels = new HashMap<Client, Label>();
-		
+
 		m_network.setCommand("ADD", this);
 		m_network.setCommand("USER", this);
 
@@ -53,6 +55,11 @@ public class Contacts implements Module
 		});
 	}
 
+	public void addFileRequest(Client client, String request)
+	{
+		m_files.addFileRequest(client, client.getUserData().getAvatar(), this);
+	}
+
 	@Override
 	public boolean executeCommand(String command, final Client client)
 	{
@@ -61,16 +68,19 @@ public class Contacts implements Module
 		if (commandCode.equals("USER"))
 		{
 			client.setUserData(m_network.parsePacket(command, UserData.class));
+
 			m_ui.getDisplay().asyncExec(new Runnable()
 			{
 				public void run()
 				{
 					Label contactLabel = m_contactLabels.get(client);
-					if(contactLabel != null)
+					if (contactLabel != null)
 					{
-						System.out.println("test");
 						contactLabel.setText(client.getUserData().getUsername());
 						m_contactsWidget.layout();
+
+						if (client.getUserData().getAvatar() != null)
+							addFileRequest(client, client.getUserData().getAvatar());
 					}
 				}
 			});
@@ -86,6 +96,9 @@ public class Contacts implements Module
 					m_contactLabels.put(client, newContactLabel);
 					newContactLabel.setText(client.getUserData().getUsername());
 					m_contactsWidget.layout();
+
+					if (client.getUserData().getAvatar() != null)
+						addFileRequest(client, client.getUserData().getAvatar());
 
 					// Send user data
 					try
@@ -224,9 +237,29 @@ public class Contacts implements Module
 		Shell	m_addContactShell;
 	}
 
+	@Override
+	public void fileNotify(Client client, String request)
+	{
+		final Client c = client;
+		final String r = request;
+		m_ui.getDisplay().asyncExec(new Runnable()
+		{
+			public void run()
+			{
+				Label label = m_contactLabels.get(c);
+				if (label != null)
+				{
+					Image image = new Image(m_ui.getDisplay(), "files/" + c.getUserData().getUsername() + "/" + r);
+					label.setImage(image);
+				}
+			}
+		});
+	}
+
 	Network					m_network;
 	UI						m_ui;
 	UserData				m_user;
 	ContactsWidget			m_contactsWidget;
+	Files					m_files;
 	HashMap<Client, Label>	m_contactLabels;
 }
