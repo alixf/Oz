@@ -21,6 +21,7 @@ public class Oz
 		user.setUsername("Jim");
 		user.getBiography().setFirstName("Jim");
 		user.getBiography().setLastName("Raynor");
+		user.setAvatar("avatar.png");
 		
 		m_network = new Network(port);
 		m_ui = new UI(user);

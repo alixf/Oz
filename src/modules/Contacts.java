@@ -1,6 +1,7 @@
 package modules;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -26,6 +27,8 @@ public class Contacts implements Module
 		m_network = network;
 		m_ui = ui;
 		m_user = user;
+		m_contactLabels = new HashMap<Client, Label>();
+		
 		m_network.setCommand("ADD", this);
 		m_network.setCommand("USER", this);
 
@@ -56,21 +59,48 @@ public class Contacts implements Module
 	{
 		String commandCode = command.split(m_network.getSeparator())[0];
 
-		if (commandCode.equals("ADD") || commandCode.equals("USER"))
+		if (commandCode.equals("USER"))
+		{
 			client.setUserData(m_network.parsePacket(command, UserData.class));
+			m_ui.getDisplay().asyncExec(new Runnable()
+			{
+				public void run()
+				{
+					Label contactLabel = m_contactLabels.get(client);
+					if(contactLabel != null)
+					{
+						System.out.println("test");
+						contactLabel.setText(client.getUserData().getUsername());
+						m_contactsWidget.layout();
+					}
+				}
+			});
+		}
 		if (commandCode.equals("ADD"))
 		{
+			client.setUserData(m_network.parsePacket(command, UserData.class));
 			m_ui.getDisplay().asyncExec(new Runnable()
 			{
 				public void run()
 				{
 					Label newContactLabel = new Label(m_contactsWidget, SWT.BORDER);
+					m_contactLabels.put(client, newContactLabel);
 					newContactLabel.setText(client.getUserData().getUsername());
 					m_contactsWidget.layout();
+
+					// Send user data
+					try
+					{
+						m_network.send(m_network.makePacket("USER", m_user), client);
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
 				}
 			});
 		}
-		
+
 		return true;
 	}
 
@@ -82,13 +112,14 @@ public class Contacts implements Module
 		{
 			Client client = m_network.createClient(address);
 			client.getUserData().setUsername(address);
-			if(client != null)
+			if (client != null)
 			{
 				System.out.println("sending data");
 				m_network.send(packet, client);
 
 				System.out.println("adding label");
 				Label newContactLabel = new Label(m_contactsWidget, SWT.BORDER);
+				m_contactLabels.put(client, newContactLabel);
 				newContactLabel.setText(client.getUserData().getUsername());
 				m_contactsWidget.layout();
 			}
@@ -157,9 +188,9 @@ public class Contacts implements Module
 					{
 						m_addContactShell.close();
 						/*
-						Label newContactLabel = new Label(m_addContactShell, SWT.BORDER);
-						newContactLabel.setText(client.getUserData().getUsername());
-						*/
+						 * Label newContactLabel = new Label(m_addContactShell, SWT.BORDER);
+						 * newContactLabel.setText(client.getUserData().getUsername());
+						 */
 					}
 					else
 					{
@@ -194,8 +225,9 @@ public class Contacts implements Module
 		Shell	m_addContactShell;
 	}
 
-	Network			m_network;
-	UI				m_ui;
-	UserData		m_user;
-	ContactsWidget	m_contactsWidget;
+	Network					m_network;
+	UI						m_ui;
+	UserData				m_user;
+	ContactsWidget			m_contactsWidget;
+	HashMap<Client, Label>	m_contactLabels;
 }
