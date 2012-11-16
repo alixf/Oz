@@ -1,4 +1,4 @@
-package data;
+package oz.data;
 
 import java.util.List;
 

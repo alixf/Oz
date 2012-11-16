@@ -1,4 +1,4 @@
-package data;
+package oz.data;
 
 public class UserSummary
 {

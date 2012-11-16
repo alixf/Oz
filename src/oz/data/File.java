@@ -1,4 +1,4 @@
-package data;
+package oz.data;
 
 public class File
 {
@@ -26,11 +26,11 @@ public class File
 	{
 		m_content = content;
 	}
-	public String getM_mimeType()
+	public String getMimeType()
 	{
 		return m_mimeType;
 	}
-	public void setM_mimeType(String mimeType)
+	public void setMimeType(String mimeType)
 	{
 		m_mimeType = mimeType;
 	}

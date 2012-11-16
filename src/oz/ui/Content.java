@@ -1,4 +1,4 @@
-package ui;
+package oz.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;

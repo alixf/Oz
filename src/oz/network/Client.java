@@ -1,8 +1,8 @@
-package network;
+package oz.network;
 
 import java.net.Socket;
 
-import data.UserData;
+import oz.data.UserData;
 
 public class Client
 {

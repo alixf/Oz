@@ -1,11 +1,11 @@
-package data;
+package oz.data;
 
 public class Message
 {
 	public Message()
-	{	
+	{
 	}
-	
+
 	public Message(String content, long date)
 	{
 		setContent(content);

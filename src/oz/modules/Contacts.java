@@ -1,4 +1,4 @@
-package modules;
+package oz.modules;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,11 +14,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import data.UserData;
-
-import ui.UI;
-import network.Client;
-import network.Network;
+import oz.data.UserData;
+import oz.ui.UI;
+import oz.network.Client;
+import oz.network.Network;
 
 public class Contacts implements Module
 {

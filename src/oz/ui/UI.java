@@ -1,4 +1,4 @@
-package ui;
+package oz.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -8,7 +8,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import data.UserData;
+import oz.data.UserData;
 
 public class UI
 {

@@ -1,6 +1,6 @@
-package modules;
+package oz.modules;
 
-import network.Client;
+import oz.network.Client;
 
 public interface Module
 {
