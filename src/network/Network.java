@@ -88,7 +88,6 @@ public class Network extends Thread
 					SocketChannel sc = client.getSocket().getChannel();
 					sc.configureBlocking(false);
 					sc.register(m_selector, SelectionKey.OP_READ, client);
-
 				}
 				else if (key.isReadable())
 				{
@@ -265,7 +264,7 @@ public class Network extends Thread
 
 	public String makePacket(String command, Object data)
 	{
-		return command + " " +  new JSONSerializer().exclude("*.class").serialize(data);
+		return command + " " +  new JSONSerializer().include("*").exclude("*.class").serialize(data);
 	}
 
 	/**
