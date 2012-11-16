@@ -97,22 +97,26 @@ public class Network extends Thread
 
 					ByteBuffer bb = ByteBuffer.allocate(m_receiveBufferSize);
 
-					int readSize = channel.read(bb);
-					if (readSize < 0) // Client disconnected
-					{
-						key.cancel();
-						m_clients.remove(client);
-					}
-					else
-					// Execute command
+					String command = "";
+					int readSize = 0;
+					do
 					{
 						bb.position(0);
-						String command = m_decoder.decode(bb).toString().substring(0, readSize);
+						readSize = channel.read(bb);
 
-						System.out.println("main : " + command);
+						if (readSize < 0) // Client disconnected
+						{
+							key.cancel();
+							m_clients.remove(client);
+						}
+						else
+						{
+							bb.position(0);
+							command += m_decoder.decode(bb).toString().substring(0, readSize);
+						}
+					} while (readSize > 0);
 
-						parseCommand(client, command);
-					}
+					parseCommand(client, command);
 				}
 			}
 			keys.clear();
@@ -163,8 +167,6 @@ public class Network extends Thread
 				client.setSocket(socket);
 				m_clients.add(client);
 				System.out.println("add : there is now " + m_clients.size() + " clients");
-
-				System.out.println("test");
 
 				// Register client socket
 				final ReentrantLock selectorLock = new ReentrantLock();
@@ -231,8 +233,7 @@ public class Network extends Thread
 
 	private boolean parseCommand(Client client, String packet)
 	{
-		System.out.println("parseCommand : " + packet);
-		System.out.println();
+		System.out.println("parsing command : " + packet);
 
 		Module module = m_commands.get(getCommand(packet));
 		if (module == null)
