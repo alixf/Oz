@@ -3,7 +3,7 @@ package oz.data;
 import java.util.List;
 
 public class UserData
-{	
+{
 	public UserData()
 	{
 		setBiography(new Biography());
@@ -84,7 +84,7 @@ public class UserData
 		public Biography()
 		{
 		}
-		
+
 		public String getFirstName()
 		{
 			return m_firstName;
@@ -137,5 +137,5 @@ public class UserData
 	private List<UserSummary>	m_friends;
 	private List<Group>			m_friendGroups;
 	private List<UserSummary>	m_followers;
-	private List<Message>			m_posts;
+	private List<Message>		m_posts;
 }

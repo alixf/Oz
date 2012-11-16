@@ -87,7 +87,7 @@ public class Settings
 		m_trackerPort = trackerPort;
 	}
 
-	private int			m_networkPort;
-	private String		m_trackerAddress;
-	private int			m_trackerPort;
+	private int		m_networkPort;
+	private String	m_trackerAddress;
+	private int		m_trackerPort;
 }

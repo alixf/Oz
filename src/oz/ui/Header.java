@@ -54,7 +54,7 @@ public class Header extends Composite
 		settingsButton.setLayoutData(settingsButtonData);
 
 		// Logo
-		Image avatarImage = new Image(m_display, "images/avatar.png");
+		Image avatarImage = new Image(m_display, user.getAvatar());
 		Label avatarLabel = new Label(this, SWT.BORDER);
 		FormData avatarLabelData = new FormData();
 		avatarLabelData.top = new FormAttachment(0, 7);

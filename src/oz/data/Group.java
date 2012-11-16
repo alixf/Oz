@@ -7,7 +7,7 @@ public class Group
 	public Group()
 	{
 	}
-	
+
 	public Group(String name)
 	{
 		setName(name);

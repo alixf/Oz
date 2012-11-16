@@ -43,7 +43,7 @@ public class Messages implements Module
 		m_messagesWidget = new MessagesWidget(m_ui.getContent());
 
 		m_dateFormat = new SimpleDateFormat("'Le' d/M/y à k:m:s", new Locale("FRANCE"));
-		
+
 		// Create menu button
 		m_ui.getDisplay().asyncExec(new Runnable()
 		{
@@ -69,9 +69,9 @@ public class Messages implements Module
 		if (commandCode.equals("MSG"))
 		{
 			Message message = m_network.parsePacket(command, Message.class);
-			
+
 			m_messagesWidget.addMessage(client.getUserData(), message);
-			
+
 			return true;
 		}
 
@@ -134,7 +134,7 @@ public class Messages implements Module
 
 			Message message = new Message(messageContent, new java.util.Date().getTime());
 			String packet = m_network.makePacket("MSG", message);
-			
+
 			try
 			{
 				m_network.send(packet, m_network.getClients());
@@ -143,23 +143,23 @@ public class Messages implements Module
 			{
 				e.printStackTrace();
 			}
-			
+
 			addMessage(m_user, message);
 		}
 
 		public void addMessage(final UserData userData, final Message message)
 		{
-			System.out.println("addMessage : "+message.getContent());
+			System.out.println("addMessage : " + message.getContent());
 			m_ui.getDisplay().asyncExec(new Runnable()
 			{
 				public void run()
 				{
 					Label newMessage = new Label(m_messagesContainer, SWT.BORDER);
-					newMessage.setText(userData.getUsername()+" - "+message.getContent()+" - "+m_dateFormat.format(new Date(message.getDate())));
+					newMessage.setText(userData.getUsername() + " - " + message.getContent() + " - " + m_dateFormat.format(new Date(message.getDate())));
 
 					m_scrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 					m_messagesContainer.layout();
-					
+
 					m_scrollContainer.getVerticalBar().setSelection(m_scrollContainer.getVerticalBar().getMaximum());
 					m_scrollContainer.layout();
 				}
@@ -171,9 +171,9 @@ public class Messages implements Module
 		Text				m_messagesInput;
 	}
 
-	private Network			m_network;
-	private UI				m_ui;
-	private UserData		m_user;
-	private MessagesWidget	m_messagesWidget;
-	private SimpleDateFormat m_dateFormat;
+	private Network				m_network;
+	private UI					m_ui;
+	private UserData			m_user;
+	private MessagesWidget		m_messagesWidget;
+	private SimpleDateFormat	m_dateFormat;
 }
