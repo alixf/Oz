@@ -2,6 +2,7 @@ package oz.network;
 
 import java.io.UnsupportedEncodingException;
 import java.security.*;
+import java.security.spec.*;
 import javax.crypto.*;
 import org.apache.commons.codec.binary.Base64;
 
@@ -13,7 +14,7 @@ public class Security
 		keyGen.initialize(1024, new SecureRandom());
 		m_keyPair = keyGen.generateKeyPair();
 		m_cipher = Cipher.getInstance("RSA");
-		//By default we use UTF-8 encoding
+		// By default we use UTF-8 encoding
 		m_charset = "UTF-8";
 	}
 
@@ -26,30 +27,53 @@ public class Security
 	}
 
 	/**
-	 * @param charset the charsetName to set
+	 * @param charset
+	 *            the charsetName to set
 	 */
 	public void setCharset(String charsetName)
 	{
 		m_charset = charsetName;
 	}
-	
-	public String encrypt(String plaintext) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException
+
+	public byte[] getEncodedPublicKey()
 	{
-		//Initialize cipher with instantiated algorithm and the public key to encrypt.
-		m_cipher.init(Cipher.ENCRYPT_MODE, m_keyPair.getPublic());
-		
-		//Convert the string into a byte array
+		return m_keyPair.getPublic().getEncoded();
+	}
+
+	public String getBase64EncodedPublicKey()
+	{
+		return Base64.encodeBase64String(m_keyPair.getPublic().getEncoded());
+	}
+
+	public static PublicKey convertEncodedPublicKey(byte[] encodedPublicKey) throws InvalidKeySpecException, NoSuchAlgorithmException
+	{
+		return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encodedPublicKey));
+		// we can also use PKCS8EncodedKeySpec
+	}
+
+	public static PublicKey convertBase64EncodedPublicKey(String base64EncodedPublicKey) throws InvalidKeySpecException, NoSuchAlgorithmException
+	{
+		return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(base64EncodedPublicKey)));
+	}
+
+	public String encryptCommand(String plaintext, PublicKey publicKey) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException, InvalidKeySpecException, NoSuchAlgorithmException
+	{
+		// Cipher with instantiated algorithm and the public key.
+		m_cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+
+		// Convert the string into a byte array
 		byte[] bytes = plaintext.getBytes(m_charset);
 
 		byte[] encrypted = blockCipher(bytes, Cipher.ENCRYPT_MODE);
 
 		String encryptedTranspherable = Base64.encodeBase64String(encrypted);
+		// we can also use Hex encoding, but base64 encoding in more efficient.
 		return new String(encryptedTranspherable);
 	}
 
-	public String decrypt(String encrypted) throws InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException
+	public String decryptCommand(String encrypted) throws InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException
 	{
-		//Initialize cipher with instantiated algorithm and the private key to decrypt.
+		// Initialize cipher with instantiated algorithm and the private key to decrypt.
 		m_cipher.init(Cipher.DECRYPT_MODE, m_keyPair.getPrivate());
 		byte[] bts = Base64.decodeBase64(encrypted);
 
@@ -60,13 +84,12 @@ public class Security
 
 	private byte[] blockCipher(byte[] bytes, int mode) throws IllegalBlockSizeException, BadPaddingException
 	{
-		// string initialize 2 buffers.
-		// scrambled will hold intermediate results
+		// string initialize 2 buffers. scrambled will hold intermediate results
 		byte[] scrambled = new byte[0];
 
 		// toReturn will hold the total result
 		byte[] toReturn = new byte[0];
-		
+
 		// if we encrypt we use 100 byte long blocks. Decryption requires 128 byte long blocks (because of RSA)
 		int length = (mode == Cipher.ENCRYPT_MODE) ? 100 : 128;
 
@@ -75,7 +98,8 @@ public class Security
 
 		for (int i = 0; i < bytes.length; i++)
 		{
-			// if we filled our buffer array we have our block ready for decryption or encryption
+			// if we filled our buffer array we have our block ready for
+			// decryption or encryption
 			if ((i > 0) && (i % length == 0))
 			{
 				// execute the operation
@@ -85,7 +109,7 @@ public class Security
 				// here we calculate the length of the next buffer required
 				int newlength = length;
 
-				// if new length would be longer than remaining bytes in the bytes array we shorten it.
+				// if new length would be longer than remaining bytes in the byte array we shorten it.
 				if (i + length > bytes.length)
 				{
 					newlength = bytes.length - i;
