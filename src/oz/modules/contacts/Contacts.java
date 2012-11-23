@@ -104,9 +104,9 @@ public class Contacts implements Module
 		try
 		{
 			final Client client = m_network.createClient(address);
-			client.getUserData().setUsername(address);
 			if (client != null)
 			{
+				client.getUserData().setUsername(address);
 				m_network.send(packet, client);
 
 				m_ui.getDisplay().asyncExec(new Runnable()
