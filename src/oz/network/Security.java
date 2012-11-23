@@ -4,18 +4,30 @@ import java.io.UnsupportedEncodingException;
 import java.security.*;
 import java.security.spec.*;
 import javax.crypto.*;
+
 import org.apache.commons.codec.binary.Base64;
 
 public class Security
 {
-	public Security() throws NoSuchAlgorithmException, NoSuchPaddingException
+	public Security()
 	{
-		KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
-		keyGen.initialize(1024, new SecureRandom());
-		m_keyPair = keyGen.generateKeyPair();
-		m_cipher = Cipher.getInstance("RSA");
-		// By default we use UTF-8 encoding
-		m_charset = "UTF-8";
+		try
+		{
+			KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
+			keyGen.initialize(1024, new SecureRandom());
+			m_keyPair = keyGen.generateKeyPair();
+			m_cipher = Cipher.getInstance("RSA");
+			// By default we use UTF-8 encoding
+			m_charset = "UTF-8";
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+		catch (NoSuchPaddingException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -45,41 +57,92 @@ public class Security
 		return Base64.encodeBase64String(m_keyPair.getPublic().getEncoded());
 	}
 
-	public static PublicKey convertEncodedPublicKey(byte[] encodedPublicKey) throws InvalidKeySpecException, NoSuchAlgorithmException
+	public static PublicKey convertEncodedPublicKey(byte[] encodedPublicKey)
 	{
-		return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encodedPublicKey));
-		// we can also use PKCS8EncodedKeySpec
+		try
+		{
+			return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encodedPublicKey));
+			// we can also use PKCS8EncodedKeySpec
+		}
+		catch(InvalidKeySpecException e)
+		{
+			e.printStackTrace();
+		}
+		catch(NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 
-	public static PublicKey convertBase64EncodedPublicKey(String base64EncodedPublicKey) throws InvalidKeySpecException, NoSuchAlgorithmException
+	public static PublicKey convertBase64EncodedPublicKey(String base64EncodedPublicKey)
 	{
-		return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(Base64.decodeBase64(base64EncodedPublicKey)));
+		return convertEncodedPublicKey(Base64.decodeBase64(base64EncodedPublicKey));
 	}
 
-	public String encryptCommand(String plaintext, PublicKey publicKey) throws IllegalBlockSizeException, BadPaddingException, InvalidKeyException, UnsupportedEncodingException, InvalidKeySpecException, NoSuchAlgorithmException
+	public String encryptCommand(String commandString, PublicKey publicKey)
 	{
-		// Cipher with instantiated algorithm and the public key.
-		m_cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-
-		// Convert the string into a byte array
-		byte[] bytes = plaintext.getBytes(m_charset);
-
-		byte[] encrypted = blockCipher(bytes, Cipher.ENCRYPT_MODE);
-
-		String encryptedTranspherable = Base64.encodeBase64String(encrypted);
-		// we can also use Hex encoding, but base64 encoding in more efficient.
-		return new String(encryptedTranspherable);
+		String encryptedString = null;
+		try
+		{
+			// Cipher with instantiated algorithm and the public key.
+			m_cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+	
+			// Convert the string into a byte array
+			byte[] bytes = commandString.getBytes(m_charset);
+	
+			byte[] encrypted = blockCipher(bytes, Cipher.ENCRYPT_MODE);
+	
+			encryptedString = Base64.encodeBase64String(encrypted);
+			// we can also use Hex encoding, but base64 encoding in more efficient.
+		}
+		catch (IllegalBlockSizeException e)
+		{
+			e.printStackTrace();
+		}
+		catch (BadPaddingException e)
+		{
+			e.printStackTrace();
+		}
+		catch (InvalidKeyException e)
+		{
+			e.printStackTrace();
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		return encryptedString;
 	}
 
-	public String decryptCommand(String encrypted) throws InvalidKeyException, UnsupportedEncodingException, IllegalBlockSizeException, BadPaddingException
+	public String decryptCommand(String encrypted)
 	{
-		// Initialize cipher with instantiated algorithm and the private key to decrypt.
-		m_cipher.init(Cipher.DECRYPT_MODE, m_keyPair.getPrivate());
-		byte[] bts = Base64.decodeBase64(encrypted);
-
-		byte[] decrypted = blockCipher(bts, Cipher.DECRYPT_MODE);
-
-		return new String(decrypted, m_charset);
+		String commandString = null;
+		try
+		{
+			// Initialize cipher with instantiated algorithm and the private key to decrypt.
+			m_cipher.init(Cipher.DECRYPT_MODE, m_keyPair.getPrivate());
+			byte[] bts = Base64.decodeBase64(encrypted);
+			byte[] decrypted = blockCipher(bts, Cipher.DECRYPT_MODE);
+			commandString = new String(decrypted, m_charset).trim();
+		}
+		catch (InvalidKeyException e)
+		{
+			e.printStackTrace();
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IllegalBlockSizeException e)
+		{
+			e.printStackTrace();
+		}
+		catch (BadPaddingException e)
+		{
+			e.printStackTrace();
+		}
+		return commandString;
 	}
 
 	private byte[] blockCipher(byte[] bytes, int mode) throws IllegalBlockSizeException, BadPaddingException
@@ -90,7 +153,8 @@ public class Security
 		// toReturn will hold the total result
 		byte[] toReturn = new byte[0];
 
-		// if we encrypt we use 100 byte long blocks. Decryption requires 128 byte long blocks (because of RSA)
+		// if we encrypt we use 100 byte long blocks. Decryption requires 128
+		// byte long blocks (because of RSA)
 		int length = (mode == Cipher.ENCRYPT_MODE) ? 100 : 128;
 
 		// Another buffer : this one will hold the bytes that have to be modified in this step
@@ -98,8 +162,7 @@ public class Security
 
 		for (int i = 0; i < bytes.length; i++)
 		{
-			// if we filled our buffer array we have our block ready for
-			// decryption or encryption
+			// if we filled our buffer array we have our block ready for decryption or encryption
 			if ((i > 0) && (i % length == 0))
 			{
 				// execute the operation
@@ -139,6 +202,30 @@ public class Security
 		for (int i = 0; i < suffix.length; i++)
 			toReturn[i + prefix.length] = suffix[i];
 		return toReturn;
+	}
+
+	public static void main(String[] args) throws Throwable
+	{
+		Security sec = new Security();
+		
+		
+		String command = "Hello world";
+		
+		String publicKeyString = sec.getBase64EncodedPublicKey();
+		PublicKey publicKey = Security.convertBase64EncodedPublicKey(publicKeyString);
+		
+		String encrytedCommand = sec.encryptCommand(command, publicKey);
+		
+		//Sending
+		
+		String decryptedCommand = sec.decryptCommand(encrytedCommand);
+
+		System.out.println(decryptedCommand.equals(command));
+		if (!decryptedCommand.equals(command))
+		{
+			System.out.println(decryptedCommand.length());
+			System.out.println(command.length());
+		}
 	}
 
 	KeyPair m_keyPair;
