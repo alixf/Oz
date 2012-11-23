@@ -6,6 +6,8 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
 import oz.data.UserData;
@@ -18,6 +20,12 @@ public class UI
 		m_display = new Display();
 		m_shell = new Shell(m_display);
 
+		m_shell.addListener(SWT.KeyDown, new Listener() {
+			public void handleEvent(Event event) {
+				System.out.println("Content");
+			}
+		});
+		
 		// Set window properties
 		m_shell.setText("Oz : Share your world");
 		Image logoImage = new Image(m_display, "images/Oz-logo.png");

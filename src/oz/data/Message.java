@@ -32,6 +32,17 @@ public class Message
 		m_date = date;
 	}
 
+	public String getChannel()
+	{
+		return m_channel;
+	}
+
+	public void setChannel(String channel)
+	{
+		m_channel = channel;
+	}
+
 	private String	m_content;
 	private long	m_date;
+	private String	m_channel;
 }

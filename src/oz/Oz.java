@@ -6,6 +6,8 @@ import oz.data.UserData;
 import oz.ui.UI;
 import oz.network.Network;
 import oz.modules.*;
+import oz.modules.contacts.Contacts;
+import oz.modules.messages.Messages;
 
 public class Oz
 {
@@ -51,10 +53,9 @@ public class Oz
 		m_network = new Network(settings);
 		m_ui = new UI(user);
 		Files files = new Files(m_network);
-		@SuppressWarnings("unused")
 		Contacts contacts = new Contacts(m_network, m_ui, user, files);
 		@SuppressWarnings("unused")
-		Messages messages = new Messages(m_network, m_ui, user);
+		Messages messages = new Messages(m_network, m_ui, user, contacts);
 	}
 
 	public void run()

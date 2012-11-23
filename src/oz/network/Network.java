@@ -149,6 +149,7 @@ public class Network extends Thread
 	{
 		String[] addressParts = address.split(":");
 		address = addressParts[0];
+		// FIXME Check address format
 		int port = (addressParts.length > 1) ? Integer.parseInt(addressParts[1]) : m_port;
 
 		try
@@ -289,7 +290,7 @@ public class Network extends Thread
 		m_separator = separator;
 	}
 
-	public Iterable<Client> getClients()
+	public List<Client> getClients()
 	{
 		return m_clients;
 	}
