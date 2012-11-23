@@ -3,7 +3,6 @@ package oz.modules.messages;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,9 +64,7 @@ public class Messages implements Module
 		if (commandCode.equals("MSG"))
 		{
 			final Message message = m_network.parsePacket(command, Message.class);
-			
-			message.setContent("FROMNETWORK : "+message.getContent());
-			
+
 			// Get message's channel
 			Channel channel = null;
 			Iterator<Channel> it = m_channels.iterator();
@@ -78,22 +75,18 @@ public class Messages implements Module
 					channel = c;
 			}
 			// Channel unknown, create Channel
-			if(channel == null)
+			if (channel == null)
 			{
 				// New channel
-				System.out.println("Create channel");
 				LinkedList<Client> clientList = new LinkedList<Client>();
 				clientList.add(client);
 				channel = createChannel(clientList);
 			}
-			
-			// Add message to the channel
-			System.out.println("Add message to channel");
-			channel.addMessage(client.getUserData(), message);
-			if(channel == m_channel)
-			{
-				System.out.println("Add message to current channel");
 
+			// Add message to the channel
+			channel.addMessage(client.getUserData(), message);
+			if (channel == m_channel)
+			{
 				m_ui.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
@@ -102,7 +95,7 @@ public class Messages implements Module
 					}
 				});
 			}
-			
+
 			return true;
 		}
 
@@ -112,7 +105,6 @@ public class Messages implements Module
 	public void sendMessage(String text)
 	{
 		Message message = new Message(text, new java.util.Date().getTime());
-		System.out.println("test : "+m_channel);
 		message.setChannelID(m_channel.getUniqueID());
 		String packet = m_network.makePacket("MSG", message);
 		try
@@ -125,6 +117,8 @@ public class Messages implements Module
 		}
 		m_channel.addMessage(m_user, message);
 		m_view.addMessage(m_user, message);
+
+		System.out.println("sendMessage : " + m_channel.getMessages().size());
 	}
 
 	public Channel createChannel(List<Client> clients)
@@ -163,7 +157,7 @@ public class Messages implements Module
 					setChannel(channel);
 				}
 			});
-			
+
 			m_channels.add(channel);
 			return channel;
 		}
@@ -201,12 +195,12 @@ public class Messages implements Module
 		m_view.showChannel(m_channel);
 	}
 
-	class Channel
+	public static class Channel
 	{
 		public Channel()
 		{
 			m_clients = new LinkedList<Client>();
-			m_messages = new HashMap<UserData, Message>();
+			m_messages = new LinkedList<UserMessage>();
 		}
 
 		public void addClient(Client client)
@@ -221,10 +215,10 @@ public class Messages implements Module
 
 		public void addMessage(UserData user, Message message)
 		{
-			m_messages.put(user, message);
+			m_messages.add(new UserMessage(user, message));
 		}
 
-		public HashMap<UserData, Message> getMessages()
+		public LinkedList<UserMessage> getMessages()
 		{
 			return m_messages;
 		}
@@ -239,9 +233,41 @@ public class Messages implements Module
 			m_uniqueID = uniqueID;
 		}
 
-		private LinkedList<Client>			m_clients;
-		private HashMap<UserData, Message>	m_messages;
-		private String						m_uniqueID;
+		public static class UserMessage
+		{
+			public UserMessage(UserData user, Message message)
+			{
+				setUser(user);
+				setMessage(message);
+			}
+
+			public Message getMessage()
+			{
+				return m_message;
+			}
+
+			public void setMessage(Message message)
+			{
+				m_message = message;
+			}
+
+			public UserData getUser()
+			{
+				return m_user;
+			}
+
+			public void setUser(UserData user)
+			{
+				m_user = user;
+			}
+
+			private Message		m_message;
+			private UserData	m_user;
+		}
+
+		private LinkedList<Client>		m_clients;
+		private LinkedList<UserMessage>	m_messages;
+		private String					m_uniqueID;
 	}
 
 	private Network				m_network;

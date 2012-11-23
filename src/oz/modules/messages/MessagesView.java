@@ -2,7 +2,6 @@ package oz.modules.messages;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map.Entry;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -14,8 +13,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -29,6 +26,11 @@ import oz.modules.messages.Messages.Channel;
 
 public class MessagesView extends Composite
 {
+	private static final int	CHANNELSVMARGIN	= 5;
+	private static final int	CHANNELSHMARGIN	= 5;
+	private static final int	MESSAGESVMARGIN	= 5;
+	private static final int	MESSAGESHMARGIN	= 5;
+
 	public MessagesView(Messages messages)
 	{
 		super(messages.getUI().getContent(), SWT.NONE);
@@ -64,13 +66,7 @@ public class MessagesView extends Composite
 		m_channelsScrollContainer.setLayoutData(channelsScrollContainerData);
 		m_channelsScrollContainer.setLayout(new FillLayout());
 		m_channelsContainer = new Composite(m_channelsScrollContainer, SWT.BORDER);
-		RowLayout layout = new RowLayout(SWT.VERTICAL);
-		layout.marginTop = 0;
-		layout.marginLeft = 0;
-		layout.marginRight = 0;
-		layout.marginBottom = 0;
-		layout.spacing = 0;
-		m_channelsContainer.setLayout(layout);
+		m_channelsContainer.setLayout(new FormLayout());
 		m_channelsScrollContainer.setContent(m_channelsContainer);
 		m_channelsScrollContainer.setExpandHorizontal(true);
 		m_channelsScrollContainer.setExpandVertical(true);
@@ -99,10 +95,14 @@ public class MessagesView extends Composite
 		m_messagesScrollContainer.setLayoutData(messagesScrollContainerData);
 		m_messagesScrollContainer.setLayout(new FillLayout());
 		m_messagesContainer = new Composite(m_messagesScrollContainer, SWT.NONE);
-		m_messagesContainer.setLayout(new RowLayout(SWT.VERTICAL));
+		m_messagesContainer.setLayout(new FormLayout());
 		m_messagesScrollContainer.setContent(m_messagesContainer);
 		m_messagesScrollContainer.setExpandHorizontal(true);
 		m_messagesScrollContainer.setExpandVertical(true);
+
+		/* Attachments */
+		m_messagesAttachment = new FormAttachment(0, MESSAGESVMARGIN);
+		m_channelsAttachment = new FormAttachment(0, CHANNELSVMARGIN);
 
 		layout();
 
@@ -133,21 +133,41 @@ public class MessagesView extends Composite
 
 	public void addMessage(final UserData user, final Message message)
 	{
-		System.out.println("Adding : "+message.getContent());
-		new MessageWidget(m_messages, m_messagesContainer, message);
+		// Create widget
+		MessageWidget messageWidget = new MessageWidget(m_messages, m_messagesContainer, message);
 
+		// Set layout data
+		FormData fd = new FormData();
+		fd.left = new FormAttachment(0, MESSAGESHMARGIN);
+		fd.right = new FormAttachment(100, -MESSAGESHMARGIN);
+		fd.top = m_messagesAttachment;
+		messageWidget.setLayoutData(fd);
+		m_messagesAttachment = new FormAttachment(messageWidget, CHANNELSHMARGIN, SWT.BOTTOM);
+
+		// Update container
 		m_messagesScrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		m_messagesContainer.layout();
+
+		// Scroll down
 		m_messagesScrollContainer.getVerticalBar().setSelection(m_messagesScrollContainer.getVerticalBar().getMaximum());
 		m_messagesScrollContainer.layout();
 	}
 
 	public void addChannel(final Channel channel)
 	{
+		// Create widget
 		ChannelWidget channelWidget = new ChannelWidget(m_messages, m_channelsContainer, channel);
-		channelWidget.setLayoutData(new RowData(m_channelsContainer.getSize().x - 8, 50));
 		m_channelWidgets.add(channelWidget);
 
+		// Set layout data
+		FormData fd = new FormData();
+		fd.left = new FormAttachment(0, CHANNELSHMARGIN);
+		fd.right = new FormAttachment(100, -CHANNELSHMARGIN);
+		fd.top = m_channelsAttachment;
+		channelWidget.setLayoutData(fd);
+		m_channelsAttachment = new FormAttachment(channelWidget, CHANNELSVMARGIN, SWT.BOTTOM);
+
+		// Update container
 		m_channelsScrollContainer.setMinSize(m_channelsContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		m_channelsContainer.layout();
 		m_channelsScrollContainer.layout();
@@ -157,23 +177,24 @@ public class MessagesView extends Composite
 	{
 		// Set channels button color
 		Iterator<ChannelWidget> it = m_channelWidgets.iterator();
-		while(it.hasNext())
+		while (it.hasNext())
 		{
 			ChannelWidget cw = it.next();
-			if(cw.getChannel() == channel)
+			if (cw.getChannel() == channel)
 				cw.setColor(127, 200, 255);
 			else
-				cw.setColor(255,255,255);
+				cw.setColor(255, 255, 255);
 		}
-		
+
 		// Clean the container
 		for (Control control : m_messagesContainer.getChildren())
 			control.dispose();
+		m_messagesAttachment = new FormAttachment(0, MESSAGESVMARGIN);
 
 		// Add messages from the channel
-		for (Entry<UserData, Message> entry : channel.getMessages().entrySet())
-			addMessage(entry.getKey(), entry.getValue());
-		
+		for (Channel.UserMessage userMessage : channel.getMessages())
+			addMessage(userMessage.getUser(), userMessage.getMessage());
+
 		// Enable input
 		m_messagesInput.setEnabled(true);
 	}
@@ -185,4 +206,7 @@ public class MessagesView extends Composite
 	private ScrolledComposite			m_channelsScrollContainer;
 	private ScrolledComposite			m_messagesScrollContainer;
 	private LinkedList<ChannelWidget>	m_channelWidgets;
+
+	private FormAttachment				m_messagesAttachment;
+	private FormAttachment				m_channelsAttachment;
 }

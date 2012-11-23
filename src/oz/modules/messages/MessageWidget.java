@@ -17,6 +17,8 @@ public class MessageWidget extends Composite
 	public MessageWidget(Messages messages, Composite parent, Message message)
 	{
 		super(parent, SWT.BORDER);
+
+		// Layout
 		setLayout(new FormLayout());
 
 		m_messages = messages;
@@ -28,15 +30,15 @@ public class MessageWidget extends Composite
 		m_text = new Label(this, SWT.NONE);
 		m_text.setText(message.getContent());
 		FormData fd = new FormData();
-		fd.top = new FormAttachment(0,5);
-		fd.left = new FormAttachment(0,5);
+		fd.top = new FormAttachment(0, 5);
+		fd.left = new FormAttachment(0, 5);
 		m_text.setLayoutData(fd);
-		
+
 		/*
 		 * Image
 		 */
 		m_image = new Label(this, SWT.NONE);
-		
+
 		/*
 		 * Date
 		 */
@@ -44,7 +46,8 @@ public class MessageWidget extends Composite
 		m_date.setText(m_messages.getDateFormat().format(new Date(message.getDate())));
 		fd = new FormData();
 		fd.top = new FormAttachment(m_text, 5, SWT.BOTTOM);
-		fd.left = new FormAttachment(0,5);
+		fd.left = new FormAttachment(0, 5);
+		fd.bottom = new FormAttachment(100, -5);
 		m_date.setLayoutData(fd);
 
 		layout();
