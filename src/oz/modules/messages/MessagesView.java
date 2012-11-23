@@ -57,7 +57,7 @@ public class MessagesView extends Composite
 		/*
 		 * Message channels
 		 */
-		m_channelsScrollContainer = new ScrolledComposite(this, SWT.V_SCROLL);
+		m_channelsScrollContainer = new ScrolledComposite(this, SWT.V_SCROLL | SWT.BORDER);
 		FormData channelsScrollContainerData = new FormData();
 		channelsScrollContainerData.left = new FormAttachment(0, 5);
 		channelsScrollContainerData.top = new FormAttachment(0, 5);
@@ -65,7 +65,7 @@ public class MessagesView extends Composite
 		channelsScrollContainerData.bottom = new FormAttachment(m_messagesInput, -5, SWT.TOP);
 		m_channelsScrollContainer.setLayoutData(channelsScrollContainerData);
 		m_channelsScrollContainer.setLayout(new FillLayout());
-		m_channelsContainer = new Composite(m_channelsScrollContainer, SWT.BORDER);
+		m_channelsContainer = new Composite(m_channelsScrollContainer, SWT.NONE);
 		m_channelsContainer.setLayout(new FormLayout());
 		m_channelsScrollContainer.setContent(m_channelsContainer);
 		m_channelsScrollContainer.setExpandHorizontal(true);

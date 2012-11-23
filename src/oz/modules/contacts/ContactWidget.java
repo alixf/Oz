@@ -37,6 +37,7 @@ public class ContactWidget extends Composite
 		m_name = new Label(this, SWT.NONE);
 		m_name.setText(client.getUserData().getBiography().getFirstName() + " " + client.getUserData().getBiography().getLastName());
 		formData = new FormData();
+		formData.top = new FormAttachment(0, 5);
 		formData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
 		m_name.setLayoutData(formData);
 
@@ -58,7 +59,7 @@ public class ContactWidget extends Composite
 	public void setImage(Image image)
 	{
 		m_image.setImage(image);
-		layout();
+		getParent().layout();
 	}
 
 	public void updateData()
