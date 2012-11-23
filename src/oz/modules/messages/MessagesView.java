@@ -1,5 +1,9 @@
 package oz.modules.messages;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map.Entry;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -14,6 +18,7 @@ import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
@@ -30,6 +35,8 @@ public class MessagesView extends Composite
 		setLayout(new FormLayout());
 		m_messages = messages;
 
+		m_channelWidgets = new LinkedList<ChannelWidget>();
+
 		/*
 		 * Message input
 		 */
@@ -43,6 +50,7 @@ public class MessagesView extends Composite
 		FontData fd = font.getFontData()[0];
 		fd.height *= 1.5;
 		m_messagesInput.setFont(new Font(getDisplay(), fd));
+		m_messagesInput.setEnabled(false);
 
 		/*
 		 * Message channels
@@ -121,16 +129,11 @@ public class MessagesView extends Composite
 				m_messages.createChannel(addChannelWindow.run());
 			}
 		});
-
-		addListener(SWT.KeyDown, new Listener() {
-			public void handleEvent(Event event) {
-				System.out.println("View");
-			}
-		});
 	}
 
 	public void addMessage(final UserData user, final Message message)
 	{
+		System.out.println("Adding : "+message.getContent());
 		new MessageWidget(m_messages, m_messagesContainer, message);
 
 		m_messagesScrollContainer.setMinSize(m_messagesContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
@@ -143,16 +146,43 @@ public class MessagesView extends Composite
 	{
 		ChannelWidget channelWidget = new ChannelWidget(m_messages, m_channelsContainer, channel);
 		channelWidget.setLayoutData(new RowData(m_channelsContainer.getSize().x - 8, 50));
+		m_channelWidgets.add(channelWidget);
 
 		m_channelsScrollContainer.setMinSize(m_channelsContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		m_channelsContainer.layout();
 		m_channelsScrollContainer.layout();
 	}
 
-	private Messages			m_messages;
-	private Text				m_messagesInput;
-	private Composite			m_channelsContainer;
-	private Composite			m_messagesContainer;
-	private ScrolledComposite	m_channelsScrollContainer;
-	private ScrolledComposite	m_messagesScrollContainer;
+	public void showChannel(Channel channel)
+	{
+		// Set channels button color
+		Iterator<ChannelWidget> it = m_channelWidgets.iterator();
+		while(it.hasNext())
+		{
+			ChannelWidget cw = it.next();
+			if(cw.getChannel() == channel)
+				cw.setColor(127, 200, 255);
+			else
+				cw.setColor(255,255,255);
+		}
+		
+		// Clean the container
+		for (Control control : m_messagesContainer.getChildren())
+			control.dispose();
+
+		// Add messages from the channel
+		for (Entry<UserData, Message> entry : channel.getMessages().entrySet())
+			addMessage(entry.getKey(), entry.getValue());
+		
+		// Enable input
+		m_messagesInput.setEnabled(true);
+	}
+
+	private Messages					m_messages;
+	private Text						m_messagesInput;
+	private Composite					m_channelsContainer;
+	private Composite					m_messagesContainer;
+	private ScrolledComposite			m_channelsScrollContainer;
+	private ScrolledComposite			m_messagesScrollContainer;
+	private LinkedList<ChannelWidget>	m_channelWidgets;
 }

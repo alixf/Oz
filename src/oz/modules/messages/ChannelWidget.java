@@ -31,9 +31,7 @@ public class ChannelWidget extends Composite
 		m_image = new Label(this, SWT.NONE);
 		Image image = new Image(getDisplay(), "files/" + user.getUsername() + "/" + user.getAvatar());
 		m_image.setImage(image);
-
-		Device device = Display.getCurrent();
-		setBackground(new Color(device, 127, 190, 255));
+		
 		/*
 		 * Label newChannel = new Label(this, SWT.BORDER);
 		 * newChannel.setText(user.getUsername());
@@ -43,23 +41,36 @@ public class ChannelWidget extends Composite
 		 * System.out.println(rd.width);
 		 * newChannel.setLayoutData(rd);
 		 */
+		
+		addListener(SWT.MouseDown, new Listener()
+		{
+			@Override
+			public void handleEvent(Event event)
+			{
+				m_messages.setChannel(m_channel);
+			}
+		});
 
-		addListener(SWT.DefaultSelection, new Listener()
+		m_image.addListener(SWT.MouseDown, new Listener()
 		{
 			@Override
 			public void handleEvent(Event event)
 			{
-				System.out.println("Widget");
+				m_messages.setChannel(m_channel);
 			}
 		});
-		m_image.addListener(SWT.DefaultSelection, new Listener()
-		{
-			@Override
-			public void handleEvent(Event event)
-			{
-				System.out.println("Image");
-			}
-		});
+	}
+	
+	public void setColor(int r, int g, int b)
+	{
+		Device device = Display.getCurrent();
+		setBackground(new Color(device, r, g, b));
+		redraw();
+	}
+	
+	public Channel getChannel()
+	{
+		return m_channel;
 	}
 
 	Messages	m_messages;

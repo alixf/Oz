@@ -32,17 +32,17 @@ public class Message
 		m_date = date;
 	}
 
-	public String getChannel()
+	public String getChannelID()
 	{
-		return m_channel;
+		return m_channelID;
 	}
 
-	public void setChannel(String channel)
+	public void setChannelID(String channel)
 	{
-		m_channel = channel;
+		m_channelID = channel;
 	}
 
 	private String	m_content;
 	private long	m_date;
-	private String	m_channel;
+	private String	m_channelID;
 }
