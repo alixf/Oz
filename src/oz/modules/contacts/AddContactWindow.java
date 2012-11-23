@@ -19,9 +19,6 @@ class AddContactWindow
 		m_contacts = contacts;
 
 		// Window
-		System.out.println(m_contacts);
-		System.out.println(m_contacts.getView());
-		System.out.println(m_contacts.getView().getDisplay());
 		m_addContactShell = new Shell(m_contacts.getView().getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
 		m_addContactShell.setText("Ajouter un contact");
 		m_addContactShell.setLayout(new RowLayout(SWT.VERTICAL));
