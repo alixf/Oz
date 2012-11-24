@@ -28,20 +28,22 @@ public class ChannelWidget extends Composite
 		m_message = new Label(this, SWT.NONE);
 		m_message.setText(m_message.getText());
 
-		m_image = new Label(this, SWT.NONE);
-		Image image = new Image(getDisplay(), "files/" + user.getUsername() + "/" + user.getAvatar());
-		m_image.setImage(image);
-
-		addListener(SWT.MouseDown, new Listener()
+		if(user.getAvatar() != null)
 		{
-			@Override
-			public void handleEvent(Event event)
+			m_image = new Label(this, SWT.NONE);
+			Image image = new Image(getDisplay(), "files/" + user.getUsername() + "/" + user.getAvatar());
+			m_image.setImage(image);
+			m_image.addListener(SWT.MouseDown, new Listener()
 			{
-				m_messages.setChannel(m_channel);
-			}
-		});
-
-		m_image.addListener(SWT.MouseDown, new Listener()
+				@Override
+				public void handleEvent(Event event)
+				{
+					m_messages.setChannel(m_channel);
+				}
+			});
+		}
+		
+		addListener(SWT.MouseDown, new Listener()
 		{
 			@Override
 			public void handleEvent(Event event)
