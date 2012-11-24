@@ -30,12 +30,12 @@ class ContactsView extends Composite implements Files.Observer
 
 		m_widgets = new HashMap<Client, ContactWidget>();
 
-		
 		// Add button
 		Button addButton = new Button(this, SWT.PUSH);
 		addButton.setText("Ajouter un contact");
 		FormData fd = new FormData();
-		fd.top = new FormAttachment(0, CONTACTSHMARGIN);;
+		fd.top = new FormAttachment(0, CONTACTSHMARGIN);
+		;
 		fd.left = new FormAttachment(0, CONTACTSHMARGIN);
 		addButton.setLayoutData(fd);
 		addButton.addSelectionListener(new SelectionAdapter()
@@ -46,7 +46,6 @@ class ContactsView extends Composite implements Files.Observer
 				addWindow.run();
 			}
 		});
-		
 
 		// Attachments
 		m_contactsAttachment = new FormAttachment(addButton, CONTACTSVMARGIN, SWT.BOTTOM);
@@ -57,7 +56,7 @@ class ContactsView extends Composite implements Files.Observer
 		// Create widget
 		ContactWidget contactWidget = new ContactWidget(m_contacts, this, client);
 		m_widgets.put(client, contactWidget);
-		
+
 		// Set layout data
 		FormData fd = new FormData();
 		fd.top = m_contactsAttachment;

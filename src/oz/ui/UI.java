@@ -12,15 +12,15 @@ import oz.data.UserData;
 
 public class UI
 {
-	public UI(UserData user)
+	public UI(Display display, UserData user)
 	{
 		// Create display and layout
-		m_display = new Display();
+		m_display = display;
 		m_shell = new Shell(m_display);
 
 		// Set window properties
 		m_shell.setText("Oz : Share your world");
-		Image logoImage = new Image(m_display, "images/Oz-logo.png");
+		Image logoImage = new Image(m_display, "images/logo-150.png");
 		m_shell.setImage(logoImage);
 		m_shell.setLayout(new FormLayout());
 
@@ -53,7 +53,6 @@ public class UI
 			if (!m_display.readAndDispatch())
 				m_display.sleep();
 		}
-		m_display.dispose();
 	}
 
 	public Display getDisplay()

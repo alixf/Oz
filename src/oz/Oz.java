@@ -2,6 +2,8 @@ package oz;
 
 import java.io.IOException;
 
+import org.eclipse.swt.widgets.Display;
+
 import oz.data.UserData;
 import oz.ui.UI;
 import oz.network.Network;
@@ -22,25 +24,14 @@ public class Oz
 	public Oz(int port)
 	{
 		/*
-		 * Create user profile
-		 * TODO Load this from file maybe (encrypted with password, would act as a login)
-		 */
-
-		UserData user = new UserData();
-		user.setUsername("Jim");
-		user.getBiography().setFirstName("Jim");
-		user.getBiography().setLastName("Raynor");
-		user.setAvatar("images/avatar.png");
-
-		/*
 		 * Load settings
 		 */
-		Settings settings = new Settings();
+		m_settings = new Settings();
 		try
 		{
-			settings.load("settings.ozs");
+			m_settings.load("settings.ozs");
 			if (port > 0)
-				settings.setNetworkPort(port);
+				m_settings.setNetworkPort(port);
 		}
 		catch (IOException e)
 		{
@@ -48,23 +39,42 @@ public class Oz
 		}
 
 		/*
-		 * Modules
+		 * Create Display
 		 */
-		m_network = new Network(settings);
-		m_ui = new UI(user);
-		Files files = new Files(m_network);
-		Contacts contacts = new Contacts(m_network, m_ui, user, files);
-		@SuppressWarnings("unused")
-		Messages messages = new Messages(m_network, m_ui, user, contacts);
+		m_display = new Display();
+
+		/*
+		 * Create user profile
+		 */
+		m_user = Login.login(m_display);
+		if (m_user != null)
+		{
+			/*
+			 * Modules
+			 */
+			m_network = new Network(m_settings);
+			m_ui = new UI(m_display, m_user);
+			Files files = new Files(m_network);
+			Contacts contacts = new Contacts(m_network, m_ui, m_user, files);
+			@SuppressWarnings("unused")
+			Messages messages = new Messages(m_network, m_ui, m_user, contacts);
+		}
 	}
 
 	public void run()
 	{
-		m_network.start();
-		m_ui.run();
-		m_network.stopListen();
+		if (m_user != null)
+		{
+			m_network.start();
+			m_ui.run();
+			m_display.dispose();
+			m_network.stopListen();
+		}
 	}
 
-	UI		m_ui;
-	Network	m_network;
+	Settings	m_settings;
+	Display		m_display;
+	UserData	m_user;
+	UI			m_ui;
+	Network		m_network;
 }

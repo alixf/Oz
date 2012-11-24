@@ -6,8 +6,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.RowData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -19,9 +17,9 @@ import oz.network.Client;
 
 class AddContactWindow
 {
-	private static final int VMARGIN = 5;
-	private static final int HMARGIN = 5;
-	
+	private static final int	VMARGIN	= 5;
+	private static final int	HMARGIN	= 5;
+
 	public AddContactWindow(Contacts contacts)
 	{
 		m_contacts = contacts;

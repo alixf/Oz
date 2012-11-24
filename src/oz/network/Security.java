@@ -64,11 +64,11 @@ public class Security
 			return KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(encodedPublicKey));
 			// we can also use PKCS8EncodedKeySpec
 		}
-		catch(InvalidKeySpecException e)
+		catch (InvalidKeySpecException e)
 		{
 			e.printStackTrace();
 		}
-		catch(NoSuchAlgorithmException e)
+		catch (NoSuchAlgorithmException e)
 		{
 			e.printStackTrace();
 		}
@@ -87,12 +87,12 @@ public class Security
 		{
 			// Cipher with instantiated algorithm and the public key.
 			m_cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-	
+
 			// Convert the string into a byte array
 			byte[] bytes = commandString.getBytes(m_charset);
-	
+
 			byte[] encrypted = blockCipher(bytes, Cipher.ENCRYPT_MODE);
-	
+
 			encryptedString = Base64.encodeBase64String(encrypted);
 			// we can also use Hex encoding, but base64 encoding in more efficient.
 		}
@@ -207,17 +207,16 @@ public class Security
 	public static void main(String[] args) throws Throwable
 	{
 		Security sec = new Security();
-		
-		
+
 		String command = "Hello world";
-		
+
 		String publicKeyString = sec.getBase64EncodedPublicKey();
 		PublicKey publicKey = Security.convertBase64EncodedPublicKey(publicKeyString);
-		
+
 		String encrytedCommand = sec.encryptCommand(command, publicKey);
-		
-		//Sending
-		
+
+		// Sending
+
 		String decryptedCommand = sec.decryptCommand(encrytedCommand);
 
 		System.out.println(decryptedCommand.equals(command));
@@ -228,7 +227,7 @@ public class Security
 		}
 	}
 
-	KeyPair m_keyPair;
-	Cipher m_cipher;
-	String m_charset;
+	KeyPair	m_keyPair;
+	Cipher	m_cipher;
+	String	m_charset;
 }

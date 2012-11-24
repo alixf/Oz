@@ -117,8 +117,6 @@ public class Messages implements Module
 		}
 		m_channel.addMessage(m_user, message);
 		m_view.addMessage(m_user, message);
-
-		System.out.println("sendMessage : " + m_channel.getMessages().size());
 	}
 
 	public Channel createChannel(List<Client> clients)

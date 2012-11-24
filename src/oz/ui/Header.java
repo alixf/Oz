@@ -25,7 +25,7 @@ public class Header extends Composite
 		setLayout(new FormLayout());
 
 		// Logo
-		Image logoImage = new Image(m_display, "images/Oz-logo.png");
+		Image logoImage = new Image(m_display, "images/logo-64.png");
 		Label logoLabel = new Label(this, SWT.NONE);
 		FormData logoLabelData = new FormData();
 		logoLabelData.left = new FormAttachment(0, 0);
@@ -54,7 +54,7 @@ public class Header extends Composite
 		settingsButton.setLayoutData(settingsButtonData);
 
 		// Logo
-		Image avatarImage = new Image(m_display, user.getAvatar());
+		Image avatarImage = new Image(m_display, user.getAvatar() == null ? "images/avatar.png" : user.getAvatar());
 		Label avatarLabel = new Label(this, SWT.BORDER);
 		FormData avatarLabelData = new FormData();
 		avatarLabelData.top = new FormAttachment(0, 7);
