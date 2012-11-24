@@ -168,6 +168,7 @@ public class Login
 	private File[] listProfiles()
 	{
 		File profilesDirectory = new File("profiles");
+		profilesDirectory.mkdirs();
 		File[] profileFiles = profilesDirectory.listFiles(new FilenameFilter()
 		{
 			@Override
