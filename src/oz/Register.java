@@ -149,7 +149,7 @@ public class Register
 		 * Confirm button
 		 */
 		final Button confirmButton = new Button(m_shell, SWT.PUSH);
-		confirmButton.setText("Créér");
+		confirmButton.setText("Créer");
 		layoutData = new FormData();
 		layoutData.left = new FormAttachment(0, HMARGIN);
 		layoutData.right = new FormAttachment(100, -HMARGIN);

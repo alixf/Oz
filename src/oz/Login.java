@@ -94,7 +94,7 @@ public class Login
 		loginButton.setFont(new Font(m_display, fontData));
 
 		final Button signupButton = new Button(m_shell, SWT.PUSH);
-		signupButton.setText("Créér un profil");
+		signupButton.setText("Créer un profil");
 		layoutData = new FormData();
 		layoutData.left = new FormAttachment(0, HMARGIN);
 		layoutData.right = new FormAttachment(100, -HMARGIN);
