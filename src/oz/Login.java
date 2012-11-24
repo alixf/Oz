@@ -20,7 +20,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -83,6 +85,7 @@ public class Login
 		layoutData.width = 250;
 		password.setLayoutData(layoutData);
 		password.setFont(new Font(m_display, fontData));
+		password.setFocus();
 
 		final Button loginButton = new Button(m_shell, SWT.PUSH);
 		loginButton.setText("Connexion");
@@ -131,13 +134,22 @@ public class Login
 				// TODO Wrong password error message
 			}
 		});
+		password.addListener(SWT.DefaultSelection, new Listener()
+		{
+			@Override
+			public void handleEvent(Event event)
+			{
+				m_user = openProfile(username.getText(), password.getText());
+				if (m_user != null)
+					m_shell.close();
+				// TODO Wrong password error message
+			}
+		});
 		signupButton.addSelectionListener(new SelectionAdapter()
 		{
 			public void widgetSelected(SelectionEvent e)
 			{
-				// m_shell.setEnabled(false);
 				Register.register(m_display);
-				// m_shell.setEnabled(true);
 
 				username.removeAll();
 				File[] profileFiles = listProfiles();
