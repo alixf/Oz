@@ -81,6 +81,7 @@ public class Messages implements Module
 				LinkedList<Client> clientList = new LinkedList<Client>();
 				clientList.add(client);
 				channel = createChannel(clientList);
+				channel.setUniqueID(message.getChannelID());
 			}
 
 			// Add message to the channel
