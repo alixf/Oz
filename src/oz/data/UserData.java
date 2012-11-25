@@ -1,5 +1,6 @@
 package oz.data;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserData
@@ -7,6 +8,10 @@ public class UserData
 	public UserData()
 	{
 		setBiography(new Biography());
+		m_friends = new LinkedList<UserSummary>();
+		m_friendGroups = new LinkedList<Group>();	
+		m_followers = new LinkedList<UserSummary>();
+		m_posts = new LinkedList<Message>();
 	}
 
 	public String getUsername()
