@@ -3,5 +3,8 @@ oz.data
 oz.modules
 oz.modules.contacts
 oz.modules.messages
+oz.modules.profile
 oz.network
+oz.security
+oz.tools
 oz.ui
