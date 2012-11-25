@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 import org.apache.commons.codec.binary.Base64;
 
+import oz.User;
 import oz.data.File;
 
 import oz.network.Client;
@@ -68,9 +69,9 @@ public class Files implements Module
 			File file = m_network.parsePacket(command, File.class);
 			try
 			{
-				String filepath = "files/" + client.getUserData().getUsername() + "/" + file.getName();
+				String filepath = "users/" + User.getUser().getUsername() + "/files/" + file.getName();
 				new java.io.File(filepath).getParentFile().mkdirs();
-				System.out.println("Created " + filepath);
+
 				FileOutputStream fos = new FileOutputStream(filepath);
 				fos.write(Base64.decodeBase64(file.getContent()));
 				fos.close();

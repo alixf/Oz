@@ -13,7 +13,6 @@ import oz.data.Message;
 
 public class MessageWidget extends Composite
 {
-
 	public MessageWidget(Messages messages, Composite parent, Message message)
 	{
 		super(parent, SWT.BORDER);

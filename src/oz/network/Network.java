@@ -26,6 +26,7 @@ import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
 import oz.Settings;
+import oz.data.Address;
 import oz.modules.Module;
 
 public class Network extends Thread
@@ -82,6 +83,8 @@ public class Network extends Thread
 					// Create client
 					Client client = new Client();
 					client.setSocket(socket.accept());
+					client.getUserSummary().setAddress(new Address(socket.getInetAddress().getHostName().toString(), m_port));
+					
 					m_clients.add(client);
 					System.out.println("accept : there is now " + m_clients.size() + " clients");
 
@@ -145,17 +148,12 @@ public class Network extends Thread
 		}
 	}
 
-	public Client createClient(String address)
+	public Client createClient(Address address)
 	{
-		String[] addressParts = address.split(":");
-		address = addressParts[0];
-		// FIXME Check address format
-		int port = (addressParts.length > 1) ? Integer.parseInt(addressParts[1]) : m_port;
-
 		try
 		{
 			System.out.println("trying to connect ...");
-			InetSocketAddress host = new InetSocketAddress(address, port);
+			InetSocketAddress host = new InetSocketAddress(address.getHost(), address.getPort());
 			SocketChannel channel = SocketChannel.open(host);
 			channel.configureBlocking(false);
 			Socket socket = channel.socket();
@@ -166,6 +164,8 @@ public class Network extends Thread
 				// Create client
 				Client client = new Client();
 				client.setSocket(socket);
+				client.getUserSummary().setAddress(address);
+				
 				m_clients.add(client);
 				System.out.println("add : there is now " + m_clients.size() + " clients");
 

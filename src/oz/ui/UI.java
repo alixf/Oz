@@ -8,17 +8,15 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-import oz.data.UserData;
-
 public class UI
 {
-	public UI(Display display, UserData user)
+	public UI(Display display)
 	{
 		m_display = display;
 		m_shell = new Shell(m_display);
 
 		// Images
-		Image logo16 = new Image(m_display, "images/logo-150.png");
+		Image logo16 = new Image(m_display, "images/logo-16.png");
 		
 		// Set window properties
 		m_shell.setText("Oz : Share your world");
@@ -26,7 +24,7 @@ public class UI
 		m_shell.setLayout(new FormLayout());
 
 		// Create header widget
-		m_header = new Header(m_shell, user);
+		m_header = new Header(m_shell);
 		FormData headerLayoutData = new FormData();
 		headerLayoutData.left = new FormAttachment(0, 0);
 		headerLayoutData.top = new FormAttachment(0, 0);

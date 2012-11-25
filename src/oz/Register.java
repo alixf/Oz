@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 
 import org.eclipse.swt.SWT;
@@ -23,30 +22,30 @@ import org.eclipse.swt.widgets.Text;
 import flexjson.JSONSerializer;
 
 import oz.data.UserData;
+import oz.security.XOR;
 
 public class Register
 {
 	private static final int	HMARGIN	= 10;
 	private static final int	VMARGIN	= 10;
 
-	static public void register(Display display)
+	static public void register()
 	{
-		Register register = new Register(display);
+		Register register = new Register();
 		register.run();
 	}
 
-	public Register(Display display)
+	public Register()
 	{
 		/*
 		 * UI
 		 */
-		// Create display and layout
-		m_display = display;
-		m_shell = new Shell(m_display, SWT.SHELL_TRIM & (~SWT.RESIZE));
+		// Create window
+		m_shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
 
 		// Set window properties
 		m_shell.setText("Oz : Share your world - Créer un profil");
-		Image logo16 = new Image(m_display, "images/logo-16.png");
+		Image logo16 = new Image(Display.getCurrent(), "images/logo-16.png");
 		m_shell.setImage(logo16);
 		m_shell.setLayout(new FormLayout());
 
@@ -195,20 +194,17 @@ public class Register
 					user.getBiography().setFirstName(firstNameText.getText());
 					user.getBiography().setLastName(lastNameText.getText());
 
-					// Serialize user
 					JSONSerializer serializer = new JSONSerializer();
 					serializer.exclude("*.class");
 					serializer.include("*");
-					String str = serializer.serialize(user);
 
-					// Write user file
 					try
 					{
-						File profileFile = new File("profiles/" + usernameText.getText() + ".ozp");
+						File profileFile = new File("users/" + usernameText.getText() + "/" + usernameText.getText() + ".ozp");
+						profileFile.getParentFile().mkdirs();
 						profileFile.createNewFile();
-						BufferedOutputStream bos;
-						bos = new BufferedOutputStream(new FileOutputStream(profileFile));
-						bos.write(encrypt(str, passwordText.getText()));
+						BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(profileFile));
+						bos.write(XOR.encrypt(serializer.serialize(user), passwordText.getText()));
 						bos.flush();
 						bos.close();
 					}
@@ -220,7 +216,7 @@ public class Register
 					m_shell.close();
 				}
 				else
-					System.out.println(errors);
+					System.err.println(errors);
 			}
 		});
 		cancelButton.addSelectionListener(new SelectionAdapter()
@@ -237,27 +233,15 @@ public class Register
 		m_shell.pack();
 	}
 
-	static public byte[] encrypt(String string, String key)
-	{
-		byte[] stringBytes = string.getBytes(Charset.forName("UTF-8"));
-		byte[] keyBytes = key.getBytes(Charset.forName("UTF-8"));
-
-		for (int i = 0; i < stringBytes.length; ++i)
-			stringBytes[i] ^= keyBytes[i % keyBytes.length];
-
-		return stringBytes;
-	}
-
 	public void run()
 	{
 		m_shell.open();
 		while (!m_shell.isDisposed())
 		{
-			if (!m_display.readAndDispatch())
-				m_display.sleep();
+			if (!Display.getCurrent().readAndDispatch())
+				Display.getCurrent().sleep();
 		}
 	}
 
-	Display	m_display;
 	Shell	m_shell;
 }

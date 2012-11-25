@@ -13,6 +13,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
+import oz.User;
 import oz.data.Message;
 import oz.data.UserData;
 
@@ -24,11 +25,10 @@ import oz.network.Network;
 
 public class Messages implements Module
 {
-	public Messages(Network network, UI ui, UserData user, Contacts contacts)
+	public Messages(Network network, UI ui, Contacts contacts)
 	{
 		m_network = network;
 		m_ui = ui;
-		m_user = user;
 		m_contacts = contacts;
 
 		m_network.setCommand("MSG", this);
@@ -116,8 +116,8 @@ public class Messages implements Module
 		{
 			e.printStackTrace();
 		}
-		m_channel.addMessage(m_user, message);
-		m_view.addMessage(m_user, message);
+		m_channel.addMessage(User.getUser(), message);
+		m_view.addMessage(User.getUser(), message);
 	}
 
 	public Channel createChannel(List<Client> clients)
@@ -138,7 +138,7 @@ public class Messages implements Module
 			boolean unique = false;
 			while (!unique)
 			{
-				uniqueID = m_user.getUsername() + Integer.toString(Math.abs(rand.nextInt()));
+				uniqueID = User.getUser().getUsername() + Integer.toString(Math.abs(rand.nextInt()));
 				unique = true;
 
 				Iterator<Channel> jt = m_channels.iterator();
@@ -171,11 +171,6 @@ public class Messages implements Module
 	public UI getUI()
 	{
 		return m_ui;
-	}
-
-	public UserData getUser()
-	{
-		return m_user;
 	}
 
 	public Contacts getContactsModule()
@@ -271,7 +266,6 @@ public class Messages implements Module
 
 	private Network				m_network;
 	private UI					m_ui;
-	private UserData			m_user;
 	private Contacts			m_contacts;
 	private MessagesView		m_view;
 	private SimpleDateFormat	m_dateFormat;

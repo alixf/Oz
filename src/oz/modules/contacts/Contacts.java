@@ -8,6 +8,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Widget;
 
+import oz.User;
+import oz.data.Address;
 import oz.data.UserData;
 import oz.ui.UI;
 import oz.modules.Files;
@@ -17,11 +19,10 @@ import oz.network.Network;
 
 public class Contacts implements Module
 {
-	public Contacts(Network network, UI ui, UserData user, Files files)
+	public Contacts(Network network, UI ui, Files files)
 	{
 		m_network = network;
 		m_ui = ui;
-		m_user = user;
 		m_files = files;
 
 		// Register network commands
@@ -80,11 +81,14 @@ public class Contacts implements Module
 			{
 				public void run()
 				{
+					User.getUser().getFollowers().add(client.getUserSummary());
+					User.getUser().save();
+					
 					m_view.createContactWidget(client);
 
 					try
 					{
-						m_network.send(m_network.makePacket("USER", m_user), client);
+						m_network.send(m_network.makePacket("USER", (UserData) User.getUser()), client);
 					}
 					catch (IOException e)
 					{
@@ -97,16 +101,20 @@ public class Contacts implements Module
 		return true;
 	}
 
-	public Client addContact(final String address)
+	public Client addContact(final Address address)
 	{
-		String packet = m_network.makePacket("ADD", m_user);
+		String packet = m_network.makePacket("ADD", (UserData) User.getUser());
 
 		try
 		{
 			final Client client = m_network.createClient(address);
 			if (client != null)
 			{
-				client.getUserData().setUsername(address);
+				client.getUserData().setUsername(address.getHost() + ":" + address.getPort());
+				
+				User.getUser().getFriends().add(client.getUserSummary());
+				User.getUser().save();
+
 				m_network.send(packet, client);
 
 				m_ui.getDisplay().asyncExec(new Runnable()
@@ -139,7 +147,6 @@ public class Contacts implements Module
 
 	Network			m_network;
 	UI				m_ui;
-	UserData		m_user;
 	ContactsView	m_view;
 	Files			m_files;
 }

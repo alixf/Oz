@@ -1,5 +1,11 @@
 package oz.data;
 
+/**
+ * Instances of this class represent a message
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Message
 {
 	public Message()

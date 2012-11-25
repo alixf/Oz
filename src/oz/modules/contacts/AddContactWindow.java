@@ -11,8 +11,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
+import oz.data.Address;
 import oz.network.Client;
 
 class AddContactWindow
@@ -43,9 +45,19 @@ class AddContactWindow
 		layoutData = new FormData();
 		layoutData.top = new FormAttachment(addressLabel, VMARGIN, SWT.BOTTOM);
 		layoutData.left = new FormAttachment(0, HMARGIN);
-		layoutData.right = new FormAttachment(100, -HMARGIN);
 		layoutData.width = 200;
 		addressText.setLayoutData(layoutData);
+
+		// Port text
+		final Spinner portSpinner = new Spinner(m_addContactShell, SWT.SINGLE | SWT.BORDER);
+		portSpinner.setMinimum(0);
+		portSpinner.setMaximum(65535);
+		portSpinner.setSelection(4242);
+		layoutData = new FormData();
+		layoutData.top = new FormAttachment(addressLabel, VMARGIN, SWT.BOTTOM);
+		layoutData.left = new FormAttachment(addressText, HMARGIN, SWT.RIGHT);
+		layoutData.right = new FormAttachment(100, -HMARGIN);
+		portSpinner.setLayoutData(layoutData);
 
 		// Confirm button
 		Button confirmButton = new Button(m_addContactShell, SWT.CENTER);
@@ -71,7 +83,7 @@ class AddContactWindow
 		{
 			public void widgetSelected(SelectionEvent e)
 			{
-				Client client = m_contacts.addContact(addressText.getText());
+				Client client = m_contacts.addContact(new Address(addressText.getText(), portSpinner.getSelection()));
 				if (client != null)
 					m_addContactShell.close();
 				else
@@ -85,7 +97,7 @@ class AddContactWindow
 			@Override
 			public void handleEvent(Event event)
 			{
-				Client client = m_contacts.addContact(addressText.getText());
+				Client client = m_contacts.addContact(new Address(addressText.getText(), portSpinner.getSelection()));
 				if (client != null)
 					m_addContactShell.close();
 				else

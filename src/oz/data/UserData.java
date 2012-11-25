@@ -1,12 +1,28 @@
 package oz.data;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import oz.User;
+import oz.security.XOR;
+
+import flexjson.JSONSerializer;
+
+/**
+ * Instances of this class represent the data of a user
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class UserData
-{
+{	
 	public UserData()
 	{
+		m_username = new String();
 		setBiography(new Biography());
 		m_friends = new LinkedList<UserSummary>();
 		m_friendGroups = new LinkedList<Group>();	
@@ -83,7 +99,34 @@ public class UserData
 	{
 		m_posts = posts;
 	}
+	
+	public String getAvatarFilename()
+	{
+		return getAvatar() == null ? "images/defaultProfilePicture.png" : "users/" + getUsername() + "/files/" + getUsername() + "/" + getAvatar();
+	}
 
+	public void saveTo(String filename)
+	{
+		JSONSerializer serializer = new JSONSerializer();
+		serializer.exclude("*.class");
+		serializer.include("*");
+		
+		try
+		{
+			File profileFile = new File(filename);
+			profileFile.getParentFile().mkdirs();
+			profileFile.createNewFile();
+			BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(profileFile));
+			bos.write(XOR.encrypt(serializer.serialize(this), User.getUser().getPassword()));
+			bos.flush();
+			bos.close();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	public static class Biography
 	{
 		public Biography()

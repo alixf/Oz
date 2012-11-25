@@ -3,7 +3,6 @@ package oz;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,33 +28,28 @@ import org.eclipse.swt.widgets.Text;
 import flexjson.JSONDeserializer;
 
 import oz.data.UserData;
+import oz.security.XOR;
 
 public class Login
 {
 	private static final int	HMARGIN	= 10;
 	private static final int	VMARGIN	= 10;
 
-	static public UserData login(Display display)
+	static public void login()
 	{
-		Login login = new Login(display);
+		Login login = new Login();
 		login.run();
-		return login.getUser();
 	}
 
-	public Login(Display display)
+	public Login()
 	{
-		/*
-		 * UI
-		 */
 		// Create display and layout
-		m_display = display != null ? display : new Display();
-		m_shell = new Shell(m_display, SWT.SHELL_TRIM & (~SWT.RESIZE));
+		m_shell = new Shell(Display.getCurrent(), SWT.SHELL_TRIM & (~SWT.RESIZE));
 
 		// Images
-		Image logo150 = new Image(m_display, "images/logo-150.png");
-		Image logo16 = new Image(m_display, "images/logo-16.png");
-		
-		
+		Image logo150 = new Image(Display.getCurrent(), "images/logo-150.png");
+		Image logo16 = new Image(Display.getCurrent(), "images/logo-16.png");
+
 		// Set window properties
 		m_shell.setText("Oz : Share your world - Login");
 		m_shell.setImage(logo16);
@@ -79,7 +73,7 @@ public class Login
 		Font font = username.getFont();
 		FontData fontData = font.getFontData()[0];
 		fontData.height *= 1.5;
-		username.setFont(new Font(m_display, fontData));
+		username.setFont(new Font(Display.getCurrent(), fontData));
 
 		final Text password = new Text(m_shell, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
 		layoutData = new FormData();
@@ -88,7 +82,7 @@ public class Login
 		layoutData.top = new FormAttachment(username, VMARGIN, SWT.BOTTOM);
 		layoutData.width = 250;
 		password.setLayoutData(layoutData);
-		password.setFont(new Font(m_display, fontData));
+		password.setFont(new Font(Display.getCurrent(), fontData));
 		password.setFocus();
 
 		final Button loginButton = new Button(m_shell, SWT.PUSH);
@@ -98,7 +92,7 @@ public class Login
 		layoutData.right = new FormAttachment(100, -HMARGIN);
 		layoutData.top = new FormAttachment(password, VMARGIN, SWT.BOTTOM);
 		loginButton.setLayoutData(layoutData);
-		loginButton.setFont(new Font(m_display, fontData));
+		loginButton.setFont(new Font(Display.getCurrent(), fontData));
 
 		final Button signupButton = new Button(m_shell, SWT.PUSH);
 		signupButton.setText("Créer un profil");
@@ -108,15 +102,15 @@ public class Login
 		layoutData.top = new FormAttachment(loginButton, VMARGIN, SWT.BOTTOM);
 		layoutData.bottom = new FormAttachment(100, -VMARGIN);
 		signupButton.setLayoutData(layoutData);
-		signupButton.setFont(new Font(m_display, fontData));
+		signupButton.setFont(new Font(Display.getCurrent(), fontData));
 
 		/*
 		 * Get profiles
 		 */
-		File[] profileFiles = listProfiles();
-		for (File file : profileFiles)
-			username.add(file.getName().substring(0, file.getName().length() - 4));
-		if (profileFiles.length <= 0)
+		String[] profiles = listProfiles();
+		for (String profile : profiles)
+			username.add(profile);
+		if (profiles.length <= 0)
 		{
 			username.setEnabled(false);
 			password.setEnabled(false);
@@ -132,8 +126,7 @@ public class Login
 		{
 			public void widgetSelected(SelectionEvent e)
 			{
-				m_user = openProfile(username.getText(), password.getText());
-				if (m_user != null)
+				if (loadProfile(username.getText(), password.getText()))
 					m_shell.close();
 				// TODO Wrong password error message
 			}
@@ -143,8 +136,7 @@ public class Login
 			@Override
 			public void handleEvent(Event event)
 			{
-				m_user = openProfile(username.getText(), password.getText());
-				if (m_user != null)
+				if (loadProfile(username.getText(), password.getText()))
 					m_shell.close();
 				// TODO Wrong password error message
 			}
@@ -153,13 +145,14 @@ public class Login
 		{
 			public void widgetSelected(SelectionEvent e)
 			{
-				Register.register(m_display);
+				Register.register();
 
 				username.removeAll();
-				File[] profileFiles = listProfiles();
-				for (File file : profileFiles)
-					username.add(file.getName().substring(0, file.getName().length() - 4));
-				if (profileFiles.length <= 0)
+				String[] profiles = listProfiles();
+				for (String profile : profiles)
+					username.add(profile);
+
+				if (profiles.length <= 0)
 				{
 					username.setEnabled(false);
 					password.setEnabled(false);
@@ -181,30 +174,33 @@ public class Login
 		m_shell.pack();
 	}
 
-	private File[] listProfiles()
+	private String[] listProfiles()
 	{
-		File profilesDirectory = new File("profiles");
+		File profilesDirectory = new File("users");
 		profilesDirectory.mkdirs();
-		File[] profileFiles = profilesDirectory.listFiles(new FilenameFilter()
+		String[] profiles = profilesDirectory.list(new FilenameFilter()
 		{
 			@Override
 			public boolean accept(File directory, String filename)
 			{
-				return filename.substring(filename.length() - 4, filename.length()).equals(".ozp");
+				File profileDirectory = new File(directory.getPath() + "/" + filename);
+				File profileFile = new File(directory.getPath() + "/" + filename + "/" + filename + ".ozp");
+				return profileDirectory.isDirectory() && profileFile.exists();
 			}
 		});
-		return profileFiles;
+		return profiles;
 	}
 
-	public UserData openProfile(String username, String password)
+	public boolean loadProfile(String username, String password)
 	{
-		UserData user = null;
-		Path path = Paths.get("profiles/" + username + ".ozp");
+		Path path = Paths.get("users/" + username + "/" + username + ".ozp");
 		try
 		{
 			byte[] bytes = Files.readAllBytes(path);
-			String str = decrypt(bytes, password);
-			user = new JSONDeserializer<UserData>().use(null, UserData.class).deserialize(str);
+			String str = XOR.decrypt(bytes, password);
+			new JSONDeserializer<UserData>().use(null, UserData.class).deserializeInto(str, User.getUser());
+			User.getUser().setPassword(password);
+			User.getUser().setValid(true);
 		}
 		catch (IOException e)
 		{
@@ -212,20 +208,10 @@ public class Login
 		}
 		catch (Exception e)
 		{
-			user = null;
+			return false;
 		}
 
-		return user;
-	}
-
-	static public String decrypt(byte[] bytes, String key)
-	{
-		byte[] keyBytes = key.getBytes(Charset.forName("UTF-8"));
-
-		for (int i = 0; i < bytes.length; ++i)
-			bytes[i] ^= keyBytes[i % keyBytes.length];
-
-		return new String(bytes, Charset.forName("UTF-8"));
+		return true;
 	}
 
 	public void run()
@@ -233,17 +219,10 @@ public class Login
 		m_shell.open();
 		while (!m_shell.isDisposed())
 		{
-			if (!m_display.readAndDispatch())
-				m_display.sleep();
+			if (!Display.getCurrent().readAndDispatch())
+				Display.getCurrent().sleep();
 		}
 	}
 
-	public UserData getUser()
-	{
-		return m_user;
-	}
-
-	Display		m_display;
-	Shell		m_shell;
-	UserData	m_user;
+	Shell	m_shell;
 }

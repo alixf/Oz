@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 
 import oz.modules.Files;
 import oz.network.Client;
@@ -89,8 +90,7 @@ class ContactsView extends Composite implements Files.Observer
 				ContactWidget widget = m_widgets.get(client);
 				if (widget != null)
 				{
-					Image image = new Image(getDisplay(), "files/" + client.getUserData().getUsername() + "/" + request);
-					widget.setImage(image);
+					widget.setImage(new Image(Display.getCurrent(), client.getUserData().getAvatarFilename()));
 				}
 			}
 		});

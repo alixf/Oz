@@ -6,6 +6,7 @@ import org.eclipse.swt.graphics.Device;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -13,6 +14,7 @@ import org.eclipse.swt.widgets.Listener;
 
 import oz.data.UserData;
 import oz.modules.messages.Messages.Channel;
+import oz.tools.Images;
 
 public class ChannelWidget extends Composite
 {
@@ -28,21 +30,9 @@ public class ChannelWidget extends Composite
 		m_message = new Label(this, SWT.NONE);
 		m_message.setText(m_message.getText());
 
-		if(user.getAvatar() != null)
-		{
-			m_image = new Label(this, SWT.NONE);
-			Image image = new Image(getDisplay(), "files/" + user.getUsername() + "/" + user.getAvatar());
-			m_image.setImage(image);
-			m_image.addListener(SWT.MouseDown, new Listener()
-			{
-				@Override
-				public void handleEvent(Event event)
-				{
-					m_messages.setChannel(m_channel);
-				}
-			});
-		}
-		
+		m_image = new Label(this, SWT.NONE);
+		m_image.setImage(Images.resize(new Image(getDisplay(), user.getAvatarFilename()), 64, 64));
+
 		addListener(SWT.MouseDown, new Listener()
 		{
 			@Override
@@ -63,6 +53,14 @@ public class ChannelWidget extends Composite
 	public Channel getChannel()
 	{
 		return m_channel;
+	}
+
+	@Override
+	public void addListener(int eventType, Listener listener)
+	{
+		super.addListener(eventType, listener);
+		for (Control control : getChildren())
+			control.addListener(eventType, listener);
 	}
 
 	Messages	m_messages;

@@ -6,9 +6,11 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 import oz.network.Client;
+import oz.tools.Images;
 
 public class ContactWidget extends Composite
 {
@@ -24,41 +26,48 @@ public class ContactWidget extends Composite
 		 * Image label
 		 */
 		m_image = new Label(this, SWT.NONE);
-		FormData formData = new FormData();
-		formData.left = new FormAttachment(0, 5);
-		formData.top = new FormAttachment(0, 5);
-		formData.bottom = new FormAttachment(100, -5);
-		m_image.setLayoutData(formData);
-		m_image.setSize(100, 100);
+		FormData layoutData = new FormData();
+		layoutData.left = new FormAttachment(0, 0);
+		layoutData.top = new FormAttachment(0, 0);
+		layoutData.bottom = new FormAttachment(100, 0);
+		layoutData.width = 64;
+		layoutData.height = 64;
+		m_image.setLayoutData(layoutData);
 
 		/*
 		 * Full name label
 		 */
 		m_name = new Label(this, SWT.NONE);
 		m_name.setText(client.getUserData().getBiography().getFirstName() + " " + client.getUserData().getBiography().getLastName());
-		formData = new FormData();
-		formData.top = new FormAttachment(0, 5);
-		formData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
-		m_name.setLayoutData(formData);
+		layoutData = new FormData();
+		layoutData.top = new FormAttachment(0, 5);
+		layoutData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
+		m_name.setLayoutData(layoutData);
 
 		/*
 		 * Username label
 		 */
 		m_username = new Label(this, SWT.NONE);
+		
 		m_username.setText(client.getUserData().getUsername());
-		formData = new FormData();
-		formData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
-		formData.top = new FormAttachment(m_name, 2, SWT.BOTTOM);
-		m_username.setLayoutData(formData);
+		layoutData = new FormData();
+		layoutData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
+		layoutData.top = new FormAttachment(m_name, 2, SWT.BOTTOM);
+		m_username.setLayoutData(layoutData);
 
 		// Avatar request
 		if (client.getUserData().getAvatar() != null)
+		{
 			m_contacts.addFileRequest(client, client.getUserData().getAvatar());
+			m_image.setImage(Images.resize(new Image(Display.getCurrent(), "images/loading.png"), 64, 64));
+		}
+		else
+			m_image.setImage(Images.resize(new Image(Display.getCurrent(), client.getUserData().getAvatarFilename()), 64, 64));
 	}
 
 	public void setImage(Image image)
 	{
-		m_image.setImage(image);
+		m_image.setImage(Images.resize(image, 64, 64));
 		getParent().layout();
 	}
 
