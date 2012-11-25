@@ -24,13 +24,15 @@ public class Header extends Composite
 
 		setLayout(new FormLayout());
 
+		// Images
+		Image logo64 = new Image(m_display, "images/logo-64.png");
+
 		// Logo
-		Image logoImage = new Image(m_display, "images/logo-64.png");
 		Label logoLabel = new Label(this, SWT.NONE);
+		logoLabel.setImage(logo64);
 		FormData logoLabelData = new FormData();
 		logoLabelData.left = new FormAttachment(0, 0);
 		logoLabelData.top = new FormAttachment(0, 0);
-		logoLabel.setImage(logoImage);
 		logoLabel.setLayoutData(logoLabelData);
 
 		// Separator Label

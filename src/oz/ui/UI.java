@@ -14,14 +14,15 @@ public class UI
 {
 	public UI(Display display, UserData user)
 	{
-		// Create display and layout
 		m_display = display;
 		m_shell = new Shell(m_display);
 
+		// Images
+		Image logo16 = new Image(m_display, "images/logo-150.png");
+		
 		// Set window properties
 		m_shell.setText("Oz : Share your world");
-		Image logoImage = new Image(m_display, "images/logo-150.png");
-		m_shell.setImage(logoImage);
+		m_shell.setImage(logo16);
 		m_shell.setLayout(new FormLayout());
 
 		// Create header widget

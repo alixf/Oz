@@ -51,14 +51,18 @@ public class Login
 		m_display = display != null ? display : new Display();
 		m_shell = new Shell(m_display, SWT.SHELL_TRIM & (~SWT.RESIZE));
 
+		// Images
+		Image logo150 = new Image(m_display, "images/logo-150.png");
+		Image logo16 = new Image(m_display, "images/logo-16.png");
+		
+		
 		// Set window properties
 		m_shell.setText("Oz : Share your world - Login");
-		Image logoImage = new Image(m_display, "images/logo-150.png");
-		m_shell.setImage(logoImage);
+		m_shell.setImage(logo16);
 		m_shell.setLayout(new FormLayout());
 
 		Label logoLabel = new Label(m_shell, SWT.CENTER);
-		logoLabel.setImage(logoImage);
+		logoLabel.setImage(logo150);
 		FormData layoutData = new FormData();
 		layoutData.left = new FormAttachment(0, HMARGIN);
 		layoutData.right = new FormAttachment(100, -HMARGIN);

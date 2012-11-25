@@ -46,8 +46,8 @@ public class Register
 
 		// Set window properties
 		m_shell.setText("Oz : Share your world - Créer un profil");
-		Image logoImage = new Image(m_display, "images/logo-150.png");
-		m_shell.setImage(logoImage);
+		Image logo16 = new Image(m_display, "images/logo-16.png");
+		m_shell.setImage(logo16);
 		m_shell.setLayout(new FormLayout());
 
 		/*
