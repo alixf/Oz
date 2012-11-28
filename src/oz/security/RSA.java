@@ -1,4 +1,4 @@
-package oz.network;
+package oz.security;
 
 import java.io.UnsupportedEncodingException;
 import java.security.*;
@@ -7,9 +7,9 @@ import javax.crypto.*;
 
 import org.apache.commons.codec.binary.Base64;
 
-public class Security
+public class RSA
 {
-	public Security()
+	public RSA()
 	{
 		try
 		{
@@ -194,7 +194,7 @@ public class Security
 		return toReturn;
 	}
 
-	private byte[] append(byte[] prefix, byte[] suffix)
+	public static byte[] append(byte[] prefix, byte[] suffix)
 	{
 		byte[] toReturn = new byte[prefix.length + suffix.length];
 		for (int i = 0; i < prefix.length; i++)
@@ -206,12 +206,13 @@ public class Security
 
 	public static void main(String[] args) throws Throwable
 	{
-		Security sec = new Security();
+		RSA sec = new RSA();
 
 		String command = "Hello world";
 
 		String publicKeyString = sec.getBase64EncodedPublicKey();
-		PublicKey publicKey = Security.convertBase64EncodedPublicKey(publicKeyString);
+		System.out.println(publicKeyString);
+		PublicKey publicKey = RSA.convertBase64EncodedPublicKey(publicKeyString);
 
 		String encrytedCommand = sec.encryptCommand(command, publicKey);
 

@@ -28,6 +28,7 @@ import flexjson.JSONSerializer;
 import oz.Settings;
 import oz.data.Address;
 import oz.modules.Module;
+import oz.security.RSA;
 
 public class Network extends Thread
 {
@@ -42,6 +43,7 @@ public class Network extends Thread
 		m_encoder = m_charset.newEncoder();
 		m_commands = new Hashtable<String, Module>();
 		m_separator = " ";
+		m_rsa = new RSA();
 	}
 
 	public void run()
@@ -84,6 +86,7 @@ public class Network extends Thread
 					Client client = new Client();
 					client.setSocket(socket.accept());
 					client.getUserSummary().setAddress(new Address(socket.getInetAddress().getHostName().toString(), m_port));
+					sendKey(client);
 					
 					m_clients.add(client);
 					System.out.println("accept : there is now " + m_clients.size() + " clients");
@@ -98,28 +101,36 @@ public class Network extends Thread
 					SocketChannel channel = (SocketChannel) key.channel();
 					Client client = (Client) key.attachment();
 
-					ByteBuffer bb = ByteBuffer.allocate(m_receiveBufferSize);
-
-					String command = "";
+					ByteBuffer bb = ByteBuffer.allocate(8);
 					int readSize = 0;
-					do
+					
+					readSize = channel.read(bb);
+					if (readSize < 0) // Client disconnected
 					{
-						bb.position(0);
-						readSize = channel.read(bb);
-
-						if (readSize < 0) // Client disconnected
+						key.cancel();
+						m_clients.remove(client);
+					}
+					else
+					{
+						String command = "";
+						long length = bb.getLong(0);
+						int leftToRead = (int) length;
+						while(leftToRead > 0 && readSize > 0)
 						{
-							key.cancel();
-							m_clients.remove(client);
+							ByteBuffer bb2 = ByteBuffer.allocate(Math.min(m_receiveBufferSize, leftToRead));
+							readSize = channel.read(bb2);
+							leftToRead -= readSize;
+							bb2.position(0);
+							command += m_decoder.decode(bb2).toString().substring(0,readSize);
 						}
-						else
-						{
-							bb.position(0);
-							command += m_decoder.decode(bb).toString().substring(0, readSize);
-						}
-					} while (readSize > 0);
 
-					parseCommand(client, command);
+						if(!command.substring(0, 4).equals("KEY "))
+						{
+							System.out.println("Encrypted command : " + command);
+							command = m_rsa.decryptCommand(command);
+						}
+						parseCommand(client, command);
+					}
 				}
 			}
 			keys.clear();
@@ -165,6 +176,7 @@ public class Network extends Thread
 				Client client = new Client();
 				client.setSocket(socket);
 				client.getUserSummary().setAddress(address);
+				sendKey(client);
 				
 				m_clients.add(client);
 				System.out.println("add : there is now " + m_clients.size() + " clients");
@@ -195,13 +207,37 @@ public class Network extends Thread
 		}
 		return null;
 	}
+	
+	public void sendKey(Client client)
+	{
+		try
+		{
+			String key = m_rsa.getBase64EncodedPublicKey();
+			String command = "KEY " + key;
+			send(command,client);
+		}
+		catch (CharacterCodingException e)
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
 
 	public void send(String packet, Client client) throws IOException
 	{
 		try
 		{
+			if(client.getPublicKey() != null)
+				packet = m_rsa.encryptCommand(packet, client.getPublicKey());
 			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-			client.getSocket().getChannel().write(bb);
+			ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
+			System.out.println((long) bb.array().length);
+			
+			ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
+			client.getSocket().getChannel().write(newbb);
 		}
 		catch (CharacterCodingException e)
 		{
@@ -305,5 +341,6 @@ public class Network extends Thread
 	private CharsetEncoder				m_encoder;
 	private Hashtable<String, Module>	m_commands;
 	private String						m_separator;
+	private RSA							m_rsa;
 
 }

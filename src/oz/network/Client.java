@@ -1,6 +1,7 @@
 package oz.network;
 
 import java.net.Socket;
+import java.security.PublicKey;
 
 import oz.data.UserData;
 import oz.data.UserSummary;
@@ -11,6 +12,7 @@ public class Client
 	{
 		m_userData = new UserData();
 		m_userSummary = new UserSummary();
+		m_publicKey = null;
 	}
 
 	/**
@@ -50,8 +52,19 @@ public class Client
 	{
 		m_userSummary = userSummary;
 	}
+	
+	public PublicKey getPublicKey()
+	{
+		return m_publicKey;
+	}
+
+	public void setPublicKey(PublicKey publicKey)
+	{
+		m_publicKey = publicKey;
+	}
 
 	private Socket		m_socket;
 	private UserData	m_userData;
 	private UserSummary	m_userSummary;
+	private PublicKey	m_publicKey;
 }
