@@ -249,17 +249,21 @@ public class Network extends Thread
 	{
 		try
 		{
-			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-
 			if (clientList == null)
 				clientList = m_clients;
 			Iterator<Client> it = clientList.iterator();
 			while (it.hasNext())
 			{
 				Client client = it.next();
+				
+				if(client.getPublicKey() != null)
+					packet = m_rsa.encryptCommand(packet, client.getPublicKey());
+				ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
+				ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
+				ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
 
 				System.out.println("sending to " + client.getUserData().getUsername());
-				client.getSocket().getChannel().write(bb);
+				client.getSocket().getChannel().write(newbb);
 			}
 		}
 		catch (CharacterCodingException e)
