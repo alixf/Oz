@@ -22,8 +22,8 @@ public class ContactRetriever extends Thread
 		// Retrieve contacts
 		for (UserSummary user : User.getUser().getFriends())
 		{
-			System.out.println(user.getUsername());
-			
+			System.out.println("Add contact : "+user.getUsername()+" : "+user.getAddress());
+			/*
 			final Client client = m_network.createClient(user.getAddress());
 			client.getUserData().setUsername(user.getUsername());
 			
@@ -43,6 +43,7 @@ public class ContactRetriever extends Thread
 				
 				m_view.createContactWidget(client);
 			}
+			*/
 		}
 	}
 	private Network			m_network;

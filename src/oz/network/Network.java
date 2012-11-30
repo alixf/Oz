@@ -377,5 +377,4 @@ public class Network extends Thread
 	private Hashtable<String, Module>	m_commands;
 	private String						m_separator;
 	private RSA							m_rsa;
-
 }
