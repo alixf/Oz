@@ -131,7 +131,7 @@ public class Login
 					m_shell.close();
 				else
 				{
-					MessageBox messageBox = new MessageBox(m_shell);
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
 					messageBox.setMessage("Ce mot de passe est incorrect");
 					messageBox.open();
 				}
@@ -146,7 +146,7 @@ public class Login
 					m_shell.close();
 				else
 				{
-					MessageBox messageBox = new MessageBox(m_shell);
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
 					messageBox.setMessage("Ce mot de passe est incorrect");
 					messageBox.open();
 				}

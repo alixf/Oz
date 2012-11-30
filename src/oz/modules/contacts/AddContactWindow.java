@@ -106,7 +106,7 @@ class AddContactWindow
 					m_addContactShell.close();
 				else
 				{
-					MessageBox messageBox = new MessageBox(m_addContactShell);
+					MessageBox messageBox = new MessageBox(m_addContactShell, SWT.ICON_ERROR);
 					messageBox.setMessage("Aucun utilisateur n'est associé à cette addresse");
 					messageBox.open();
 				}
@@ -122,7 +122,7 @@ class AddContactWindow
 					m_addContactShell.close();
 				else
 				{
-					MessageBox messageBox = new MessageBox(m_addContactShell);
+					MessageBox messageBox = new MessageBox(m_addContactShell, SWT.ICON_ERROR);
 					messageBox.setMessage("Aucun utilisateur n'est associé à cette addresse");
 					messageBox.open();
 				}
