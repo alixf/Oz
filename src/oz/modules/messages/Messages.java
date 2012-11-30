@@ -110,7 +110,7 @@ public class Messages implements Module
 		String packet = m_network.makePacket("MSG", message);
 		try
 		{
-			m_network.send(packet, m_network.getClients());
+			m_network.send(packet, m_channel.getClients());
 		}
 		catch (IOException e)
 		{
