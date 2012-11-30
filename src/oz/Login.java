@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -128,7 +129,12 @@ public class Login
 			{
 				if (loadProfile(username.getText(), password.getText()))
 					m_shell.close();
-				// TODO Wrong password error message
+				else
+				{
+					MessageBox messageBox = new MessageBox(m_shell);
+					messageBox.setMessage("Ce mot de passe est incorrect");
+					messageBox.open();
+				}
 			}
 		});
 		password.addListener(SWT.DefaultSelection, new Listener()
@@ -138,7 +144,12 @@ public class Login
 			{
 				if (loadProfile(username.getText(), password.getText()))
 					m_shell.close();
-				// TODO Wrong password error message
+				else
+				{
+					MessageBox messageBox = new MessageBox(m_shell);
+					messageBox.setMessage("Ce mot de passe est incorrect");
+					messageBox.open();
+				}
 			}
 		});
 		signupButton.addSelectionListener(new SelectionAdapter()

@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -105,7 +106,9 @@ class AddContactWindow
 					m_addContactShell.close();
 				else
 				{
-					// TODO Display error
+					MessageBox messageBox = new MessageBox(m_addContactShell);
+					messageBox.setMessage("Aucun utilisateur n'est associé à cette addresse");
+					messageBox.open();
 				}
 			}
 		});
@@ -119,7 +122,9 @@ class AddContactWindow
 					m_addContactShell.close();
 				else
 				{
-					// TODO Display error
+					MessageBox messageBox = new MessageBox(m_addContactShell);
+					messageBox.setMessage("Aucun utilisateur n'est associé à cette addresse");
+					messageBox.open();
 				}
 			}
 		});
