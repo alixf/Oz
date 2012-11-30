@@ -10,6 +10,7 @@ import oz.modules.*;
 import oz.modules.contacts.Contacts;
 import oz.modules.messages.Messages;
 import oz.modules.profile.Profile;
+import oz.modules.settings.Settings;
 
 public class Oz
 {
@@ -48,6 +49,7 @@ public class Oz
 		{
 			m_network = new Network(m_settings);
 			m_ui = new UI(m_display);
+			m_settings.setUI(m_ui);
 			Files files = new Files(m_network);
 			Profile profile = new Profile(m_ui);
 			Contacts contacts = new Contacts(m_network, m_ui, files);

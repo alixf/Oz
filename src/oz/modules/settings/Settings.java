@@ -1,15 +1,24 @@
-package oz;
+package oz.modules.settings;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.nio.MappedByteBuffer;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
+
+import oz.ui.UI;
 
 public class Settings
 {
@@ -17,6 +26,22 @@ public class Settings
 	{
 	}
 
+	public void setUI(UI ui)
+	{
+		// Images
+		Image settingsImage = new Image(Display.getCurrent(), "images/gear.png");
+		
+		// Settings button
+		Button settingsButton = new Button(ui.getHeader(), SWT.PUSH);
+		settingsButton.setImage(settingsImage);
+		FormData layoutData = new FormData();
+		layoutData.right = ui.getHeader().getRightAttachment();
+		layoutData.top = ui.getHeader().getTopAttachment();
+		layoutData.bottom = ui.getHeader().getBottomAttachment();
+		settingsButton.setLayoutData(layoutData);
+		ui.getHeader().setRightAttachment(new FormAttachment(settingsButton, -ui.getHeader().getHorizontalMargin(), SWT.LEFT));
+	}
+	
 	public Settings(String file) throws IOException
 	{
 		load(file);

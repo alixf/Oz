@@ -11,6 +11,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.channels.UnresolvedAddressException;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -25,9 +26,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-import oz.Settings;
 import oz.data.Address;
 import oz.modules.Module;
+import oz.modules.settings.Settings;
 import oz.security.RSA;
 
 public class Network extends Thread
@@ -201,6 +202,10 @@ public class Network extends Thread
 		{
 			return null;
 		}
+		catch(UnresolvedAddressException e)
+		{
+			return null;
+		}
 		catch (IOException e)
 		{
 			return null;
@@ -249,21 +254,17 @@ public class Network extends Thread
 	{
 		try
 		{
+			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
+
 			if (clientList == null)
 				clientList = m_clients;
 			Iterator<Client> it = clientList.iterator();
 			while (it.hasNext())
 			{
 				Client client = it.next();
-				
-				if(client.getPublicKey() != null)
-					packet = m_rsa.encryptCommand(packet, client.getPublicKey());
-				ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-				ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
-				ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
 
 				System.out.println("sending to " + client.getUserData().getUsername());
-				client.getSocket().getChannel().write(newbb);
+				client.getSocket().getChannel().write(bb);
 			}
 		}
 		catch (CharacterCodingException e)

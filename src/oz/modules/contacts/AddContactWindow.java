@@ -17,11 +17,28 @@ import org.eclipse.swt.widgets.Text;
 import oz.data.Address;
 import oz.network.Client;
 
+/**
+ * Instances of this class are windows asking necessary information to add a contact
+ * 
+ * @author Alix 'eolhing' Fumoleau
+ * @author Jean 'Jack3113' Batista
+ */
 class AddContactWindow
 {
+	/**
+	 * Value of the vertical layout margin
+	 */
 	private static final int	VMARGIN	= 5;
+	/**
+	 * Value of the horizontal layout margin
+	 */
 	private static final int	HMARGIN	= 5;
 
+	/**
+	 * Create a window asking necessary information to add a contact
+	 * 
+	 * @param contacts The parent Contacts module
+	 */
 	public AddContactWindow(Contacts contacts)
 	{
 		m_contacts = contacts;
@@ -119,6 +136,9 @@ class AddContactWindow
 		m_addContactShell.open();
 	}
 
+	/**
+	 * Run the window's event loop
+	 */
 	public void run()
 	{
 		// Event loop
@@ -129,6 +149,12 @@ class AddContactWindow
 		}
 	}
 
+	/**
+	 * The contact module parent to the window
+	 */
 	Contacts	m_contacts;
+	/**
+	 * The window
+	 */
 	Shell		m_addContactShell;
 }

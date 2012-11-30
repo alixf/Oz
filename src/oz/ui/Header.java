@@ -27,7 +27,6 @@ public class Header extends Composite
 
 		// Images
 		Image logo64 = new Image(m_display, "images/logo-64.png");
-		Image settingsImage = new Image(m_display, "images/gear.png");
 
 		// Attachments
 		m_leftAttachment = new FormAttachment(0, HMARGIN);
@@ -49,16 +48,6 @@ public class Header extends Composite
 		layoutData.right = new FormAttachment(100, -HMARGIN);
 		layoutData.top = new FormAttachment(logoLabel, VMARGIN, SWT.BOTTOM);
 		m_separatorLabel.setLayoutData(layoutData);
-
-		// Settings button
-		Button settingsButton = new Button(this, SWT.PUSH);
-		settingsButton.setImage(settingsImage);
-		layoutData = new FormData();
-		layoutData.right = getRightAttachment();
-		layoutData.top = getTopAttachment();
-		layoutData.bottom = getBottomAttachment();
-		settingsButton.setLayoutData(layoutData);
-		setRightAttachment(new FormAttachment(settingsButton, -getHorizontalMargin(), SWT.LEFT));
 
 		layout();
 	}
