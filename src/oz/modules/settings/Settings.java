@@ -9,6 +9,8 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -28,18 +30,41 @@ public class Settings
 
 	public void setUI(UI ui)
 	{
+		m_ui = ui;
+		
 		// Images
 		Image settingsImage = new Image(Display.getCurrent(), "images/gear.png");
 		
 		// Settings button
-		Button settingsButton = new Button(ui.getHeader(), SWT.PUSH);
+		final Button settingsButton = new Button(ui.getHeader(), SWT.PUSH);
 		settingsButton.setImage(settingsImage);
 		FormData layoutData = new FormData();
-		layoutData.right = ui.getHeader().getRightAttachment();
-		layoutData.top = ui.getHeader().getTopAttachment();
-		layoutData.bottom = ui.getHeader().getBottomAttachment();
+		layoutData.right = m_ui.getHeader().getRightAttachment();
+		layoutData.top = m_ui.getHeader().getTopAttachment();
+		layoutData.bottom = m_ui.getHeader().getBottomAttachment();
 		settingsButton.setLayoutData(layoutData);
-		ui.getHeader().setRightAttachment(new FormAttachment(settingsButton, -ui.getHeader().getHorizontalMargin(), SWT.LEFT));
+		ui.getHeader().setRightAttachment(new FormAttachment(settingsButton, -m_ui.getHeader().getHorizontalMargin(), SWT.LEFT));
+
+		m_ui.getDisplay().asyncExec(new Runnable()
+		{
+			public void run()
+			{
+				settingsButton.addSelectionListener(new SelectionAdapter()
+				{
+					public void widgetSelected(SelectionEvent e)
+					{
+						openSettingsWindow();
+					}
+				});
+			}
+		});
+	}
+
+
+	private void openSettingsWindow()
+	{
+		SettingsView settingsView = new SettingsView(this);
+		settingsView.open();
 	}
 	
 	public Settings(String file) throws IOException
@@ -112,6 +137,7 @@ public class Settings
 		m_trackerPort = trackerPort;
 	}
 
+	private UI		m_ui;
 	private int		m_networkPort;
 	private String	m_trackerAddress;
 	private int		m_trackerPort;
