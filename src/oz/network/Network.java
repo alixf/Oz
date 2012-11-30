@@ -101,43 +101,49 @@ public class Network extends Thread
 					SocketChannel channel = (SocketChannel) key.channel();
 					Client client = (Client) key.attachment();
 
-					ByteBuffer bb = ByteBuffer.allocate(8);
-					int readSize = 0;
-					
-					readSize = channel.read(bb);
-					if (readSize < 0) // Client disconnected
+					if(!read(channel, client))
 					{
 						key.cancel();
 						m_clients.remove(client);
-					}
-					else
-					{
-						String command = "";
-						long length = bb.getLong(0);
-						int leftToRead = (int) length;
-						while(leftToRead > 0 && readSize > 0)
-						{
-							ByteBuffer bb2 = ByteBuffer.allocate(Math.min(m_receiveBufferSize, leftToRead));
-							readSize = channel.read(bb2);
-							leftToRead -= readSize;
-							bb2.position(0);
-							command += m_decoder.decode(bb2).toString().substring(0,readSize);
-						}
-
-						if(!command.substring(0, 4).equals("KEY "))
-						{
-							System.out.println("Encrypted command : " + command);
-							command = m_rsa.decryptCommand(command);
-						}
-						parseCommand(client, command);
 					}
 				}
 			}
 			keys.clear();
 		}
-
 		socket.close();
 		System.out.println("Stopped listening to port " + m_port);
+	}
+	
+	private boolean read(SocketChannel channel, Client client) throws IOException
+	{
+		ByteBuffer bb = ByteBuffer.allocate(8);
+		int readSize = 0;
+		
+		readSize = channel.read(bb);
+		if (readSize < 0) // Client disconnected
+			return false;
+		else
+		{
+			String command = "";
+			long length = bb.getLong(0);
+			int leftToRead = (int) length;
+			while(leftToRead > 0 && readSize > 0)
+			{
+				ByteBuffer bb2 = ByteBuffer.allocate(Math.min(m_receiveBufferSize, leftToRead));
+				readSize = channel.read(bb2);
+				leftToRead -= readSize;
+				bb2.position(0);
+				command += m_decoder.decode(bb2).toString().substring(0,readSize);
+			}
+
+			if(!command.substring(0, 4).equals("KEY "))
+			{
+				System.out.println("Encrypted command : " + command);
+				command = m_rsa.decryptCommand(command);
+			}
+			parseCommand(client, command);
+		}
+		return true;
 	}
 
 	public void stopListen()
@@ -177,6 +183,10 @@ public class Network extends Thread
 				client.setSocket(socket);
 				client.getUserSummary().setAddress(address);
 				sendKey(client);
+				
+				channel.configureBlocking(true);
+				read(channel,client);
+				channel.configureBlocking(false);
 				
 				m_clients.add(client);
 				System.out.println("add : there is now " + m_clients.size() + " clients");
