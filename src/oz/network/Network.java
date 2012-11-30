@@ -251,6 +251,7 @@ public class Network extends Thread
 		try
 		{
 			System.out.println("****************** Sending ******************");
+			System.out.println("Packet to send : " + packet);
 			if(client.getPublicKey() != null)
 				packet = m_rsa.encryptCommand(packet, client.getPublicKey());
 			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
@@ -271,17 +272,28 @@ public class Network extends Thread
 	{
 		try
 		{
-			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
+			System.out.println("****************** Sending ******************");
+			System.out.println("Packet to send : " + packet);
 
 			if (clientList == null)
 				clientList = m_clients;
 			Iterator<Client> it = clientList.iterator();
+			
 			while (it.hasNext())
 			{
 				Client client = it.next();
+				System.out.println("Sending packet to " + client.getUserData().getUsername());
+				
+				if(client.getPublicKey() != null)
+					packet = m_rsa.encryptCommand(packet, client.getPublicKey());
+				ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
 
-				System.out.println("sending to " + client.getUserData().getUsername());
-				client.getSocket().getChannel().write(bb);
+				ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
+				System.out.println("Sending packet : " + packet);
+				System.out.println("Size : " + (long) bb.array().length + " bytes");
+				
+				ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
+				client.getSocket().getChannel().write(newbb);
 			}
 		}
 		catch (CharacterCodingException e)
