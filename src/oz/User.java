@@ -1,5 +1,6 @@
 package oz;
 
+import flexjson.JSON;
 import oz.data.UserData;
 
 public class User extends UserData
@@ -18,6 +19,7 @@ public class User extends UserData
 		return instance;
 	}
 	
+	@JSON(include=false)
 	public String getPassword()
 	{
 		return m_password;
