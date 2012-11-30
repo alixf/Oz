@@ -15,6 +15,8 @@ public class Profile implements Module
 	public Profile(UI ui)
 	{
 		m_ui = ui;
+
+		m_view = new ProfileView(m_ui.getContent());
 		
 		MenuWidget menuWidget = new MenuWidget(m_ui, User.getUser());
 		menuWidget.addListener(SWT.MouseDown, new Listener()
@@ -26,18 +28,20 @@ public class Profile implements Module
 			}
 		});
 	}
-	
+
 	@Override
 	public boolean executeCommand(String command, Client client)
 	{
 		return false;
 	}
-	
+
 	public void show(UserData user)
 	{
+		m_view.setUser(user);
+		m_ui.getContent().show(m_view);
+		m_view.layout();
 	}
 
-	private UI m_ui;
-	@SuppressWarnings("unused")
-	private ProfileView m_view;
+	private UI			m_ui;
+	private ProfileView	m_view;
 }
