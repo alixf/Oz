@@ -12,7 +12,10 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
+import oz.User;
 import oz.modules.Files;
 import oz.network.Client;
 
@@ -74,7 +77,7 @@ class ContactsView extends Composite implements Files.Observer
 		cr.run();
 	}
 
-	public void createContactWidget(Client client)
+	public void createContactWidget(final Client client)
 	{
 		// Create widget
 		ContactWidget contactWidget = new ContactWidget(m_contacts, this, client);
@@ -88,6 +91,15 @@ class ContactsView extends Composite implements Files.Observer
 		contactWidget.setLayoutData(fd);
 		m_contactsAttachment = new FormAttachment(contactWidget, CONTACTSVMARGIN, SWT.BOTTOM);
 
+		contactWidget.addListener(SWT.MouseDown, new Listener()
+		{
+			@Override
+			public void handleEvent(Event event)
+			{
+				m_contacts.getProfile().show(client.getUserData());
+			}
+		});
+		
 		layout();
 	}
 

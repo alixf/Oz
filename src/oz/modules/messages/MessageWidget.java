@@ -7,7 +7,9 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 
 import oz.data.Message;
 
@@ -50,6 +52,14 @@ public class MessageWidget extends Composite
 		m_date.setLayoutData(fd);
 
 		layout();
+	}
+
+	@Override
+	public void addListener (int eventType, Listener listener)
+	{
+		super.addListener(eventType, listener);
+		for(Control control : getChildren())
+			control.addListener(eventType, listener);
 	}
 
 	Messages	m_messages;

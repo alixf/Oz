@@ -6,8 +6,10 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 
 import oz.network.Client;
 import oz.tools.Images;
@@ -80,6 +82,14 @@ public class ContactWidget extends Composite
 		// Avatar request
 		if (m_client.getUserData().getAvatar() != null)
 			m_contacts.addFileRequest(m_client, m_client.getUserData().getAvatar());
+	}
+
+	@Override
+	public void addListener (int eventType, Listener listener)
+	{
+		super.addListener(eventType, listener);
+		for(Control control : getChildren())
+			control.addListener(eventType, listener);
 	}
 
 	Contacts	m_contacts;
