@@ -36,7 +36,6 @@ class ContactsView extends Composite implements Files.Observer
 		addButton.setText("Ajouter un contact");
 		FormData fd = new FormData();
 		fd.top = new FormAttachment(0, CONTACTSHMARGIN);
-		;
 		fd.left = new FormAttachment(0, CONTACTSHMARGIN);
 		addButton.setLayoutData(fd);
 		addButton.addSelectionListener(new SelectionAdapter()
@@ -47,9 +46,32 @@ class ContactsView extends Composite implements Files.Observer
 				addWindow.run();
 			}
 		});
+		
+
+		// Retrieve button
+		Button trackerButton = new Button(this, SWT.PUSH);
+		trackerButton.setText("Tracker");
+		fd = new FormData();
+		fd.top = new FormAttachment(0, CONTACTSHMARGIN);
+		fd.left = new FormAttachment(addButton, CONTACTSHMARGIN, SWT.RIGHT);
+		trackerButton.setLayoutData(fd);
+		trackerButton.addSelectionListener(new SelectionAdapter()
+		{
+			public void widgetSelected(SelectionEvent e)
+			{
+				retrieveContact();
+			}
+
+		});
 
 		// Attachments
 		m_contactsAttachment = new FormAttachment(addButton, CONTACTSVMARGIN, SWT.BOTTOM);
+	}
+	
+	private void retrieveContact()
+	{
+		ContactRetriever cr = new ContactRetriever(m_contacts.getNetwork(), this);
+		cr.run();
 	}
 
 	public void createContactWidget(Client client)

@@ -47,6 +47,7 @@ public class Oz
 		// Launch modules
 		if (User.getUser().isValid())
 		{
+			User.getUser().setAvatar("avatar.jpg");
 			m_network = new Network(m_settings);
 			m_ui = new UI(m_display);
 			m_settings.setUI(m_ui);

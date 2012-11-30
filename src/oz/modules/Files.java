@@ -88,7 +88,7 @@ public class Files implements Module
 		if (commandCode.equals("GETFILE"))
 		{
 			File file = m_network.parsePacket(command, File.class);
-			Path path = Paths.get(file.getName());
+			Path path = Paths.get("users/"+User.getUser().getUsername()+"/"+file.getName());
 			try
 			{
 				file.setContent(Base64.encodeBase64String(java.nio.file.Files.readAllBytes(path)));
@@ -106,7 +106,7 @@ public class Files implements Module
 	public void addFileRequest(Client client, String request, Observer observer)
 	{
 		File file = new File();
-		file.setName(request);
+		file.setName(User.getUser()+"/"+request);
 		try
 		{
 			m_network.send(m_network.makePacket("GETFILE", file), client);

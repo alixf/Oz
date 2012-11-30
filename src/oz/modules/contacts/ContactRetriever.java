@@ -22,13 +22,15 @@ public class ContactRetriever extends Thread
 		// Retrieve contacts
 		for (UserSummary user : User.getUser().getFriends())
 		{
+			System.out.println(user.getUsername());
+			
 			final Client client = m_network.createClient(user.getAddress());
 			client.getUserData().setUsername(user.getUsername());
 			
 			if (client != null)
 			{
 				client.getUserData().setUsername(user.getUsername());
-
+			
 				String packet = m_network.makePacket("USER", (UserData) User.getUser());
 				try
 				{
@@ -43,7 +45,6 @@ public class ContactRetriever extends Thread
 			}
 		}
 	}
-
 	private Network			m_network;
 	private ContactsView	m_view;
 }

@@ -64,6 +64,9 @@ public class Contacts implements Module
 		if (commandCode.equals("USER"))
 		{
 			client.setUserData(m_network.parsePacket(command, UserData.class));
+			client.getUserSummary().setUsername(client.getUserData().getUsername());
+			
+			User.getUser().save();
 
 			m_ui.getDisplay().asyncExec(new Runnable()
 			{
@@ -111,6 +114,7 @@ public class Contacts implements Module
 			if (client != null)
 			{
 				client.getUserData().setUsername(address.getHost() + ":" + address.getPort());
+				client.getUserSummary().setUsername(address.getHost() + ":" + address.getPort());
 				
 				User.getUser().getFriends().add(client.getUserSummary());
 				User.getUser().save();
@@ -143,6 +147,11 @@ public class Contacts implements Module
 	public Widget getView()
 	{
 		return m_view;
+	}
+	
+	public Network getNetwork()
+	{
+		return m_network;
 	}
 
 	Network			m_network;
