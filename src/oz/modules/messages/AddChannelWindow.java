@@ -9,9 +9,11 @@ import java.util.Map.Entry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import oz.network.Client;
@@ -21,6 +23,8 @@ public class AddChannelWindow
 	public AddChannelWindow(Messages m_messages)
 	{
 		m_addChannelShell = new Shell(m_messages.getUI().getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
+		Image logo16 = new Image(Display.getCurrent(), "images/logo-16.png");
+		m_addChannelShell.setImage(logo16);
 		m_addChannelShell.setText("Ajouter un fil de discussion");
 		m_addChannelShell.setLayout(new RowLayout(SWT.VERTICAL));
 		RowData layoutData = new RowData();

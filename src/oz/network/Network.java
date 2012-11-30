@@ -249,6 +249,7 @@ public class Network extends Thread
 				packet = m_rsa.encryptCommand(packet, client.getPublicKey());
 			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
 			ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
+			System.out.println("Sending packet : " + packet);
 			System.out.println((long) bb.array().length);
 			
 			ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));

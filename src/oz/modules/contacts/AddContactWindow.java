@@ -3,10 +3,12 @@ package oz.modules.contacts;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -46,6 +48,8 @@ class AddContactWindow
 
 		// Window
 		m_addContactShell = new Shell(m_contacts.getView().getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
+		Image logo16 = new Image(Display.getCurrent(), "images/logo-16.png");
+		m_addContactShell.setImage(logo16);
 		m_addContactShell.setText("Ajouter un contact");
 		m_addContactShell.setLayout(new FormLayout());
 
@@ -66,7 +70,7 @@ class AddContactWindow
 		layoutData.width = 200;
 		addressText.setLayoutData(layoutData);
 
-		// Port text
+		// Port spinner
 		final Spinner portSpinner = new Spinner(m_addContactShell, SWT.SINGLE | SWT.BORDER);
 		portSpinner.setMinimum(0);
 		portSpinner.setMaximum(65535);
