@@ -13,47 +13,48 @@ import oz.ui.UI;
 
 public class About
 {
-	public About()
-	{
-	}
-
-	public void setUI(UI ui)
+	public About(UI ui)
 	{
 		m_ui = ui;
 
-		// Images
+		/*
+		 * Images
+		 */
 		Image settingsImage = new Image(Display.getCurrent(), "images/logo-16.png");
 
-		// Settings button
-		final Button settingsButton = new Button(ui.getHeader(), SWT.PUSH);
-		settingsButton.setImage(settingsImage);
+		/*
+		 * Settings button
+		 */
+		m_settingsButton = new Button(ui.getHeader(), SWT.PUSH);
+		m_settingsButton.setImage(settingsImage);
 		FormData layoutData = new FormData();
 		layoutData.right = m_ui.getHeader().getRightAttachment();
 		layoutData.top = m_ui.getHeader().getTopAttachment();
 		layoutData.bottom = m_ui.getHeader().getBottomAttachment();
-		settingsButton.setLayoutData(layoutData);
-		ui.getHeader().setRightAttachment(new FormAttachment(settingsButton, -m_ui.getHeader().getHorizontalMargin(), SWT.LEFT));
-
+		m_settingsButton.setLayoutData(layoutData);
+		ui.getHeader().setRightAttachment(new FormAttachment(m_settingsButton, -m_ui.getHeader().getHorizontalMargin(), SWT.LEFT));
 		m_ui.getDisplay().asyncExec(new Runnable()
 		{
 			public void run()
 			{
-				settingsButton.addSelectionListener(new SelectionAdapter()
+				m_settingsButton.addSelectionListener(new SelectionAdapter()
 				{
 					public void widgetSelected(SelectionEvent e)
 					{
-						openAboutWindow();
+						open();
 					}
 				});
 			}
 		});
+		m_aboutWindow = new AboutWindow();
 	}
 
-	private void openAboutWindow()
+	private void open()
 	{
-		AboutView aboutView = new AboutView();
-		aboutView.open();
+		m_aboutWindow.open();
 	}
 
-	private UI	m_ui;
+	private UI			m_ui;
+	private AboutWindow	m_aboutWindow;
+	private Button		m_settingsButton;
 }

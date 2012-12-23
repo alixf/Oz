@@ -50,8 +50,7 @@ public class Oz
 		{
 			m_network = new Network(m_settings);
 			m_ui = new UI(m_display);
-			About about = new About();
-			about.setUI(m_ui);
+			About about = new About(m_ui);
 			m_settings.setUI(m_ui);
 			Files files = new Files(m_network);
 			Profile profile = new Profile(m_ui);
