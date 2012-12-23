@@ -1,5 +1,7 @@
 package oz.modules.profile;
 
+import java.net.UnknownHostException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
@@ -57,7 +59,14 @@ public class MenuWidget extends Composite
 
 		// Status label
 		m_status = new Label(this, SWT.NONE);
-		m_status.setText("Online");
+		try
+		{
+			m_status.setText(java.net.InetAddress.getLocalHost().getHostAddress());
+		} catch (UnknownHostException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		layoutData = new FormData();
 		layoutData.left = new FormAttachment(m_picture, HMARGIN, SWT.RIGHT);
 		layoutData.top = new FormAttachment(m_username, VMARGIN, SWT.BOTTOM);
