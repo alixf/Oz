@@ -16,10 +16,11 @@ public class Profile implements Module
 	{
 		m_ui = ui;
 
-		m_view = new ProfileView(m_ui.getContent());
+		m_view = new ProfileView(this, m_ui.getContent());
+		m_editView = new EditView(this, m_ui.getContent());
 		
-		MenuWidget menuWidget = new MenuWidget(m_ui, User.getUser());
-		menuWidget.addListener(SWT.MouseDown, new Listener()
+		m_menuWidget = new MenuWidget(m_ui, User.getUser());
+		m_menuWidget.addListener(SWT.MouseDown, new Listener()
 		{
 			@Override
 			public void handleEvent(Event event)
@@ -41,7 +42,20 @@ public class Profile implements Module
 		m_ui.getContent().show(m_view);
 		m_view.layout();
 	}
+	
+	public void showEditView()
+	{
+		m_ui.getContent().show(m_editView);
+		m_editView.layout();
+	}
+	
+	public void updateWidget()
+	{
+		m_menuWidget.updateData();
+	}
 
 	private UI			m_ui;
 	private ProfileView	m_view;
+	private EditView	m_editView;
+	private MenuWidget	m_menuWidget; 
 }

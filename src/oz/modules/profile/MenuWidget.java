@@ -28,7 +28,7 @@ public class MenuWidget extends Composite
 		m_user = user;
 
 		// Images
-		Image avatarImage = Images.resize(new Image(ui.getDisplay(), m_user.getAvatarFilename()), 64, 64);
+		Image avatarImage = Images.resize(new Image(getDisplay(), m_user.getAvatarFilename()), 64, 64);
 
 		// Picture
 		m_picture = new Label(this, SWT.BORDER);
@@ -72,11 +72,20 @@ public class MenuWidget extends Composite
 	}
 
 	@Override
-	public void addListener (int eventType, Listener listener)
+	public void addListener(int eventType, Listener listener)
 	{
 		super.addListener(eventType, listener);
 		for(Control control : getChildren())
 			control.addListener(eventType, listener);
+	}
+
+	public void updateData()
+	{
+		Image avatarImage = Images.resize(new Image(getDisplay(), m_user.getAvatarFilename()), 64, 64);
+		m_picture.setImage(avatarImage);
+		m_name.setText(m_user.getBiography().getFirstName() + " " + m_user.getBiography().getLastName());
+		m_username.setText("(" + m_user.getUsername() + ")");
+		layout();
 	}
 	
 	private UI			m_ui;
