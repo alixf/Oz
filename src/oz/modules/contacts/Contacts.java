@@ -89,8 +89,6 @@ public class Contacts implements Module
 					User.getUser().getFollowers().add(client.getUserSummary());
 					User.getUser().save();
 
-					m_view.createContactWidget(client);
-
 					try
 					{
 						m_network.send(m_network.makePacket("USER", (UserData) User.getUser()), client);
@@ -99,6 +97,8 @@ public class Contacts implements Module
 					{
 						e.printStackTrace();
 					}
+
+					m_view.createContactWidget(client);
 				}
 			});
 		}
