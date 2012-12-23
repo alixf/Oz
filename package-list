@@ -1,9 +1,11 @@
 oz
 oz.data
 oz.modules
+oz.modules.about
 oz.modules.contacts
 oz.modules.messages
 oz.modules.profile
+oz.modules.settings
 oz.network
 oz.security
 oz.tools
