@@ -1,6 +1,7 @@
 package oz.network;
 
 import java.io.IOException;
+import java.nio.channels.SocketChannel;
 import java.nio.charset.CharacterCodingException;
 
 import oz.security.RSA;
@@ -9,6 +10,7 @@ public class RSAEncryption implements EncryptionSystem
 {
 	public RSAEncryption(Network network)
 	{
+		m_network = network;
 		m_rsa = new RSA();
 	}
 
@@ -18,15 +20,15 @@ public class RSAEncryption implements EncryptionSystem
 		sendKey(client);
 	}
 
-	@Override
-	public void onConnect(Client client)
+	public void onConnect(SocketChannel channel, Client client)
 	{
 		sendKey(client);
 		try
 		{
-			client.getSocket().getChannel().configureBlocking(true);
-			// m_network.read(client.getSocket().getChannel(), client);
-			client.getSocket().getChannel().configureBlocking(false);
+			if(!channel.isBlocking())
+				channel.configureBlocking(true);
+			m_network.read(channel, client);
+			channel.configureBlocking(false);
 		}
 		catch (IOException e)
 		{
@@ -39,7 +41,13 @@ public class RSAEncryption implements EncryptionSystem
 	{
 		if (!packet.substring(0, 4).equals("KEY "))
 			return m_rsa.decryptCommand(packet);
-		return packet;
+		else
+		{
+			String key = packet.substring(4);
+			System.out.println("Set client public key : "+key);
+			client.setPublicKey(RSA.convertBase64EncodedPublicKey(key));
+		}
+		return null;
 	}
 
 	@Override
