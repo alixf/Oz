@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -176,7 +175,6 @@ public class Register
 			public void widgetSelected(SelectionEvent event)
 			{
 				boolean error = false;
-				LinkedList<String> errors = new LinkedList<String>();
 				if (usernameText.getText().length() < 4)
 				{
 
