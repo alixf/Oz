@@ -11,6 +11,7 @@ import org.eclipse.swt.widgets.Widget;
 import oz.User;
 import oz.data.Address;
 import oz.data.UserData;
+import oz.data.UserIdentifier;
 import oz.ui.UI;
 import oz.modules.Files;
 import oz.modules.Module;
@@ -65,45 +66,100 @@ public class Contacts implements Module
 
 		if (commandCode.equals("USER"))
 		{
+			Address address = client.getUserData().getUserIdentifier().getAddress();
 			client.setUserData(m_network.parsePacket(command, UserData.class));
-			client.getUserSummary().setUsername(client.getUserData().getUsername());
+			client.getUserData().getUserIdentifier().setAddress(address);
 
-			User.getUser().save();
-
-			m_ui.getDisplay().asyncExec(new Runnable()
+			// Add to friends
+			switch(checkAddFriend(client))
 			{
-				public void run()
+			case 0 : // New friend
+				m_ui.getDisplay().asyncExec(new Runnable()
 				{
-					m_view.updateContactWidget(client);
-				}
-			});
+					public void run()
+					{
+						m_view.createContactWidget(client.getUserData().getUserIdentifier(), client);
+					}
+				});
+				break;
+			case 2 : // Already existing friend
+				m_ui.getDisplay().asyncExec(new Runnable()
+				{
+					public void run()
+					{
+						m_view.updateContactWidget(client);
+					}
+				});
+				break;
+			default : break;
+			}
+
 		}
 		if (commandCode.equals("ADD"))
 		{
+			Address address = client.getUserData().getUserIdentifier().getAddress();
 			client.setUserData(m_network.parsePacket(command, UserData.class));
+			client.getUserData().getUserIdentifier().setAddress(address);
 
-			m_ui.getDisplay().asyncExec(new Runnable()
+			// Add to friends
+			switch(checkAddFriend(client))
 			{
-				public void run()
+			case 0 : // New friend
+				m_ui.getDisplay().asyncExec(new Runnable()
 				{
-					User.getUser().getFollowers().add(client.getUserSummary());
-					User.getUser().save();
-
-					try
+					public void run()
 					{
-						m_network.send(m_network.makePacket("USER", (UserData) User.getUser()), client);
+						m_view.createContactWidget(client.getUserData().getUserIdentifier(), client);
 					}
-					catch (IOException e)
+				});
+				break;
+			case 2 : // Already existing friend
+				m_ui.getDisplay().asyncExec(new Runnable()
+				{
+					public void run()
 					{
-						e.printStackTrace();
+						m_view.updateContactWidget(client);
 					}
+				});
+				break;
+			default : break;
+			}
 
-					m_view.createContactWidget(client);
-				}
-			});
+			try
+			{
+				m_network.send(m_network.makePacket("USER", (UserData) User.getUser()), client);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		return true;
+	}
+
+	private int checkAddFriend(Client client)
+	{
+		System.out.println("CHECKADDFRIEND WITH UUID "+client.getUserData().getUserIdentifier().getUUID()+" AND ADDRESS "+client.getUserData().getUserIdentifier().getAddress());
+		
+		if(User.getUser().getUserIdentifier().getUUID().equals(client.getUserData().getUserIdentifier().getUUID()))
+			return 1;
+		
+		for(UserIdentifier userID : User.getUser().getFriends())
+		{
+			if(userID.getUUID().equals(client.getUserData().getUserIdentifier().getUUID()))
+			{
+				userID.setAddress(client.getUserData().getUserIdentifier().getAddress());
+				System.out.println("UPDATED FRIEND "+client.getUserData().getUsername());
+				User.getUser().save();
+				return 2;
+			}
+		}
+
+		User.getUser().getFriends().add(client.getUserData().getUserIdentifier());
+		System.out.println("ADDED TO FRIEND "+client.getUserData().getUsername());
+		User.getUser().save();
+		return 0;
 	}
 
 	public Client addContact(final Address address)
@@ -116,13 +172,14 @@ public class Contacts implements Module
 			if (client != null)
 			{
 				client.getUserData().setUsername(address.getHost() + ":" + address.getPort());
-				client.getUserSummary().setUsername(address.getHost() + ":" + address.getPort());
-
-				User.getUser().getFriends().add(client.getUserSummary());
-				User.getUser().save();
-
+				client.getUserData().getUserIdentifier().setUsername(address.getHost() + ":" + address.getPort());
+				
+				//client.getUserData().getUserIdentifier().setAddress(address);
+				System.out.println("CLIENT IS FOUND, ADD CONTACT WITH ADDRESS "+client.getUserData().getUserIdentifier().getAddress());
+				
 				m_network.send(packet, client);
 
+				/*
 				m_ui.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
@@ -130,6 +187,7 @@ public class Contacts implements Module
 						m_view.createContactWidget(client);
 					}
 				});
+				*/
 			}
 			return client;
 		}
@@ -159,6 +217,12 @@ public class Contacts implements Module
 	public Profile getProfile()
 	{
 		return m_profile;
+	}
+	
+	public void retrieveContacts()
+	{
+		ContactRetriever contactRetriever = new ContactRetriever(m_network, m_view);
+		contactRetriever.run();
 	}
 
 	Network			m_network;

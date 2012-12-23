@@ -1,5 +1,7 @@
 package oz.data;
 
+import flexjson.JSON;
+
 /**
  * Instances of this class represent a file
  * 
@@ -13,6 +15,7 @@ public class File
 	 * 
 	 * @return the name of the file
 	 */
+	@JSON
 	public String getName()
 	{
 		return m_name;
@@ -33,6 +36,7 @@ public class File
 	 * 
 	 * @return the modification date of the file
 	 */
+	@JSON
 	public long getMtime()
 	{
 		return m_mtime;
@@ -53,6 +57,7 @@ public class File
 	 * 
 	 * @return the content of the file
 	 */
+	@JSON
 	public String getContent()
 	{
 		return m_content;
@@ -73,6 +78,7 @@ public class File
 	 * 
 	 * @return the MIME type of the file
 	 */
+	@JSON
 	public String getMimeType()
 	{
 		return m_mimeType;

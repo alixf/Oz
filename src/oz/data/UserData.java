@@ -11,6 +11,7 @@ import oz.User;
 import oz.security.XOR;
 
 import flexjson.JSONSerializer;
+import flexjson.JSON;
 
 /**
  * Instances of this class represent the data of a user
@@ -37,12 +38,18 @@ public class UserData
 	{
 		return m_userIdentifier;
 	}
+	
+	public void setUserIdentifier(UserIdentifier userIdentifier)
+	{
+		m_userIdentifier = userIdentifier;
+	}
 
 	/**
 	 * Return the username of the user
 	 * 
 	 * @return the username of the user
 	 */
+	@JSON(include=false)
 	public String getUsername()
 	{
 		return m_userIdentifier.getUsername();
@@ -57,12 +64,34 @@ public class UserData
 	{
 		m_userIdentifier.setUsername(username);
 	}
+	
+	/**
+	 * Return the uuid of the user
+	 * 
+	 * @return the uuid of the user
+	 */
+	@JSON(include=false)
+	public String getUUID()
+	{
+		return m_userIdentifier.getUUID();
+	}
+
+	/**
+	 * Set the uuid of the user
+	 * 
+	 * @param u a uuid
+	 */
+	public void setUUID(String uuid)
+	{
+		m_userIdentifier.setUUID(uuid);
+	}
 
 	/**
 	 * Return the avatar of the user
 	 * 
 	 * @return the avatar of the user as a string
 	 */
+	@JSON
 	public String getAvatar()
 	{
 		return m_avatar;
@@ -83,6 +112,7 @@ public class UserData
 	 * 
 	 * @return the biography of the user
 	 */
+	@JSON
 	public Biography getBiography()
 	{
 		return m_biography;
@@ -103,6 +133,7 @@ public class UserData
 	 * 
 	 * @return the friend list of the user
 	 */
+	@JSON
 	public List<UserIdentifier> getFriends()
 	{
 		return m_friends;
@@ -123,6 +154,7 @@ public class UserData
 	 * 
 	 * @return the friend group list of the user
 	 */
+	@JSON
 	public List<Group> getFriendGroups()
 	{
 		return m_friendGroups;
@@ -143,6 +175,7 @@ public class UserData
 	 * 
 	 * @return the follower list of the user
 	 */
+	@JSON
 	public List<UserIdentifier> getFollowers()
 	{
 		return m_followers;
@@ -163,6 +196,7 @@ public class UserData
 	 * 
 	 * @return the post list of the user
 	 */
+	@JSON
 	public List<Message> getPosts()
 	{
 		return m_posts;
@@ -183,6 +217,7 @@ public class UserData
 	 * 
 	 * @return the complete filename for the avatar of the user
 	 */
+	@JSON(include=false)
 	public String getAvatarFilename()
 	{
 		return getAvatar() == null ? "images/defaultProfilePicture.png" : "users/" + User.getUser().getUsername() + "/files/" + getUsername() + "/" + getAvatar();
@@ -235,6 +270,7 @@ public class UserData
 		 * 
 		 * @return the first name of the biography
 		 */
+		@JSON
 		public String getFirstName()
 		{
 			return m_firstName;
@@ -255,6 +291,7 @@ public class UserData
 		 * 
 		 * @return the last name of the biography
 		 */
+		@JSON
 		public String getLastName()
 		{
 			return m_lastName;
@@ -275,6 +312,7 @@ public class UserData
 		 * 
 		 * @return the birth date of the biography as an integer representing a timestamp
 		 */
+		@JSON
 		public Integer getBirthDate()
 		{
 			return m_birthDate;
@@ -295,6 +333,7 @@ public class UserData
 		 * 
 		 * @return the description of the biography
 		 */
+		@JSON
 		public String getDescription()
 		{
 			return m_description;
@@ -329,7 +368,7 @@ public class UserData
 	}
 
 	/**
-	 * The username of the user
+	 * The user identifier of the user
 	 */
 	private UserIdentifier			m_userIdentifier;
 	/**

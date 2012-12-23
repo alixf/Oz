@@ -33,6 +33,7 @@ public class User extends UserData
 	/**
 	 * @return the m_valid
 	 */
+	@JSON(include = false)
 	public boolean isValid()
 	{
 		return m_valid;

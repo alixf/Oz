@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 
+import oz.data.UserIdentifier;
 import oz.modules.Files;
 import oz.network.Client;
 
@@ -31,7 +32,7 @@ class ContactsView extends Composite implements Files.Observer
 		// Layout
 		setLayout(new FormLayout());
 
-		m_widgets = new HashMap<Client, ContactWidget>();
+		m_widgets = new HashMap<String, ContactWidget>();
 
 		// Add button
 		Button addButton = new Button(this, SWT.PUSH);
@@ -75,11 +76,11 @@ class ContactsView extends Composite implements Files.Observer
 		cr.run();
 	}
 
-	public void createContactWidget(final Client client)
+	public void createContactWidget(UserIdentifier user, final Client client)
 	{
 		// Create widget
-		ContactWidget contactWidget = new ContactWidget(m_contacts, this, client);
-		m_widgets.put(client, contactWidget);
+		ContactWidget contactWidget = new ContactWidget(m_contacts, this, user, client);
+		m_widgets.put(user.getUUID(), contactWidget);
 
 		// Set layout data
 		FormData fd = new FormData();
@@ -89,21 +90,24 @@ class ContactsView extends Composite implements Files.Observer
 		contactWidget.setLayoutData(fd);
 		m_contactsAttachment = new FormAttachment(contactWidget, CONTACTSVMARGIN, SWT.BOTTOM);
 
-		contactWidget.addListener(SWT.MouseDown, new Listener()
+		if(client != null)
 		{
-			@Override
-			public void handleEvent(Event event)
+			contactWidget.addListener(SWT.MouseDown, new Listener()
 			{
-				m_contacts.getProfile().show(client.getUserData());
-			}
-		});
+				@Override
+				public void handleEvent(Event event)
+				{
+					m_contacts.getProfile().show(client.getUserData());
+				}
+			});
+		}
 
 		layout();
 	}
 
 	public void updateContactWidget(Client client)
 	{
-		ContactWidget widget = m_widgets.get(client);
+		ContactWidget widget = m_widgets.get(client.getUserData().getUserIdentifier().getUUID());
 		if (widget != null)
 			widget.updateData();
 		else
@@ -134,6 +138,6 @@ class ContactsView extends Composite implements Files.Observer
 	}
 
 	Contacts						m_contacts;
-	HashMap<Client, ContactWidget>	m_widgets;
+	HashMap<String, ContactWidget>	m_widgets;
 	private FormAttachment			m_contactsAttachment;
 }

@@ -1,5 +1,7 @@
 package oz.data;
 
+import flexjson.JSON;
+
 /**
  * Instances of this class represent a network address
  * 
@@ -34,6 +36,7 @@ public class Address
 	 * 
 	 * @return the host of the address
 	 */
+	@JSON
 	public String getHost()
 	{
 		return m_host;
@@ -54,6 +57,7 @@ public class Address
 	 * 
 	 * @return the port of the address
 	 */
+	@JSON
 	public int getPort()
 	{
 		return m_port;
@@ -78,6 +82,11 @@ public class Address
 	public boolean equals(Address address)
 	{
 		return m_host.equals(address.getHost()) && m_port == address.getPort();
+	}
+	
+	public String toString()
+	{
+		return "{"+m_host+","+m_port+"}";
 	}
 
 	/**

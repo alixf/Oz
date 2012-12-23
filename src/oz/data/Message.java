@@ -1,5 +1,7 @@
 package oz.data;
 
+import flexjson.JSON;
+
 /**
  * Instances of this class represent a message
  * 
@@ -32,6 +34,7 @@ public class Message
 	 * 
 	 * @return the content of the message
 	 */
+	@JSON
 	public String getContent()
 	{
 		return m_content;
@@ -52,6 +55,7 @@ public class Message
 	 * 
 	 * @return the date of the message
 	 */
+	@JSON
 	public long getDate()
 	{
 		return m_date;
@@ -72,6 +76,7 @@ public class Message
 	 * 
 	 * @return the channel's if of the message
 	 */
+	@JSON
 	public String getChannelID()
 	{
 		return m_channelID;

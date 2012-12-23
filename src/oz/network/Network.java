@@ -45,6 +45,26 @@ public class Network extends Thread
 		m_commands = new Hashtable<String, Module>();
 		m_separator = " ";
 		m_encryption = new IdentityEncryption();
+
+		// Create listening socket
+		try
+		{
+			ServerSocketChannel serverSocketChannel;
+			serverSocketChannel = ServerSocketChannel.open();
+			m_serverSocket = serverSocketChannel.socket();
+			m_serverSocket.bind(new InetSocketAddress(m_port));
+			m_serverSocket.setReuseAddress(true);
+			System.out.println("Listening to port " + m_port);
+
+			// Create selector
+			m_selector = Selector.open();
+			serverSocketChannel.configureBlocking(false);
+			serverSocketChannel.register(m_selector, SelectionKey.OP_ACCEPT);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void run()
@@ -61,18 +81,6 @@ public class Network extends Thread
 
 	public void listen() throws IOException
 	{
-		// Create listening socket
-		ServerSocketChannel ssc = ServerSocketChannel.open();
-		ServerSocket socket = ssc.socket();
-		socket.bind(new InetSocketAddress(m_port));
-		socket.setReuseAddress(true);
-		System.out.println("Listening to port " + m_port);
-
-		// Create selector
-		m_selector = Selector.open();
-		ssc.configureBlocking(false);
-		ssc.register(m_selector, SelectionKey.OP_ACCEPT);
-
 		while (m_run)
 		{
 			m_selector.select();
@@ -85,9 +93,9 @@ public class Network extends Thread
 				{
 					// Create client
 					Client client = new Client();
-					client.setSocket(socket.accept());
+					client.setSocket(m_serverSocket.accept());
 					client.getSocket().setTcpNoDelay(true);
-					client.getUserSummary().setAddress(new Address(socket.getInetAddress().getHostName().toString(), m_port));
+					client.getUserData().getUserIdentifier().setAddress(new Address(client.getSocket().getInetAddress().getHostName().toString(), m_port));
 					m_clients.add(client);
 
 					// Register client socket
@@ -111,7 +119,7 @@ public class Network extends Thread
 			}
 			keys.clear();
 		}
-		socket.close();
+		m_serverSocket.close();
 		System.out.println("Stopped listening to port " + m_port);
 	}
 
@@ -192,7 +200,7 @@ public class Network extends Thread
 				Client client = new Client();
 				client.setSocket(socket);
 				client.getSocket().setTcpNoDelay(true);
-				client.getUserSummary().setAddress(address);
+				client.getUserData().getUserIdentifier().setAddress(address);
 				channel.configureBlocking(false);
 				m_clients.add(client);
 
@@ -284,18 +292,24 @@ public class Network extends Thread
 		return packet.split(m_separator)[0];
 	}
 
-	public <T> T parsePacket(String packet, Class<T> c) // TODO check errors
+	public <T> T parsePacket(String packet, Class<T> c)
 	{
 		String command = packet.split(m_separator)[0];
-		String data = packet.substring(command.length() + 1);
+		String data = packet.substring(command.length() + m_separator.length());
 		return (T) new JSONDeserializer<T>().use(null, c).deserialize(data);
+	}
+
+	public <T> void parsePacketInto(String packet, Class<T> c, T o)
+	{
+		String command = packet.split(m_separator)[0];
+		String data = packet.substring(command.length() + m_separator.length());
+		new JSONDeserializer<T>().use(null, c).deserializeInto(data, o);
 	}
 
 	public String makePacket(String command, Object data)
 	{
 		JSONSerializer serializer = new JSONSerializer();
 		serializer.exclude("*.class");
-		serializer.include("*");
 		return command + " " + serializer.serialize(data);
 	}
 
@@ -324,6 +338,7 @@ public class Network extends Thread
 	private int							m_port;
 	private long						m_receiveBufferSize;
 	private Selector					m_selector;
+	private ServerSocket				m_serverSocket;
 	private List<Client>				m_clients;
 	private Charset						m_charset;
 	private CharsetDecoder				m_decoder;

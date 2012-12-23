@@ -11,12 +11,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 
+import oz.data.UserIdentifier;
 import oz.network.Client;
 import oz.tools.Images;
 
 public class ContactWidget extends Composite
 {
-	public ContactWidget(Contacts contacts, Composite parent, Client client)
+	public ContactWidget(Contacts contacts, Composite parent, UserIdentifier user, Client client)
 	{
 		super(parent, SWT.BORDER);
 		setLayout(new FormLayout());
@@ -40,7 +41,6 @@ public class ContactWidget extends Composite
 		 * Full name label
 		 */
 		m_name = new Label(this, SWT.NONE);
-		m_name.setText(client.getUserData().getBiography().getFirstName() + " " + client.getUserData().getBiography().getLastName());
 		layoutData = new FormData();
 		layoutData.top = new FormAttachment(0, 5);
 		layoutData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
@@ -51,20 +51,24 @@ public class ContactWidget extends Composite
 		 */
 		m_username = new Label(this, SWT.NONE);
 
-		m_username.setText(client.getUserData().getUsername());
+		m_username.setText(user.getUsername());
 		layoutData = new FormData();
 		layoutData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
 		layoutData.top = new FormAttachment(m_name, 2, SWT.BOTTOM);
 		m_username.setLayoutData(layoutData);
 
 		// Avatar request
-		if (client.getUserData().getAvatar() != null)
+		if(m_client != null)
 		{
-			m_contacts.addFileRequest(client, client.getUserData().getAvatar());
-			m_image.setImage(Images.resize(new Image(Display.getCurrent(), "images/loading.png"), 64, 64));
+			m_name.setText(m_client.getUserData().getBiography().getFirstName() + " " + m_client.getUserData().getBiography().getLastName());
+			if (m_client.getUserData().getAvatar() != null)
+			{
+				m_contacts.addFileRequest(m_client, m_client.getUserData().getAvatar());
+				m_image.setImage(Images.resize(new Image(Display.getCurrent(), "images/loading.png"), 64, 64));
+			}
+			else
+				m_image.setImage(Images.resize(new Image(Display.getCurrent(), m_client.getUserData().getAvatarFilename()), 64, 64));
 		}
-		else
-			m_image.setImage(Images.resize(new Image(Display.getCurrent(), client.getUserData().getAvatarFilename()), 64, 64));
 	}
 
 	public void setImage(Image image)
@@ -75,13 +79,16 @@ public class ContactWidget extends Composite
 
 	public void updateData()
 	{
-		m_name.setText(m_client.getUserData().getBiography().getFirstName() + " " + m_client.getUserData().getBiography().getLastName());
-		m_username.setText(m_client.getUserData().getUsername());
-		layout();
-
-		// Avatar request
-		if (m_client.getUserData().getAvatar() != null)
-			m_contacts.addFileRequest(m_client, m_client.getUserData().getAvatar());
+		if(m_client != null)
+		{
+			m_name.setText(m_client.getUserData().getBiography().getFirstName() + " " + m_client.getUserData().getBiography().getLastName());
+			m_username.setText(m_client.getUserData().getUsername());
+			layout();
+	
+			// Avatar request
+			if (m_client.getUserData().getAvatar() != null)
+				m_contacts.addFileRequest(m_client, m_client.getUserData().getAvatar());
+		}
 	}
 
 	@Override
@@ -90,6 +97,16 @@ public class ContactWidget extends Composite
 		super.addListener(eventType, listener);
 		for (Control control : getChildren())
 			control.addListener(eventType, listener);
+	}
+	
+	public void setClient(Client client)
+	{
+		m_client = client;
+	}
+	
+	public Client getClient()
+	{
+		return m_client;
 	}
 
 	Contacts	m_contacts;

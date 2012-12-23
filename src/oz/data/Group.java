@@ -2,6 +2,8 @@ package oz.data;
 
 import java.util.List;
 
+import flexjson.JSON;
+
 /**
  * Instances of this class represent a group of users
  * 
@@ -32,6 +34,7 @@ public class Group
 	 * 
 	 * @return the name of the group
 	 */
+	@JSON
 	public String getName()
 	{
 		return m_name;
@@ -52,6 +55,7 @@ public class Group
 	 * 
 	 * @return the users list of the group
 	 */
+	@JSON
 	public List<UserIdentifier> getUsers()
 	{
 		return m_users;

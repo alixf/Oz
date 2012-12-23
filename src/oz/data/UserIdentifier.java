@@ -1,5 +1,7 @@
 package oz.data;
 
+import flexjson.JSON;
+
 /**
  * Instances of this class represent the necessary data to identify a user
  * 
@@ -32,6 +34,7 @@ public class UserIdentifier
 	 * 
 	 * @return the address of the user
 	 */
+	@JSON
 	public Address getAddress()
 	{
 		return m_address;
@@ -52,6 +55,7 @@ public class UserIdentifier
 	 * 
 	 * @return the username of the user
 	 */
+	@JSON
 	public String getUsername()
 	{
 		return m_username;
@@ -72,6 +76,7 @@ public class UserIdentifier
 	 * 
 	 * @return the uuid of the user
 	 */
+	@JSON
 	public String getUUID()
 	{
 		return m_uuid;
@@ -85,6 +90,11 @@ public class UserIdentifier
 	public void setUUID(String uuid)
 	{
 		m_uuid = uuid;
+	}
+	
+	public String toString()
+	{
+		return "{"+getUsername()+","+getAddress()+","+getUUID()+"}";
 	}
 
 	/**
