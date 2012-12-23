@@ -19,18 +19,23 @@ import flexjson.JSONSerializer;
  * @author Jean "Jack3113" Batista
  */
 public class UserData
-{	
+{
 	/**
 	 * Default constructor
 	 */
 	public UserData()
 	{
-		m_username = new String();
+		m_userIdentifier = new UserIdentifier();
 		setBiography(new Biography());
-		m_friends = new LinkedList<UserSummary>();
-		m_friendGroups = new LinkedList<Group>();	
-		m_followers = new LinkedList<UserSummary>();
+		m_friends = new LinkedList<UserIdentifier>();
+		m_friendGroups = new LinkedList<Group>();
+		m_followers = new LinkedList<UserIdentifier>();
 		m_posts = new LinkedList<Message>();
+	}
+	
+	public UserIdentifier getUserIdentifier()
+	{
+		return m_userIdentifier;
 	}
 
 	/**
@@ -40,7 +45,7 @@ public class UserData
 	 */
 	public String getUsername()
 	{
-		return m_username;
+		return m_userIdentifier.getUsername();
 	}
 
 	/**
@@ -50,7 +55,7 @@ public class UserData
 	 */
 	public void setUsername(String username)
 	{
-		m_username = username;
+		m_userIdentifier.setUsername(username);
 	}
 
 	/**
@@ -98,7 +103,7 @@ public class UserData
 	 * 
 	 * @return the friend list of the user
 	 */
-	public List<UserSummary> getFriends()
+	public List<UserIdentifier> getFriends()
 	{
 		return m_friends;
 	}
@@ -108,7 +113,7 @@ public class UserData
 	 * 
 	 * @param friends a friend list
 	 */
-	public void setFriends(List<UserSummary> friends)
+	public void setFriends(List<UserIdentifier> friends)
 	{
 		m_friends = friends;
 	}
@@ -138,7 +143,7 @@ public class UserData
 	 * 
 	 * @return the follower list of the user
 	 */
-	public List<UserSummary> getFollowers()
+	public List<UserIdentifier> getFollowers()
 	{
 		return m_followers;
 	}
@@ -148,7 +153,7 @@ public class UserData
 	 * 
 	 * @param followers a follower list
 	 */
-	public void setFollowers(List<UserSummary> followers)
+	public void setFollowers(List<UserIdentifier> followers)
 	{
 		m_followers = followers;
 	}
@@ -172,7 +177,7 @@ public class UserData
 	{
 		m_posts = posts;
 	}
-	
+
 	/**
 	 * Return the complete filename for the avatar of the user
 	 * 
@@ -193,7 +198,7 @@ public class UserData
 		JSONSerializer serializer = new JSONSerializer();
 		serializer.exclude("*.class");
 		serializer.include("*");
-		
+
 		try
 		{
 			File profileFile = new File(filename);
@@ -209,7 +214,7 @@ public class UserData
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Instances of this class represents the biography of a user
 	 * 
@@ -326,29 +331,29 @@ public class UserData
 	/**
 	 * The username of the user
 	 */
-	private String				m_username;
+	private UserIdentifier			m_userIdentifier;
 	/**
 	 * The avatar of the user
 	 */
-	private String				m_avatar;
+	private String					m_avatar;
 	/**
 	 * The biography of the user
 	 */
-	private Biography			m_biography;
+	private Biography				m_biography;
 	/**
 	 * The friend list of the user
 	 */
-	private List<UserSummary>	m_friends;
+	private List<UserIdentifier>	m_friends;
 	/**
 	 * The friend group list of the user
 	 */
-	private List<Group>			m_friendGroups;
+	private List<Group>				m_friendGroups;
 	/**
 	 * The follower list of the user
 	 */
-	private List<UserSummary>	m_followers;
+	private List<UserIdentifier>	m_followers;
 	/**
 	 * The post list of the user
 	 */
-	private List<Message>		m_posts;
+	private List<Message>			m_posts;
 }

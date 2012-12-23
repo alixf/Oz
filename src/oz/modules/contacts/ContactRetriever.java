@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import oz.User;
 import oz.data.UserData;
-import oz.data.UserSummary;
+import oz.data.UserIdentifier;
 import oz.network.Client;
 import oz.network.Network;
 
@@ -20,7 +20,7 @@ public class ContactRetriever extends Thread
 	public void run()
 	{
 		// Retrieve contacts
-		for (UserSummary user : User.getUser().getFriends())
+		for (UserIdentifier user : User.getUser().getFriends())
 		{
 			final Client client = m_network.createClient(user.getAddress());
 			client.getUserData().setUsername(user.getUsername());

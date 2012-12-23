@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,6 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import com.eaio.uuid.UUID;
 
 import flexjson.JSONSerializer;
 
@@ -191,6 +191,7 @@ public class Register
 					// Create user
 					UserData user = new UserData();
 					user.setUsername(usernameText.getText());
+					user.getUserIdentifier().setUUID(new UUID().toString());
 					user.getBiography().setFirstName(firstNameText.getText());
 					user.getBiography().setLastName(lastNameText.getText());
 

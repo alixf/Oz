@@ -52,7 +52,7 @@ public class Group
 	 * 
 	 * @return the users list of the group
 	 */
-	public List<UserSummary> getUsers()
+	public List<UserIdentifier> getUsers()
 	{
 		return m_users;
 	}
@@ -62,7 +62,7 @@ public class Group
 	 * 
 	 * @param users a users list
 	 */
-	public void setUsers(List<UserSummary> users)
+	public void setUsers(List<UserIdentifier> users)
 	{
 		m_users = users;
 	}
@@ -74,5 +74,5 @@ public class Group
 	/**
 	 * The users list of the group
 	 */
-	private List<UserSummary>	m_users;
+	private List<UserIdentifier>	m_users;
 }

@@ -6,12 +6,12 @@ package oz.data;
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
  */
-public class UserSummary
+public class UserIdentifier
 {
 	/**
 	 * Default constructor
 	 */
-	public UserSummary()
+	public UserIdentifier()
 	{
 	}
 
@@ -21,7 +21,7 @@ public class UserSummary
 	 * @param username an username as a string
 	 * @param address an adress
 	 */
-	public UserSummary(String username, Address address)
+	public UserIdentifier(String username, Address address)
 	{
 		setUsername(username);
 		setAddress(address);
@@ -68,6 +68,26 @@ public class UserSummary
 	}
 
 	/**
+	 * Return the uuid of the user
+	 * 
+	 * @return the uuid of the user
+	 */
+	public String getUUID()
+	{
+		return m_uuid;
+	}
+
+	/**
+	 * Set the uuid of the user
+	 * 
+	 * @param uuid an uuid
+	 */
+	public void setUUID(String uuid)
+	{
+		m_uuid = uuid;
+	}
+
+	/**
 	 * The address of the user
 	 */
 	private Address	m_address;
@@ -75,4 +95,8 @@ public class UserSummary
 	 * The username of the user
 	 */
 	private String	m_username;
+	/**
+	 * The UUID of the user
+	 */
+	private String m_uuid;
 }

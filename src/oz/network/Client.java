@@ -4,14 +4,14 @@ import java.net.Socket;
 import java.security.PublicKey;
 
 import oz.data.UserData;
-import oz.data.UserSummary;
+import oz.data.UserIdentifier;
 
 public class Client
 {
 	public Client()
 	{
 		m_userData = new UserData();
-		m_userSummary = new UserSummary();
+		m_userIdentifier = new UserIdentifier();
 		m_publicKey = null;
 	}
 
@@ -40,19 +40,19 @@ public class Client
 	public void setUserData(UserData userData)
 	{
 		m_userData = userData;
-		m_userSummary.setUsername(m_userData.getUsername());
+		m_userIdentifier.setUsername(m_userData.getUsername());
 	}
-	
-	public UserSummary getUserSummary()
+
+	public UserIdentifier getUserSummary()
 	{
-		return m_userSummary;
+		return m_userIdentifier;
 	}
-	
-	public void setUserSummary(UserSummary userSummary)
+
+	public void setUserSummary(UserIdentifier userSummary)
 	{
-		m_userSummary = userSummary;
+		m_userIdentifier = userSummary;
 	}
-	
+
 	public PublicKey getPublicKey()
 	{
 		return m_publicKey;
@@ -63,8 +63,8 @@ public class Client
 		m_publicKey = publicKey;
 	}
 
-	private Socket		m_socket;
-	private UserData	m_userData;
-	private UserSummary	m_userSummary;
-	private PublicKey	m_publicKey;
+	private Socket			m_socket;
+	private UserData		m_userData;
+	private UserIdentifier	m_userIdentifier;
+	private PublicKey		m_publicKey;
 }
