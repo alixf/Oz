@@ -1,5 +1,7 @@
 package oz.network;
 
+import java.nio.channels.SocketChannel;
+
 public class IdentityEncryption implements EncryptionSystem
 {
 	@Override
@@ -8,7 +10,7 @@ public class IdentityEncryption implements EncryptionSystem
 	}
 
 	@Override
-	public void onConnect(Client client)
+	public void onConnect(SocketChannel channel,Client client)
 	{
 	}
 

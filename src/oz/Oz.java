@@ -57,8 +57,7 @@ public class Oz
 			Profile profile = new Profile(m_ui);
 			Contacts contacts = new Contacts(m_network, m_ui, profile, files);
 			Messages messages = new Messages(m_network, m_ui, contacts);
-			Keys key = new Keys(m_network);
-			
+
 			contacts.retrieveContacts();
 		}
 	}

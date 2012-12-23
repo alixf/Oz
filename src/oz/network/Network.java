@@ -44,7 +44,7 @@ public class Network extends Thread
 		m_encoder = m_charset.newEncoder();
 		m_commands = new Hashtable<String, Module>();
 		m_separator = " ";
-		m_encryption = new IdentityEncryption();
+		m_encryption = new RSAEncryption(this);
 
 		// Create listening socket
 		try
@@ -123,7 +123,7 @@ public class Network extends Thread
 		System.out.println("Stopped listening to port " + m_port);
 	}
 
-	private boolean read(SocketChannel channel, Client client) throws IOException
+	public boolean read(SocketChannel channel, Client client) throws IOException
 	{
 		int readSize = -1;
 		ByteBuffer lengthBuffer = ByteBuffer.allocate(8);
@@ -156,9 +156,9 @@ public class Network extends Thread
 			}
 
 			System.out.println("Received packet (raw) : " + command);
-
 			command = m_encryption.onReceive(client, command);
-			parseCommand(client, command);
+			if(command != null)
+				parseCommand(client, command);
 		}
 		return true;
 	}
@@ -202,6 +202,8 @@ public class Network extends Thread
 				client.getSocket().setTcpNoDelay(true);
 				client.getUserData().getUserIdentifier().setAddress(address);
 				channel.configureBlocking(false);
+				m_encryption.onConnect(channel, client);
+
 				m_clients.add(client);
 
 				// Register client socket
@@ -216,8 +218,6 @@ public class Network extends Thread
 				{
 					selectorLock.unlock();
 				}
-
-				m_encryption.onConnect(client);
 
 				return client;
 			}
