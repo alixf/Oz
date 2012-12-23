@@ -28,9 +28,46 @@ import org.eclipse.swt.widgets.Text;
 import oz.User;
 import oz.tools.Images;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class EditView.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class EditView extends Composite
 {
 
+	/** The m_avatar filename. */
+	String	m_avatarFilename;
+
+	/** The m_avatar label. */
+	Label	m_avatarLabel;
+
+	/** The m_cancel button. */
+	Button	m_cancelButton;
+
+	/** The m_confirm button. */
+	Button	m_confirmButton;
+
+	/** The m_first name text. */
+	Text	m_firstNameText;
+
+	/** The m_last name text. */
+	Text	m_lastNameText;
+
+	/** The m_separator label. */
+	Label	m_separatorLabel;
+
+	/** The m_username text. */
+	Text	m_usernameText;
+
+	/**
+	 * Instantiates a new edits the view.
+	 * 
+	 * @param profile the profile
+	 * @param parent the parent
+	 */
 	public EditView(final Profile profile, Composite parent)
 	{
 		super(parent, SWT.NONE);
@@ -56,6 +93,7 @@ public class EditView extends Composite
 		m_cancelButton.setLayoutData(layoutData);
 		m_cancelButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				profile.show(User.getUser());
@@ -73,6 +111,7 @@ public class EditView extends Composite
 		m_confirmButton.setLayoutData(layoutData);
 		m_confirmButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				saveProfile(profile);
@@ -159,6 +198,11 @@ public class EditView extends Composite
 
 	}
 
+	/**
+	 * Save profile.
+	 * 
+	 * @param profile the profile
+	 */
 	public void saveProfile(Profile profile)
 	{
 		User user = User.getUser();
@@ -184,13 +228,4 @@ public class EditView extends Composite
 		user.save();
 		profile.updateWidget();
 	}
-
-	Text	m_firstNameText;
-	Text	m_lastNameText;
-	Text	m_usernameText;
-	Label	m_avatarLabel;
-	String	m_avatarFilename;
-	Button	m_confirmButton;
-	Button	m_cancelButton;
-	Label	m_separatorLabel;
 }

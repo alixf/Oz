@@ -84,6 +84,12 @@ public class Address
 		return m_host.equals(address.getHost()) && m_port == address.getPort();
 	}
 
+	/**
+	 * String conversion
+	 * 
+	 * @return the String representation of the address
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString()
 	{
 		return "{" + m_host + "," + m_port + "}";

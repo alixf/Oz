@@ -19,11 +19,37 @@ import oz.data.UserIdentifier;
 import oz.modules.Files;
 import oz.network.Client;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ContactsView.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 class ContactsView extends Composite implements Files.Observer
 {
-	private static final int	CONTACTSVMARGIN	= 5;
-	private static final int	CONTACTSHMARGIN	= 5;
 
+	/** The Constant CONTACTSHMARGIN. */
+	private static final int		CONTACTSHMARGIN	= 5;
+
+	/** The Constant CONTACTSVMARGIN. */
+	private static final int		CONTACTSVMARGIN	= 5;
+
+	/** The m_contacts. */
+	Contacts						m_contacts;
+
+	/** The m_contacts attachment. */
+	private FormAttachment			m_contactsAttachment;
+
+	/** The m_widgets. */
+	HashMap<String, ContactWidget>	m_widgets;
+
+	/**
+	 * Instantiates a new contacts view.
+	 * 
+	 * @param contacts the contacts
+	 * @param parent the parent
+	 */
 	public ContactsView(Contacts contacts, Composite parent)
 	{
 		super(parent, SWT.NONE);
@@ -43,6 +69,7 @@ class ContactsView extends Composite implements Files.Observer
 		addButton.setLayoutData(fd);
 		addButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				AddContactWindow addWindow = new AddContactWindow(m_contacts);
@@ -59,6 +86,7 @@ class ContactsView extends Composite implements Files.Observer
 		trackerButton.setLayoutData(fd);
 		trackerButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				retrieveContact();
@@ -70,12 +98,12 @@ class ContactsView extends Composite implements Files.Observer
 		m_contactsAttachment = new FormAttachment(addButton, CONTACTSVMARGIN, SWT.BOTTOM);
 	}
 
-	private void retrieveContact()
-	{
-		ContactRetriever cr = new ContactRetriever(m_contacts.getNetwork(), this);
-		cr.run();
-	}
-
+	/**
+	 * Creates the contact widget.
+	 * 
+	 * @param user the user
+	 * @param client the client
+	 */
 	public void createContactWidget(UserIdentifier user, final Client client)
 	{
 		// Create widget
@@ -105,22 +133,17 @@ class ContactsView extends Composite implements Files.Observer
 		layout();
 	}
 
-	public void updateContactWidget(Client client)
-	{
-		ContactWidget widget = m_widgets.get(client.getUserData().getUserIdentifier().getUUID());
-		if (widget != null)
-			widget.updateData();
-		else
-			System.err.println("updateContactWidget : Widget doesn't exist");
-
-		layout();
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.modules.Files.Observer#fileNotify(oz.network.Client, java.lang.String)
+	 */
 	@Override
 	public void fileNotify(final Client client, final String request)
 	{
 		getDisplay().asyncExec(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				ContactWidget widget = m_widgets.get(client);
@@ -132,12 +155,38 @@ class ContactsView extends Composite implements Files.Observer
 		});
 	}
 
+	/**
+	 * Gets the contacts.
+	 * 
+	 * @return the contacts
+	 */
 	public Contacts getContacts()
 	{
 		return m_contacts;
 	}
 
-	Contacts						m_contacts;
-	HashMap<String, ContactWidget>	m_widgets;
-	private FormAttachment			m_contactsAttachment;
+	/**
+	 * Retrieve contact.
+	 */
+	private void retrieveContact()
+	{
+		ContactRetriever cr = new ContactRetriever(m_contacts.getNetwork(), this);
+		cr.run();
+	}
+
+	/**
+	 * Update contact widget.
+	 * 
+	 * @param client the client
+	 */
+	public void updateContactWidget(Client client)
+	{
+		ContactWidget widget = m_widgets.get(client.getUserData().getUserIdentifier().getUUID());
+		if (widget != null)
+			widget.updateData();
+		else
+			System.err.println("updateContactWidget : Widget doesn't exist");
+
+		layout();
+	}
 }

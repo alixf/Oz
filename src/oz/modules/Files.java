@@ -10,19 +10,51 @@ import org.apache.commons.codec.binary.Base64;
 
 import oz.User;
 import oz.data.File;
-
 import oz.network.Client;
 import oz.network.Network;
 
+/**
+ * This module class manages file transfer and storage
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Files implements Module
 {
+
+	/**
+	 * The Interface Observer.
+	 */
 	public interface Observer
 	{
+
+		/**
+		 * File notify.
+		 * 
+		 * @param client the client
+		 * @param request the request
+		 */
 		public void fileNotify(Client client, String request);
 	}
 
+	/**
+	 * The Class Request.
+	 */
 	public static class Request
 	{
+
+		/** The client. */
+		public Client	client;
+
+		/** The request string. */
+		public String	requestString;
+
+		/**
+		 * Instantiates a new request.
+		 * 
+		 * @param client the client
+		 * @param requestString the request string
+		 */
 		public Request(Client client, String requestString)
 		{
 			this.client = client;
@@ -30,6 +62,13 @@ public class Files implements Module
 
 		}
 
+		/** 
+		 * Return whether an object is equal to the request 
+		 *
+		 * @return True if the object is equal to the request
+		 * 
+		 * @see java.lang.Object#equals(java.lang.Object)
+		 */
 		@Override
 		public boolean equals(Object o)
 		{
@@ -40,6 +79,12 @@ public class Files implements Module
 			return other.client.equals(client) && other.requestString.equals(requestString);
 		}
 
+		/**
+		 * Get the hashCode of the Request
+		 * 
+		 * @see java.lang.Object#hashCode()
+		 */
+		@Override
 		public int hashCode()
 		{
 			// TODO Improve that for better performance
@@ -47,15 +92,31 @@ public class Files implements Module
 			return hc;
 		}
 
+		/**
+		 * Get the string representation of the request
+		 * 
+		 * @return The String representation of the request
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
 		public String toString()
 		{
 			return "{" + client.getUserData().getUsername() + " : " + requestString + "}";
 		}
-
-		public Client	client;
-		public String	requestString;
 	}
 
+	/** The network. */
+	Network						m_network;
+
+	/** The requests. */
+	HashMap<Request, Observer>	m_requests;
+
+	/**
+	 * Instantiates a new files module.
+	 * 
+	 * @param network the network
+	 */
 	public Files(Network network)
 	{
 		m_network = network;
@@ -64,6 +125,33 @@ public class Files implements Module
 		m_network.setCommand("GETFILE", this);
 	}
 
+	/**
+	 * Adds a file request.
+	 * 
+	 * @param client the client
+	 * @param request the request
+	 * @param observer the observer
+	 */
+	public void addFileRequest(Client client, String request, Observer observer)
+	{
+		File file = new File();
+		file.setName(client.getUserData().getUsername() + "/" + request);
+		try
+		{
+			m_network.send(m_network.makePacket("GETFILE", file), client);
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		m_requests.put(new Request(client, file.getName()), observer);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.modules.Module#executeCommand(java.lang.String, oz.network.Client)
+	 */
 	@Override
 	public boolean executeCommand(String command, Client client)
 	{
@@ -107,22 +195,4 @@ public class Files implements Module
 
 		return false;
 	}
-
-	public void addFileRequest(Client client, String request, Observer observer)
-	{
-		File file = new File();
-		file.setName(client.getUserData().getUsername() + "/" + request);
-		try
-		{
-			m_network.send(m_network.makePacket("GETFILE", file), client);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		m_requests.put(new Request(client, file.getName()), observer);
-	}
-
-	Network						m_network;
-	HashMap<Request, Observer>	m_requests;
 }

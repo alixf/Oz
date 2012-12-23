@@ -6,20 +6,50 @@ import java.nio.charset.CharacterCodingException;
 
 import oz.security.RSA;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RSAEncryption.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class RSAEncryption implements EncryptionSystem
 {
+
+	/** The m_network. */
+	private Network	m_network;
+
+	/** The m_rsa. */
+	private RSA		m_rsa;
+
+	/**
+	 * Instantiates a new rSA encryption.
+	 * 
+	 * @param network the network
+	 */
 	public RSAEncryption(Network network)
 	{
 		m_network = network;
 		m_rsa = new RSA();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.network.EncryptionSystem#onClientConnect(oz.network.Client)
+	 */
 	@Override
 	public void onClientConnect(Client client)
 	{
 		sendKey(client);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.network.EncryptionSystem#onConnect(java.nio.channels.SocketChannel, oz.network.Client)
+	 */
+	@Override
 	public void onConnect(SocketChannel channel, Client client)
 	{
 		sendKey(client);
@@ -36,6 +66,11 @@ public class RSAEncryption implements EncryptionSystem
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.network.EncryptionSystem#onReceive(oz.network.Client, java.lang.String)
+	 */
 	@Override
 	public String onReceive(Client client, String packet)
 	{
@@ -50,6 +85,11 @@ public class RSAEncryption implements EncryptionSystem
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.network.EncryptionSystem#onSend(oz.network.Client, java.lang.String)
+	 */
 	@Override
 	public String onSend(Client client, String packet)
 	{
@@ -58,6 +98,11 @@ public class RSAEncryption implements EncryptionSystem
 		return packet;
 	}
 
+	/**
+	 * Send key.
+	 * 
+	 * @param client the client
+	 */
 	public void sendKey(Client client)
 	{
 		try
@@ -75,7 +120,4 @@ public class RSAEncryption implements EncryptionSystem
 			e.printStackTrace();
 		}
 	}
-
-	private Network	m_network;
-	private RSA		m_rsa;
 }

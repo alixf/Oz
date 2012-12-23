@@ -10,8 +10,33 @@ import oz.modules.Module;
 import oz.network.Client;
 import oz.ui.UI;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Profile.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Profile implements Module
 {
+
+	/** The m_edit view. */
+	private EditView	m_editView;
+
+	/** The m_menu widget. */
+	private MenuWidget	m_menuWidget;
+
+	/** The m_ui. */
+	private UI			m_ui;
+
+	/** The m_view. */
+	private ProfileView	m_view;
+
+	/**
+	 * Instantiates a new profile.
+	 * 
+	 * @param ui the ui
+	 */
 	public Profile(UI ui)
 	{
 		m_ui = ui;
@@ -30,12 +55,22 @@ public class Profile implements Module
 		});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see oz.modules.Module#executeCommand(java.lang.String, oz.network.Client)
+	 */
 	@Override
 	public boolean executeCommand(String command, Client client)
 	{
 		return false;
 	}
 
+	/**
+	 * Show.
+	 * 
+	 * @param user the user
+	 */
 	public void show(UserData user)
 	{
 		m_view.setUser(user);
@@ -43,19 +78,20 @@ public class Profile implements Module
 		m_view.layout();
 	}
 
+	/**
+	 * Show edit view.
+	 */
 	public void showEditView()
 	{
 		m_ui.getContent().show(m_editView);
 		m_editView.layout();
 	}
 
+	/**
+	 * Update widget.
+	 */
 	public void updateWidget()
 	{
 		m_menuWidget.updateData();
 	}
-
-	private UI			m_ui;
-	private ProfileView	m_view;
-	private EditView	m_editView;
-	private MenuWidget	m_menuWidget;
 }

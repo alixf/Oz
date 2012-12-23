@@ -16,8 +16,35 @@ import oz.data.UserData;
 import oz.modules.messages.Messages.Channel;
 import oz.tools.Images;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ChannelWidget.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class ChannelWidget extends Composite
 {
+
+	/** The m_channel. */
+	Channel		m_channel;
+
+	/** The m_image. */
+	Label		m_image;
+
+	/** The m_message. */
+	Label		m_message;
+
+	/** The m_messages. */
+	Messages	m_messages;
+
+	/**
+	 * Instantiates a new channel widget.
+	 * 
+	 * @param messages the messages
+	 * @param parent the parent
+	 * @param channel the channel
+	 */
 	public ChannelWidget(Messages messages, Composite parent, Channel channel)
 	{
 		super(parent, SWT.BORDER);
@@ -43,18 +70,11 @@ public class ChannelWidget extends Composite
 		});
 	}
 
-	public void setColor(int r, int g, int b)
-	{
-		Device device = Display.getCurrent();
-		setBackground(new Color(device, r, g, b));
-		redraw();
-	}
-
-	public Channel getChannel()
-	{
-		return m_channel;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.swt.widgets.Widget#addListener(int, org.eclipse.swt.widgets.Listener)
+	 */
 	@Override
 	public void addListener(int eventType, Listener listener)
 	{
@@ -63,8 +83,27 @@ public class ChannelWidget extends Composite
 			control.addListener(eventType, listener);
 	}
 
-	Messages	m_messages;
-	Channel		m_channel;
-	Label		m_message;
-	Label		m_image;
+	/**
+	 * Gets the channel.
+	 * 
+	 * @return the channel
+	 */
+	public Channel getChannel()
+	{
+		return m_channel;
+	}
+
+	/**
+	 * Sets the color.
+	 * 
+	 * @param r the r
+	 * @param g the g
+	 * @param b the b
+	 */
+	public void setColor(int r, int g, int b)
+	{
+		Device device = Display.getCurrent();
+		setBackground(new Color(device, r, g, b));
+		redraw();
+	}
 }

@@ -20,25 +20,30 @@ import org.eclipse.swt.widgets.Text;
 import oz.data.Address;
 import oz.network.Client;
 
+// TODO: Auto-generated Javadoc
 /**
- * Instances of this class are windows asking necessary information to add a contact
+ * Instances of this class are windows asking necessary information to add a contact.
  * 
  * @author Alix 'eolhing' Fumoleau
  * @author Jean 'Jack3113' Batista
  */
 class AddContactWindow
 {
-	/**
-	 * Value of the vertical layout margin
-	 */
-	private static final int	VMARGIN	= 5;
-	/**
-	 * Value of the horizontal layout margin
-	 */
+
+	/** Value of the horizontal layout margin. */
 	private static final int	HMARGIN	= 5;
 
+	/** Value of the vertical layout margin. */
+	private static final int	VMARGIN	= 5;
+
+	/** The window. */
+	Shell						m_addContactShell;
+
+	/** The contact module parent to the window. */
+	Contacts					m_contacts;
+
 	/**
-	 * Create a window asking necessary information to add a contact
+	 * Create a window asking necessary information to add a contact.
 	 * 
 	 * @param contacts The parent Contacts module
 	 */
@@ -103,6 +108,7 @@ class AddContactWindow
 		// Events
 		confirmButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				Client client = m_contacts.addContact(new Address(addressText.getText(), portSpinner.getSelection()));
@@ -134,6 +140,7 @@ class AddContactWindow
 		});
 		cancelButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				m_addContactShell.close();
@@ -146,7 +153,7 @@ class AddContactWindow
 	}
 
 	/**
-	 * Run the window's event loop
+	 * Run the window's event loop.
 	 */
 	public void run()
 	{
@@ -157,13 +164,4 @@ class AddContactWindow
 				m_addContactShell.getDisplay().sleep();
 		}
 	}
-
-	/**
-	 * The contact module parent to the window
-	 */
-	Contacts	m_contacts;
-	/**
-	 * The window
-	 */
-	Shell		m_addContactShell;
 }

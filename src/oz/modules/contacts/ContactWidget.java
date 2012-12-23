@@ -15,8 +15,39 @@ import oz.data.UserIdentifier;
 import oz.network.Client;
 import oz.tools.Images;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ContactWidget.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class ContactWidget extends Composite
 {
+
+	/** The m_client. */
+	Client		m_client;
+
+	/** The m_contacts. */
+	Contacts	m_contacts;
+
+	/** The m_image. */
+	Label		m_image;
+
+	/** The m_name. */
+	Label		m_name;
+
+	/** The m_username. */
+	Label		m_username;
+
+	/**
+	 * Instantiates a new contact widget.
+	 * 
+	 * @param contacts the contacts
+	 * @param parent the parent
+	 * @param user the user
+	 * @param client the client
+	 */
 	public ContactWidget(Contacts contacts, Composite parent, UserIdentifier user, Client client)
 	{
 		super(parent, SWT.BORDER);
@@ -71,12 +102,53 @@ public class ContactWidget extends Composite
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.swt.widgets.Widget#addListener(int, org.eclipse.swt.widgets.Listener)
+	 */
+	@Override
+	public void addListener(int eventType, Listener listener)
+	{
+		super.addListener(eventType, listener);
+		for (Control control : getChildren())
+			control.addListener(eventType, listener);
+	}
+
+	/**
+	 * Gets the client.
+	 * 
+	 * @return the client
+	 */
+	public Client getClient()
+	{
+		return m_client;
+	}
+
+	/**
+	 * Sets the client.
+	 * 
+	 * @param client the new client
+	 */
+	public void setClient(Client client)
+	{
+		m_client = client;
+	}
+
+	/**
+	 * Sets the image.
+	 * 
+	 * @param image the new image
+	 */
 	public void setImage(Image image)
 	{
 		m_image.setImage(Images.resize(image, 64, 64));
 		getParent().layout();
 	}
 
+	/**
+	 * Update data.
+	 */
 	public void updateData()
 	{
 		if (m_client != null)
@@ -90,28 +162,4 @@ public class ContactWidget extends Composite
 				m_contacts.addFileRequest(m_client, m_client.getUserData().getAvatar());
 		}
 	}
-
-	@Override
-	public void addListener(int eventType, Listener listener)
-	{
-		super.addListener(eventType, listener);
-		for (Control control : getChildren())
-			control.addListener(eventType, listener);
-	}
-
-	public void setClient(Client client)
-	{
-		m_client = client;
-	}
-
-	public Client getClient()
-	{
-		return m_client;
-	}
-
-	Contacts	m_contacts;
-	Client		m_client;
-	Label		m_image;
-	Label		m_name;
-	Label		m_username;
 }

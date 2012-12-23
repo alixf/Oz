@@ -21,11 +21,43 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AboutWindow.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class AboutWindow
 {
-	private final static int	VMARGIN	= 5;
+
+	/** The Constant HMARGIN. */
 	private final static int	HMARGIN	= 5;
 
+	/** The Constant VMARGIN. */
+	private final static int	VMARGIN	= 5;
+
+	/** The m_logo label. */
+	private Label				m_logoLabel;
+
+	/** The m_network port. */
+	Spinner						m_networkPort;
+
+	/** The m_shell. */
+	private Shell				m_shell;
+
+	/** The m_text link. */
+	private Link				m_textLink;
+
+	/** The m_tracker address. */
+	Text						m_trackerAddress;
+
+	/** The m_tracker port. */
+	Spinner						m_trackerPort;
+
+	/**
+	 * Instantiates a new about window.
+	 */
 	public AboutWindow()
 	{
 		/*
@@ -72,6 +104,7 @@ public class AboutWindow
 		m_textLink.setLayoutData(layoutData);
 		m_textLink.addListener(SWT.Selection, new Listener()
 		{
+			@Override
 			public void handleEvent(Event event)
 			{
 				java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
@@ -82,7 +115,10 @@ public class AboutWindow
 						java.net.URI uri = new java.net.URI(event.text);
 						desktop.browse(uri);
 					}
-					catch (URISyntaxException | IOException e)
+					catch (URISyntaxException e)
+					{
+					}
+					catch(IOException e)
 					{
 					}
 				}
@@ -92,6 +128,11 @@ public class AboutWindow
 		m_shell.pack();
 	}
 
+	/**
+	 * Gets the iP address.
+	 * 
+	 * @return the iP address
+	 */
 	private String getIPAddress()
 	{
 		try
@@ -105,6 +146,11 @@ public class AboutWindow
 		return null;
 	}
 
+	/**
+	 * Gets the public ip address.
+	 * 
+	 * @return the public ip address
+	 */
 	private String getPublicIPAddress()
 	{
 		try
@@ -126,16 +172,11 @@ public class AboutWindow
 		return "Non connecté à Internet";
 	}
 
+	/**
+	 * Open.
+	 */
 	public void open()
 	{
 		m_shell.open();
 	}
-
-	private Shell	m_shell;
-	private Label	m_logoLabel;
-	private Link	m_textLink;
-
-	Spinner			m_networkPort;
-	Text			m_trackerAddress;
-	Spinner			m_trackerPort;
 }

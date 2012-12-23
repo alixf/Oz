@@ -8,8 +8,30 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class UI.
+ */
 public class UI
 {
+
+	/** The m_content. */
+	private Content	m_content;
+
+	/** The m_display. */
+	private Display	m_display;
+
+	/** The m_header. */
+	private Header	m_header;
+
+	/** The m_shell. */
+	private Shell	m_shell;
+
+	/**
+	 * Instantiates a new ui.
+	 * 
+	 * @param display the display
+	 */
 	public UI(Display display)
 	{
 		m_display = display;
@@ -44,6 +66,49 @@ public class UI
 		m_shell.open();
 	}
 
+	/**
+	 * Gets the content.
+	 * 
+	 * @return the content
+	 */
+	public Content getContent()
+	{
+		return m_content;
+	}
+
+	/**
+	 * Gets the display.
+	 * 
+	 * @return the display
+	 */
+	public Display getDisplay()
+	{
+		return m_display;
+	}
+
+	/**
+	 * Gets the header.
+	 * 
+	 * @return the header
+	 */
+	public Header getHeader()
+	{
+		return m_header;
+	}
+
+	/**
+	 * Gets the shell.
+	 * 
+	 * @return the shell
+	 */
+	public Shell getShell()
+	{
+		return m_shell;
+	}
+
+	/**
+	 * Run.
+	 */
 	public void run()
 	{
 		// Event loop
@@ -53,29 +118,4 @@ public class UI
 				m_display.sleep();
 		}
 	}
-
-	public Display getDisplay()
-	{
-		return m_display;
-	}
-
-	public Shell getShell()
-	{
-		return m_shell;
-	}
-
-	public Header getHeader()
-	{
-		return m_header;
-	}
-
-	public Content getContent()
-	{
-		return m_content;
-	}
-
-	private Display	m_display;
-	private Shell	m_shell;
-	private Header	m_header;
-	private Content	m_content;
 }

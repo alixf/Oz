@@ -13,8 +13,38 @@ import org.eclipse.swt.widgets.Listener;
 
 import oz.data.Message;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MessageWidget.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class MessageWidget extends Composite
 {
+
+	/** The m_date. */
+	Label		m_date;
+
+	/** The m_image. */
+	Label		m_image;
+
+	/** The m_message. */
+	Message		m_message;
+
+	/** The m_messages. */
+	Messages	m_messages;
+
+	/** The m_text. */
+	Label		m_text;
+
+	/**
+	 * Instantiates a new message widget.
+	 * 
+	 * @param messages the messages
+	 * @param parent the parent
+	 * @param message the message
+	 */
 	public MessageWidget(Messages messages, Composite parent, Message message)
 	{
 		super(parent, SWT.BORDER);
@@ -54,6 +84,11 @@ public class MessageWidget extends Composite
 		layout();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.swt.widgets.Widget#addListener(int, org.eclipse.swt.widgets.Listener)
+	 */
 	@Override
 	public void addListener(int eventType, Listener listener)
 	{
@@ -61,10 +96,4 @@ public class MessageWidget extends Composite
 		for (Control control : getChildren())
 			control.addListener(eventType, listener);
 	}
-
-	Messages	m_messages;
-	Message		m_message;
-	Label		m_text;
-	Label		m_image;
-	Label		m_date;
 }

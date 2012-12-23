@@ -16,11 +16,46 @@ import oz.data.UserData;
 import oz.tools.Images;
 import oz.ui.UI;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MenuWidget.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class MenuWidget extends Composite
 {
+
+	/** The Constant HMARGIN. */
 	private static final int	HMARGIN	= 5;
+
+	/** The Constant VMARGIN. */
 	private static final int	VMARGIN	= 4;
 
+	/** The m_name. */
+	private Label				m_name;
+
+	/** The m_picture. */
+	private Label				m_picture;
+
+	/** The m_status. */
+	private Label				m_status;
+
+	/** The m_ui. */
+	private UI					m_ui;
+
+	/** The m_user. */
+	private UserData			m_user;
+
+	/** The m_username. */
+	private Label				m_username;
+
+	/**
+	 * Instantiates a new menu widget.
+	 * 
+	 * @param ui the ui
+	 * @param user the user
+	 */
 	public MenuWidget(UI ui, UserData user)
 	{
 		super(ui.getHeader(), SWT.BORDER);
@@ -81,6 +116,11 @@ public class MenuWidget extends Composite
 		m_ui.getHeader().setRightAttachment(new FormAttachment(this, -m_ui.getHeader().getHorizontalMargin(), SWT.LEFT));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.swt.widgets.Widget#addListener(int, org.eclipse.swt.widgets.Listener)
+	 */
 	@Override
 	public void addListener(int eventType, Listener listener)
 	{
@@ -89,6 +129,9 @@ public class MenuWidget extends Composite
 			control.addListener(eventType, listener);
 	}
 
+	/**
+	 * Update data.
+	 */
 	public void updateData()
 	{
 		Image avatarImage = Images.resize(new Image(getDisplay(), m_user.getAvatarFilename()), 64, 64);
@@ -97,12 +140,4 @@ public class MenuWidget extends Composite
 		m_username.setText("(" + m_user.getUsername() + ")");
 		layout();
 	}
-
-	private UI			m_ui;
-	private UserData	m_user;
-
-	private Label		m_picture;
-	private Label		m_username;
-	private Label		m_name;
-	private Label		m_status;
 }

@@ -18,8 +18,37 @@ import oz.User;
 import oz.data.UserData;
 import oz.tools.Images;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ProfileView.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class ProfileView extends Composite
 {
+
+	/** The m_avatar label. */
+	Label	m_avatarLabel;
+
+	/** The m_edit button. */
+	Button	m_editButton;
+
+	/** The m_name label. */
+	Label	m_nameLabel;
+
+	/** The m_separator label. */
+	Label	m_separatorLabel;
+
+	/** The m_username label. */
+	Label	m_usernameLabel;
+
+	/**
+	 * Instantiates a new profile view.
+	 * 
+	 * @param profile the profile
+	 * @param parent the parent
+	 */
 	public ProfileView(final Profile profile, Composite parent)
 	{
 		super(parent, SWT.NONE);
@@ -43,6 +72,7 @@ public class ProfileView extends Composite
 		m_editButton.setLayoutData(layoutData);
 		m_editButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				profile.showEditView();
@@ -91,6 +121,11 @@ public class ProfileView extends Composite
 		m_usernameLabel.setFont(font);
 	}
 
+	/**
+	 * Sets the user.
+	 * 
+	 * @param user the new user
+	 */
 	public void setUser(UserData user)
 	{
 		boolean currentUserProfile = user.getUserIdentifier().equals(User.getUser().getUserIdentifier());
@@ -102,10 +137,4 @@ public class ProfileView extends Composite
 		((FormData) m_avatarLabel.getLayoutData()).top = currentUserProfile ? new FormAttachment(m_separatorLabel, 10, SWT.BOTTOM) : new FormAttachment(0, 10);
 		layout();
 	}
-
-	Button	m_editButton;
-	Label	m_separatorLabel;
-	Label	m_nameLabel;
-	Label	m_usernameLabel;
-	Label	m_avatarLabel;
 }

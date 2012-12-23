@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,24 +18,44 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import com.eaio.uuid.UUID;
-
-import flexjson.JSONSerializer;
 
 import oz.data.UserData;
 import oz.security.XOR;
 
+import com.eaio.uuid.UUID;
+
+import flexjson.JSONSerializer;
+
+/**
+ * This class is used to create new users
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Register
 {
+
+	/** Horizontal margin of the UI */
 	private static final int	HMARGIN	= 10;
+
+	/** Vertical margin of the UI */
 	private static final int	VMARGIN	= 10;
 
+	/**
+	 * Attempt to register a new user
+	 */
 	static public void register()
 	{
 		Register register = new Register();
 		register.run();
 	}
 
+	/** The shell. */
+	private Shell	m_shell;
+
+	/**
+	 * Instantiates a new registering module.
+	 */
 	public Register()
 	{
 		/*
@@ -172,6 +193,7 @@ public class Register
 		 */
 		confirmButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent event)
 			{
 				boolean error = false;
@@ -249,6 +271,7 @@ public class Register
 		});
 		cancelButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				m_shell.close();
@@ -258,6 +281,9 @@ public class Register
 		m_shell.pack();
 	}
 
+	/**
+	 * Run the registering module.
+	 */
 	public void run()
 	{
 		m_shell.open();
@@ -267,6 +293,4 @@ public class Register
 				Display.getCurrent().sleep();
 		}
 	}
-
-	Shell	m_shell;
 }

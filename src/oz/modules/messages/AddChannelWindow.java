@@ -18,8 +18,30 @@ import org.eclipse.swt.widgets.Shell;
 
 import oz.network.Client;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AddChannelWindow.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class AddChannelWindow
 {
+
+	/** The m_add channel shell. */
+	Shell					m_addChannelShell;
+
+	/** The m_client buttons. */
+	HashMap<Button, Client>	m_clientButtons;
+
+	/** The m_selected clients. */
+	List<Client>			m_selectedClients;
+
+	/**
+	 * Instantiates a new adds the channel window.
+	 * 
+	 * @param m_messages the m_messages
+	 */
 	public AddChannelWindow(Messages m_messages)
 	{
 		m_addChannelShell = new Shell(m_messages.getUI().getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
@@ -47,6 +69,7 @@ public class AddChannelWindow
 		confirmButton.setLayoutData(layoutData);
 		confirmButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				for (Entry<Button, Client> entry : m_clientButtons.entrySet())
@@ -62,6 +85,7 @@ public class AddChannelWindow
 		cancelButton.setLayoutData(layoutData);
 		cancelButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				m_addChannelShell.close();
@@ -72,6 +96,11 @@ public class AddChannelWindow
 		m_addChannelShell.open();
 	}
 
+	/**
+	 * Run.
+	 * 
+	 * @return the list
+	 */
 	public List<Client> run()
 	{
 		while (!m_addChannelShell.isDisposed())
@@ -81,8 +110,4 @@ public class AddChannelWindow
 		}
 		return m_selectedClients;
 	}
-
-	Shell					m_addChannelShell;
-	List<Client>			m_selectedClients;
-	HashMap<Button, Client>	m_clientButtons;
 }

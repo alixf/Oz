@@ -24,13 +24,60 @@ import oz.data.Message;
 import oz.data.UserData;
 import oz.modules.messages.Messages.Channel;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MessagesView.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class MessagesView extends Composite
 {
-	private static final int	CHANNELSVMARGIN	= 5;
-	private static final int	CHANNELSHMARGIN	= 5;
-	private static final int	MESSAGESVMARGIN	= 5;
-	private static final int	MESSAGESHMARGIN	= 5;
 
+	/** The Constant CHANNELSHMARGIN. */
+	private static final int			CHANNELSHMARGIN	= 5;
+
+	/** The Constant CHANNELSVMARGIN. */
+	private static final int			CHANNELSVMARGIN	= 5;
+
+	/** The Constant MESSAGESHMARGIN. */
+	private static final int			MESSAGESHMARGIN	= 5;
+
+	/** The Constant MESSAGESVMARGIN. */
+	private static final int			MESSAGESVMARGIN	= 5;
+
+	/** The m_channels attachment. */
+	private FormAttachment				m_channelsAttachment;
+
+	/** The m_channels container. */
+	private Composite					m_channelsContainer;
+
+	/** The m_channels scroll container. */
+	private ScrolledComposite			m_channelsScrollContainer;
+
+	/** The m_channel widgets. */
+	private LinkedList<ChannelWidget>	m_channelWidgets;
+
+	/** The m_messages. */
+	private Messages					m_messages;
+
+	/** The m_messages attachment. */
+	private FormAttachment				m_messagesAttachment;
+
+	/** The m_messages container. */
+	private Composite					m_messagesContainer;
+
+	/** The m_messages input. */
+	private Text						m_messagesInput;
+
+	/** The m_messages scroll container. */
+	private ScrolledComposite			m_messagesScrollContainer;
+
+	/**
+	 * Instantiates a new messages view.
+	 * 
+	 * @param messages the messages
+	 */
 	public MessagesView(Messages messages)
 	{
 		super(messages.getUI().getContent(), SWT.NONE);
@@ -123,6 +170,7 @@ public class MessagesView extends Composite
 		});
 		addChannelButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				AddChannelWindow addChannelWindow = new AddChannelWindow(m_messages);
@@ -131,6 +179,37 @@ public class MessagesView extends Composite
 		});
 	}
 
+	/**
+	 * Adds the channel.
+	 * 
+	 * @param channel the channel
+	 */
+	public void addChannel(final Channel channel)
+	{
+		// Create widget
+		ChannelWidget channelWidget = new ChannelWidget(m_messages, m_channelsContainer, channel);
+		m_channelWidgets.add(channelWidget);
+
+		// Set layout data
+		FormData fd = new FormData();
+		fd.left = new FormAttachment(0, CHANNELSHMARGIN);
+		fd.right = new FormAttachment(100, -CHANNELSHMARGIN);
+		fd.top = m_channelsAttachment;
+		channelWidget.setLayoutData(fd);
+		m_channelsAttachment = new FormAttachment(channelWidget, CHANNELSVMARGIN, SWT.BOTTOM);
+
+		// Update container
+		m_channelsScrollContainer.setMinSize(m_channelsContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
+		m_channelsContainer.layout();
+		m_channelsScrollContainer.layout();
+	}
+
+	/**
+	 * Adds the message.
+	 * 
+	 * @param user the user
+	 * @param message the message
+	 */
 	public void addMessage(final UserData user, final Message message)
 	{
 		// Create widget
@@ -153,26 +232,11 @@ public class MessagesView extends Composite
 		m_messagesScrollContainer.layout();
 	}
 
-	public void addChannel(final Channel channel)
-	{
-		// Create widget
-		ChannelWidget channelWidget = new ChannelWidget(m_messages, m_channelsContainer, channel);
-		m_channelWidgets.add(channelWidget);
-
-		// Set layout data
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, CHANNELSHMARGIN);
-		fd.right = new FormAttachment(100, -CHANNELSHMARGIN);
-		fd.top = m_channelsAttachment;
-		channelWidget.setLayoutData(fd);
-		m_channelsAttachment = new FormAttachment(channelWidget, CHANNELSVMARGIN, SWT.BOTTOM);
-
-		// Update container
-		m_channelsScrollContainer.setMinSize(m_channelsContainer.computeSize(SWT.DEFAULT, SWT.DEFAULT));
-		m_channelsContainer.layout();
-		m_channelsScrollContainer.layout();
-	}
-
+	/**
+	 * Show channel.
+	 * 
+	 * @param channel the channel
+	 */
 	public void showChannel(Channel channel)
 	{
 		// Set channels button color
@@ -198,15 +262,4 @@ public class MessagesView extends Composite
 		// Enable input
 		m_messagesInput.setEnabled(true);
 	}
-
-	private Messages					m_messages;
-	private Text						m_messagesInput;
-	private Composite					m_channelsContainer;
-	private Composite					m_messagesContainer;
-	private ScrolledComposite			m_channelsScrollContainer;
-	private ScrolledComposite			m_messagesScrollContainer;
-	private LinkedList<ChannelWidget>	m_channelWidgets;
-
-	private FormAttachment				m_messagesAttachment;
-	private FormAttachment				m_channelsAttachment;
 }

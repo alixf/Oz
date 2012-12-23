@@ -23,16 +23,64 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
-import flexjson.JSONDeserializer;
-import flexjson.JSONSerializer;
-
 import oz.data.Address;
 import oz.modules.Module;
 import oz.modules.settings.Settings;
 import oz.tools.Operations;
+import flexjson.JSONDeserializer;
+import flexjson.JSONSerializer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Network.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Network extends Thread
 {
+
+	/** The m_charset. */
+	private Charset						m_charset;
+
+	/** The m_clients. */
+	private List<Client>				m_clients;
+
+	/** The m_commands. */
+	private Hashtable<String, Module>	m_commands;
+
+	/** The m_decoder. */
+	private CharsetDecoder				m_decoder;
+
+	/** The m_encoder. */
+	private CharsetEncoder				m_encoder;
+
+	/** The m_encryption. */
+	private EncryptionSystem			m_encryption;
+
+	/** The m_port. */
+	private int							m_port;
+
+	/** The m_receive buffer size. */
+	private long						m_receiveBufferSize;
+
+	/** The m_run. */
+	private boolean						m_run;
+
+	/** The m_selector. */
+	private Selector					m_selector;
+
+	/** The m_separator. */
+	private String						m_separator;
+
+	/** The m_server socket. */
+	private ServerSocket				m_serverSocket;
+
+	/**
+	 * Instantiates a new network.
+	 * 
+	 * @param settings the settings
+	 */
 	public Network(Settings settings)
 	{
 		m_run = true;
@@ -67,121 +115,12 @@ public class Network extends Thread
 		}
 	}
 
-	public void run()
-	{
-		try
-		{
-			listen();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public void listen() throws IOException
-	{
-		while (m_run)
-		{
-			m_selector.select();
-			Set<SelectionKey> keys = m_selector.selectedKeys();
-			Iterator<SelectionKey> it = keys.iterator();
-			while (it.hasNext())
-			{
-				SelectionKey key = (SelectionKey) it.next();
-				if (key.isAcceptable())
-				{
-					// Create client
-					Client client = new Client();
-					client.setSocket(m_serverSocket.accept());
-					client.getSocket().setTcpNoDelay(true);
-					client.getUserData().getUserIdentifier().setAddress(new Address(client.getSocket().getInetAddress().getHostName().toString(), m_port));
-					m_clients.add(client);
-
-					// Register client socket
-					SocketChannel sc = client.getSocket().getChannel();
-					sc.configureBlocking(false);
-					sc.register(m_selector, SelectionKey.OP_READ, client);
-
-					m_encryption.onClientConnect(client);
-				}
-				else if (key.isReadable())
-				{
-					SocketChannel channel = (SocketChannel) key.channel();
-					Client client = (Client) key.attachment();
-
-					if (!read(channel, client))
-					{
-						key.cancel();
-						m_clients.remove(client);
-					}
-				}
-			}
-			keys.clear();
-		}
-		m_serverSocket.close();
-		System.out.println("Stopped listening to port " + m_port);
-	}
-
-	public boolean read(SocketChannel channel, Client client) throws IOException
-	{
-		int readSize = -1;
-		ByteBuffer lengthBuffer = ByteBuffer.allocate(8);
-		try
-		{
-			readSize = channel.read(lengthBuffer);
-		}
-		catch (IOException e)
-		{
-			return false;
-		}
-
-		if (readSize < 0) // Client disconnected
-			return false;
-		else
-		{
-			String command = "";
-			long leftToRead = lengthBuffer.getLong(0);
-
-			System.out.println("*** Reception : " + leftToRead + " bytes ***");
-
-			while (leftToRead > 0 && readSize >= 0)
-			{
-				ByteBuffer dataBuffer = ByteBuffer.allocate((int) Math.min(m_receiveBufferSize, leftToRead));
-				readSize = channel.read(dataBuffer);
-				leftToRead -= readSize;
-				System.out.println("read " + readSize + " bytes, left to read : " + leftToRead);
-				dataBuffer.position(0);
-				command += Operations.trimString(m_decoder.decode(dataBuffer).toString(), (char) 0);
-			}
-
-			System.out.println("Received packet (raw) : " + command);
-			command = m_encryption.onReceive(client, command);
-			if (command != null)
-				parseCommand(client, command);
-		}
-		return true;
-	}
-
-	public void stopListen()
-	{
-		m_run = false;
-		try
-		{
-			// Create a fake connection to unblock the selector and exit
-			Socket socket = new Socket("localhost", m_port);
-			socket.close();
-		}
-		catch (UnknownHostException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Creates the client.
+	 * 
+	 * @param address the address
+	 * @return the client
+	 */
 	public Client createClient(Address address)
 	{
 		try
@@ -237,6 +176,226 @@ public class Network extends Thread
 		return null;
 	}
 
+	/**
+	 * Gets the clients.
+	 * 
+	 * @return the clients
+	 */
+	public List<Client> getClients()
+	{
+		return m_clients;
+	}
+
+	/**
+	 * Gets the command.
+	 * 
+	 * @param packet the packet
+	 * @return the command
+	 */
+	public String getCommand(String packet)
+	{
+		return packet.split(m_separator)[0];
+	}
+
+	/**
+	 * Gets the separator.
+	 * 
+	 * @return the fields separator
+	 */
+	public String getSeparator()
+	{
+		return m_separator;
+	}
+
+	/**
+	 * Listen.
+	 * 
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void listen() throws IOException
+	{
+		while (m_run)
+		{
+			m_selector.select();
+			Set<SelectionKey> keys = m_selector.selectedKeys();
+			Iterator<SelectionKey> it = keys.iterator();
+			while (it.hasNext())
+			{
+				SelectionKey key = it.next();
+				if (key.isAcceptable())
+				{
+					// Create client
+					Client client = new Client();
+					client.setSocket(m_serverSocket.accept());
+					client.getSocket().setTcpNoDelay(true);
+					client.getUserData().getUserIdentifier().setAddress(new Address(client.getSocket().getInetAddress().getHostName().toString(), m_port));
+					m_clients.add(client);
+
+					// Register client socket
+					SocketChannel sc = client.getSocket().getChannel();
+					sc.configureBlocking(false);
+					sc.register(m_selector, SelectionKey.OP_READ, client);
+
+					m_encryption.onClientConnect(client);
+				}
+				else if (key.isReadable())
+				{
+					SocketChannel channel = (SocketChannel) key.channel();
+					Client client = (Client) key.attachment();
+
+					if (!read(channel, client))
+					{
+						key.cancel();
+						m_clients.remove(client);
+					}
+				}
+			}
+			keys.clear();
+		}
+		m_serverSocket.close();
+		System.out.println("Stopped listening to port " + m_port);
+	}
+
+	/**
+	 * Make packet.
+	 * 
+	 * @param command the command
+	 * @param data the data
+	 * @return the string
+	 */
+	public String makePacket(String command, Object data)
+	{
+		JSONSerializer serializer = new JSONSerializer();
+		serializer.exclude("*.class");
+		return command + " " + serializer.serialize(data);
+	}
+
+	/**
+	 * Parses the command.
+	 * 
+	 * @param client the client
+	 * @param packet the packet
+	 * @return true, if successful
+	 */
+	private boolean parseCommand(Client client, String packet)
+	{
+		System.out.println("Parsing command : " + packet);
+
+		Module module = m_commands.get(getCommand(packet));
+		if (module == null)
+		{
+			System.err.println("no module set for command " + getCommand(packet));
+			return false;
+		}
+
+		module.executeCommand(packet, client);
+
+		return true;
+	}
+
+	/**
+	 * Parses the packet.
+	 * 
+	 * @param <T> the generic type
+	 * @param packet the packet
+	 * @param c the c
+	 * @return the t
+	 */
+	public <T> T parsePacket(String packet, Class<T> c)
+	{
+		String command = packet.split(m_separator)[0];
+		String data = packet.substring(command.length() + m_separator.length());
+		return new JSONDeserializer<T>().use(null, c).deserialize(data);
+	}
+
+	/**
+	 * Parses the packet into.
+	 * 
+	 * @param <T> the generic type
+	 * @param packet the packet
+	 * @param c the c
+	 * @param o the o
+	 */
+	public <T> void parsePacketInto(String packet, Class<T> c, T o)
+	{
+		String command = packet.split(m_separator)[0];
+		String data = packet.substring(command.length() + m_separator.length());
+		new JSONDeserializer<T>().use(null, c).deserializeInto(data, o);
+	}
+
+	/**
+	 * Read.
+	 * 
+	 * @param channel the channel
+	 * @param client the client
+	 * @return true, if successful
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public boolean read(SocketChannel channel, Client client) throws IOException
+	{
+		int readSize = -1;
+		ByteBuffer lengthBuffer = ByteBuffer.allocate(8);
+		try
+		{
+			readSize = channel.read(lengthBuffer);
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
+
+		if (readSize < 0) // Client disconnected
+			return false;
+		else
+		{
+			String command = "";
+			long leftToRead = lengthBuffer.getLong(0);
+
+			System.out.println("*** Reception : " + leftToRead + " bytes ***");
+
+			while (leftToRead > 0 && readSize >= 0)
+			{
+				ByteBuffer dataBuffer = ByteBuffer.allocate((int) Math.min(m_receiveBufferSize, leftToRead));
+				readSize = channel.read(dataBuffer);
+				leftToRead -= readSize;
+				System.out.println("read " + readSize + " bytes, left to read : " + leftToRead);
+				dataBuffer.position(0);
+				command += Operations.trimString(m_decoder.decode(dataBuffer).toString(), (char) 0);
+			}
+
+			System.out.println("Received packet (raw) : " + command);
+			command = m_encryption.onReceive(client, command);
+			if (command != null)
+				parseCommand(client, command);
+		}
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Thread#run()
+	 */
+	@Override
+	public void run()
+	{
+		try
+		{
+			listen();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Send.
+	 * 
+	 * @param packet the packet
+	 * @param client the client
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void send(String packet, Client client) throws IOException
 	{
 		try
@@ -258,6 +417,13 @@ public class Network extends Thread
 		}
 	}
 
+	/**
+	 * Send.
+	 * 
+	 * @param packet the packet
+	 * @param clientList the client list
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public void send(String packet, Iterable<Client> clientList) throws IOException
 	{
 		for (Client client : clientList)
@@ -266,62 +432,21 @@ public class Network extends Thread
 		}
 	}
 
-	private boolean parseCommand(Client client, String packet)
-	{
-		System.out.println("Parsing command : " + packet);
-
-		Module module = m_commands.get(getCommand(packet));
-		if (module == null)
-		{
-			System.err.println("no module set for command " + getCommand(packet));
-			return false;
-		}
-
-		module.executeCommand(packet, client);
-
-		return true;
-	}
-
+	/**
+	 * Sets the command.
+	 * 
+	 * @param command the command
+	 * @param module the module
+	 * @return true, if successful
+	 */
 	public boolean setCommand(String command, Module module)
 	{
 		return m_commands.put(command, module) != null;
 	}
 
-	public String getCommand(String packet)
-	{
-		return packet.split(m_separator)[0];
-	}
-
-	public <T> T parsePacket(String packet, Class<T> c)
-	{
-		String command = packet.split(m_separator)[0];
-		String data = packet.substring(command.length() + m_separator.length());
-		return (T) new JSONDeserializer<T>().use(null, c).deserialize(data);
-	}
-
-	public <T> void parsePacketInto(String packet, Class<T> c, T o)
-	{
-		String command = packet.split(m_separator)[0];
-		String data = packet.substring(command.length() + m_separator.length());
-		new JSONDeserializer<T>().use(null, c).deserializeInto(data, o);
-	}
-
-	public String makePacket(String command, Object data)
-	{
-		JSONSerializer serializer = new JSONSerializer();
-		serializer.exclude("*.class");
-		return command + " " + serializer.serialize(data);
-	}
-
 	/**
-	 * @return the fields separator
-	 */
-	public String getSeparator()
-	{
-		return m_separator;
-	}
-
-	/**
+	 * Sets the separator.
+	 * 
 	 * @param separator the fields separator to set
 	 */
 	public void setSeparator(String separator)
@@ -329,21 +454,25 @@ public class Network extends Thread
 		m_separator = separator;
 	}
 
-	public List<Client> getClients()
+	/**
+	 * Stop listen.
+	 */
+	public void stopListen()
 	{
-		return m_clients;
+		m_run = false;
+		try
+		{
+			// Create a fake connection to unblock the selector and exit
+			Socket socket = new Socket("localhost", m_port);
+			socket.close();
+		}
+		catch (UnknownHostException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
-
-	private boolean						m_run;
-	private int							m_port;
-	private long						m_receiveBufferSize;
-	private Selector					m_selector;
-	private ServerSocket				m_serverSocket;
-	private List<Client>				m_clients;
-	private Charset						m_charset;
-	private CharsetDecoder				m_decoder;
-	private CharsetEncoder				m_encoder;
-	private Hashtable<String, Module>	m_commands;
-	private String						m_separator;
-	private EncryptionSystem			m_encryption;
 }

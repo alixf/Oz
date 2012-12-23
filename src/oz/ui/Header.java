@@ -2,20 +2,51 @@ package oz.ui;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Header.
+ */
 public class Header extends Composite
 {
+
+	/** The Constant HMARGIN. */
 	private static final int	HMARGIN	= 5;
+
+	/** The Constant VMARGIN. */
 	private static final int	VMARGIN	= 5;
 
+	/** The m_display. */
+	Display						m_display;
+
+	/** The m_left attachment. */
+	FormAttachment				m_leftAttachment;
+
+	/** The m_right attachment. */
+	FormAttachment				m_rightAttachment;
+
+	/** The m_separator label. */
+	Label						m_separatorLabel;
+
+	/** The m_shell. */
+	Shell						m_shell;
+
+	/** The m_username label. */
+	Label						m_usernameLabel;
+
+	/**
+	 * Instantiates a new header.
+	 * 
+	 * @param shell the shell
+	 */
 	public Header(Shell shell)
 	{
 		super(shell, SWT.NONE);
@@ -52,6 +83,12 @@ public class Header extends Composite
 		layout();
 	}
 
+	/**
+	 * Adds the menu.
+	 * 
+	 * @param name the name
+	 * @return the button
+	 */
 	public Button addMenu(String name)
 	{
 		// Profile button
@@ -68,50 +105,83 @@ public class Header extends Composite
 		return menuButton;
 	}
 
-	public FormAttachment getLeftAttachment()
-	{
-		return m_leftAttachment;
-	}
-
-	public void setLeftAttachment(FormAttachment attachment)
-	{
-		m_leftAttachment = attachment;
-	}
-
-	public FormAttachment getRightAttachment()
-	{
-		return m_rightAttachment;
-	}
-
-	public void setRightAttachment(FormAttachment attachment)
-	{
-		m_rightAttachment = attachment;
-	}
-
-	public FormAttachment getTopAttachment()
-	{
-		return new FormAttachment(0, VMARGIN);
-	}
-
+	/**
+	 * Gets the bottom attachment.
+	 * 
+	 * @return the bottom attachment
+	 */
 	public FormAttachment getBottomAttachment()
 	{
 		return new FormAttachment(m_separatorLabel, -VMARGIN, SWT.TOP);
 	}
 
+	/**
+	 * Gets the horizontal margin.
+	 * 
+	 * @return the horizontal margin
+	 */
 	public int getHorizontalMargin()
 	{
 		return HMARGIN;
 	}
 
+	/**
+	 * Gets the left attachment.
+	 * 
+	 * @return the left attachment
+	 */
+	public FormAttachment getLeftAttachment()
+	{
+		return m_leftAttachment;
+	}
+
+	/**
+	 * Gets the right attachment.
+	 * 
+	 * @return the right attachment
+	 */
+	public FormAttachment getRightAttachment()
+	{
+		return m_rightAttachment;
+	}
+
+	/**
+	 * Gets the top attachment.
+	 * 
+	 * @return the top attachment
+	 */
+	public FormAttachment getTopAttachment()
+	{
+		return new FormAttachment(0, VMARGIN);
+	}
+
+	/**
+	 * Gets the vertical margin.
+	 * 
+	 * @return the vertical margin
+	 */
 	public int getVerticalMargin()
 	{
 		return VMARGIN;
 	}
 
-	Display			m_display;
-	Shell			m_shell;
-	Label			m_separatorLabel;
-	FormAttachment	m_leftAttachment;
-	FormAttachment	m_rightAttachment;
-	Label			m_usernameLabel;
+	/**
+	 * Sets the left attachment.
+	 * 
+	 * @param attachment the new left attachment
+	 */
+	public void setLeftAttachment(FormAttachment attachment)
+	{
+		m_leftAttachment = attachment;
+	}
+
+	/**
+	 * Sets the right attachment.
+	 * 
+	 * @param attachment the new right attachment
+	 */
+	public void setRightAttachment(FormAttachment attachment)
+	{
+		m_rightAttachment = attachment;
+	}
 }

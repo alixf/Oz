@@ -11,8 +11,27 @@ import org.eclipse.swt.widgets.Display;
 
 import oz.ui.UI;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class About.
+ */
 public class About
 {
+
+	/** The m_about window. */
+	private AboutWindow	m_aboutWindow;
+
+	/** The m_settings button. */
+	private Button		m_settingsButton;
+
+	/** The m_ui. */
+	private UI			m_ui;
+
+	/**
+	 * Instantiates a new about.
+	 * 
+	 * @param ui the ui
+	 */
 	public About(UI ui)
 	{
 		m_ui = ui;
@@ -35,10 +54,12 @@ public class About
 		ui.getHeader().setRightAttachment(new FormAttachment(m_settingsButton, -m_ui.getHeader().getHorizontalMargin(), SWT.LEFT));
 		m_ui.getDisplay().asyncExec(new Runnable()
 		{
+			@Override
 			public void run()
 			{
 				m_settingsButton.addSelectionListener(new SelectionAdapter()
 				{
+					@Override
 					public void widgetSelected(SelectionEvent e)
 					{
 						open();
@@ -49,12 +70,11 @@ public class About
 		m_aboutWindow = new AboutWindow();
 	}
 
+	/**
+	 * Open.
+	 */
 	private void open()
 	{
 		m_aboutWindow.open();
 	}
-
-	private UI			m_ui;
-	private AboutWindow	m_aboutWindow;
-	private Button		m_settingsButton;
 }

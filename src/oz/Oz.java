@@ -4,17 +4,29 @@ import java.io.IOException;
 
 import org.eclipse.swt.widgets.Display;
 
-import oz.ui.UI;
-import oz.network.Network;
-import oz.modules.*;
+import oz.modules.Files;
 import oz.modules.about.About;
 import oz.modules.contacts.Contacts;
 import oz.modules.messages.Messages;
 import oz.modules.profile.Profile;
 import oz.modules.settings.Settings;
+import oz.network.Network;
+import oz.ui.UI;
 
+/**
+ * The Main class of Oz.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Oz
 {
+
+	/**
+	 * The main method.
+	 * 
+	 * @param args program arguments
+	 */
 	public static void main(String[] args)
 	{
 		int port = (args.length > 0) ? Integer.parseInt(args[0]) : 0;
@@ -23,6 +35,23 @@ public class Oz
 		oz.run();
 	}
 
+	/** The display. */
+	Display		m_display;
+
+	/** The network. */
+	Network		m_network;
+
+	/** The settings. */
+	Settings	m_settings;
+
+	/** The ui. */
+	UI			m_ui;
+
+	/**
+	 * Instantiates a new Oz program.
+	 * 
+	 * @param port the port
+	 */
 	@SuppressWarnings("unused")
 	public Oz(int port)
 	{
@@ -61,6 +90,9 @@ public class Oz
 		}
 	}
 
+	/**
+	 * Run the program.
+	 */
 	public void run()
 	{
 		if (User.getUser().isValid())
@@ -71,9 +103,4 @@ public class Oz
 			m_network.stopListen();
 		}
 	}
-
-	Settings	m_settings;
-	Display		m_display;
-	UI			m_ui;
-	Network		m_network;
 }

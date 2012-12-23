@@ -26,22 +26,40 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import flexjson.JSONDeserializer;
-
 import oz.data.UserData;
 import oz.security.XOR;
+import flexjson.JSONDeserializer;
 
+/**
+ * This class is used to authentificate user and load user data
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class Login
 {
+
+	/** Horizontal margin of the UI */
 	private static final int	HMARGIN	= 10;
+
+	/** Vertical margin of the UI */
 	private static final int	VMARGIN	= 10;
 
+	/**
+	 * Attempt login
+	 */
 	static public void login()
 	{
 		Login login = new Login();
 		login.run();
 	}
 
+	/** The shell. */
+	Shell	m_shell;
+
+	/**
+	 * Instantiates a new login module.
+	 */
 	public Login()
 	{
 		// Create display and layout
@@ -125,6 +143,7 @@ public class Login
 		 */
 		loginButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				if (loadProfile(username.getText(), password.getText()))
@@ -154,6 +173,7 @@ public class Login
 		});
 		signupButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				Register.register();
@@ -185,6 +205,11 @@ public class Login
 		m_shell.pack();
 	}
 
+	/**
+	 * List profiles.
+	 * 
+	 * @return the available profiles
+	 */
 	private String[] listProfiles()
 	{
 		File profilesDirectory = new File("users");
@@ -202,6 +227,13 @@ public class Login
 		return profiles;
 	}
 
+	/**
+	 * Load profile.
+	 * 
+	 * @param username the username
+	 * @param password the password
+	 * @return true, if successful
+	 */
 	public boolean loadProfile(String username, String password)
 	{
 		Path path = Paths.get("users/" + username + "/" + username + ".ozp");
@@ -225,6 +257,9 @@ public class Login
 		return true;
 	}
 
+	/**
+	 * Run the login window
+	 */
 	public void run()
 	{
 		m_shell.open();
@@ -234,6 +269,4 @@ public class Login
 				Display.getCurrent().sleep();
 		}
 	}
-
-	Shell	m_shell;
 }

@@ -16,11 +16,45 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SettingsView.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
+ */
 public class SettingsView
 {
+
+	/** The Constant HMARGIN. */
 	private final static int	HMARGIN	= 5;
+
+	/** The Constant VMARGIN. */
 	private final static int	VMARGIN	= 5;
 
+	/** The m_network port. */
+	Spinner						m_networkPort;
+
+	/** The m_settings. */
+	private Settings			m_settings;
+
+	/** The m_shell. */
+	private Shell				m_shell;
+
+	/** The m_top attachment. */
+	private FormAttachment		m_topAttachment;
+
+	/** The m_tracker address. */
+	Text						m_trackerAddress;
+
+	/** The m_tracker port. */
+	Spinner						m_trackerPort;
+
+	/**
+	 * Instantiates a new settings view.
+	 * 
+	 * @param settings the settings
+	 */
 	public SettingsView(Settings settings)
 	{
 		m_settings = settings;
@@ -44,6 +78,7 @@ public class SettingsView
 		confirmButton.setLayoutData(layoutData);
 		confirmButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				writeConfigFile();
@@ -60,6 +95,7 @@ public class SettingsView
 		cancelButton.setLayoutData(layoutData);
 		cancelButton.addSelectionListener(new SelectionAdapter()
 		{
+			@Override
 			public void widgetSelected(SelectionEvent e)
 			{
 				m_shell.close();
@@ -69,6 +105,13 @@ public class SettingsView
 		m_shell.pack();
 	}
 
+	/**
+	 * Adds the int setting.
+	 * 
+	 * @param labelString the label string
+	 * @param defaultValue the default value
+	 * @return the spinner
+	 */
 	private Spinner addIntSetting(String labelString, int defaultValue)
 	{
 		Label label = new Label(m_shell, SWT.NONE);
@@ -93,6 +136,13 @@ public class SettingsView
 		return spinner;
 	}
 
+	/**
+	 * Adds the string setting.
+	 * 
+	 * @param labelString the label string
+	 * @param defaultValue the default value
+	 * @return the text
+	 */
 	private Text addStringSetting(String labelString, String defaultValue)
 	{
 		Label label = new Label(m_shell, SWT.NONE);
@@ -117,11 +167,17 @@ public class SettingsView
 		return text;
 	}
 
+	/**
+	 * Open.
+	 */
 	public void open()
 	{
 		m_shell.open();
 	}
 
+	/**
+	 * Write config file.
+	 */
 	private void writeConfigFile()
 	{
 		m_settings.setNetworkPort(m_networkPort.getSelection());
@@ -136,12 +192,4 @@ public class SettingsView
 			e.printStackTrace();
 		}
 	}
-
-	private Settings		m_settings;
-	private Shell			m_shell;
-	private FormAttachment	m_topAttachment;
-
-	Spinner					m_networkPort;
-	Text					m_trackerAddress;
-	Spinner					m_trackerPort;
 }
