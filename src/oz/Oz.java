@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Display;
 import oz.ui.UI;
 import oz.network.Network;
 import oz.modules.*;
+import oz.modules.about.About;
 import oz.modules.contacts.Contacts;
 import oz.modules.messages.Messages;
 import oz.modules.profile.Profile;
@@ -49,6 +50,8 @@ public class Oz
 		{
 			m_network = new Network(m_settings);
 			m_ui = new UI(m_display);
+			About about = new About();
+			about.setUI(m_ui);
 			m_settings.setUI(m_ui);
 			Files files = new Files(m_network);
 			Profile profile = new Profile(m_ui);
