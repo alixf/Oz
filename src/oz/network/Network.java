@@ -86,6 +86,7 @@ public class Network extends Thread
 					// Create client
 					Client client = new Client();
 					client.setSocket(socket.accept());
+					client.getSocket().setTcpNoDelay(true);
 					client.getUserSummary().setAddress(new Address(socket.getInetAddress().getHostName().toString(), m_port));
 					sendKey(client);
 					
@@ -125,23 +126,26 @@ public class Network extends Thread
 			return false;
 		else
 		{
+			System.out.println("****************** Reception ******************");
 			String command = "";
 			long length = bb.getLong(0);
+
+			System.out.println("Received packet size : " + length + " bytes");
 			int leftToRead = (int) length;
 			while(leftToRead > 0 && readSize > 0)
 			{
 				ByteBuffer bb2 = ByteBuffer.allocate(Math.min(m_receiveBufferSize, leftToRead));
+				System.out.println("\t allocate :" + Math.min(m_receiveBufferSize, leftToRead));
 				readSize = channel.read(bb2);
+				System.out.println("\t read :" + readSize);
 				leftToRead -= readSize;
+				System.out.println("\t leftToRead :" + readSize);
 				bb2.position(0);
 				command += m_decoder.decode(bb2).toString().substring(0,readSize);
 			}
-
+			System.out.println("Received packet (raw printing) : " + command);
 			if(!command.substring(0, 4).equals("KEY "))
-			{
-				System.out.println("Encrypted command : " + command);
 				command = m_rsa.decryptCommand(command);
-			}
 			parseCommand(client, command);
 		}
 		return true;
@@ -182,6 +186,7 @@ public class Network extends Thread
 				// Create client
 				Client client = new Client();
 				client.setSocket(socket);
+				client.getSocket().setTcpNoDelay(true);
 				client.getUserSummary().setAddress(address);
 				sendKey(client);
 				
@@ -245,12 +250,14 @@ public class Network extends Thread
 	{
 		try
 		{
+			System.out.println("****************** Sending ******************");
+			System.out.println("Packet to send : " + packet);
 			if(client.getPublicKey() != null)
 				packet = m_rsa.encryptCommand(packet, client.getPublicKey());
 			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
 			ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
 			System.out.println("Sending packet : " + packet);
-			System.out.println((long) bb.array().length);
+			System.out.println("Size : " + (long) bb.array().length + " bytes");
 			
 			ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
 			client.getSocket().getChannel().write(newbb);
@@ -265,17 +272,28 @@ public class Network extends Thread
 	{
 		try
 		{
-			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
+			System.out.println("****************** Sending ******************");
+			System.out.println("Packet to send : " + packet);
 
 			if (clientList == null)
 				clientList = m_clients;
 			Iterator<Client> it = clientList.iterator();
+			
 			while (it.hasNext())
 			{
 				Client client = it.next();
+				System.out.println("Sending packet to " + client.getUserData().getUsername());
+				
+				if(client.getPublicKey() != null)
+					packet = m_rsa.encryptCommand(packet, client.getPublicKey());
+				ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
 
-				System.out.println("sending to " + client.getUserData().getUsername());
-				client.getSocket().getChannel().write(bb);
+				ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
+				System.out.println("Sending packet : " + packet);
+				System.out.println("Size : " + (long) bb.array().length + " bytes");
+				
+				ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
+				client.getSocket().getChannel().write(newbb);
 			}
 		}
 		catch (CharacterCodingException e)
@@ -286,7 +304,8 @@ public class Network extends Thread
 
 	private boolean parseCommand(Client client, String packet)
 	{
-		System.out.println("parsing command : " + packet);
+		System.out.println("****************** Parsing ******************");
+		System.out.println("Parsing command : " + packet);
 
 		Module module = m_commands.get(getCommand(packet));
 		if (module == null)
@@ -358,5 +377,4 @@ public class Network extends Thread
 	private Hashtable<String, Module>	m_commands;
 	private String						m_separator;
 	private RSA							m_rsa;
-
 }

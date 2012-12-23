@@ -14,15 +14,17 @@ import oz.data.UserData;
 import oz.ui.UI;
 import oz.modules.Files;
 import oz.modules.Module;
+import oz.modules.profile.Profile;
 import oz.network.Client;
 import oz.network.Network;
 
 public class Contacts implements Module
 {
-	public Contacts(Network network, UI ui, Files files)
+	public Contacts(Network network, UI ui, Profile profile, Files files)
 	{
 		m_network = network;
 		m_ui = ui;
+		m_profile = profile;
 		m_files = files;
 
 		// Register network commands
@@ -53,7 +55,7 @@ public class Contacts implements Module
 
 	public void addFileRequest(Client client, String request)
 	{
-		m_files.addFileRequest(client, client.getUserData().getAvatar(), m_view);
+		m_files.addFileRequest(client, request, m_view);
 	}
 
 	@Override
@@ -64,6 +66,9 @@ public class Contacts implements Module
 		if (commandCode.equals("USER"))
 		{
 			client.setUserData(m_network.parsePacket(command, UserData.class));
+			client.getUserSummary().setUsername(client.getUserData().getUsername());
+			
+			User.getUser().save();
 
 			m_ui.getDisplay().asyncExec(new Runnable()
 			{
@@ -111,6 +116,7 @@ public class Contacts implements Module
 			if (client != null)
 			{
 				client.getUserData().setUsername(address.getHost() + ":" + address.getPort());
+				client.getUserSummary().setUsername(address.getHost() + ":" + address.getPort());
 				
 				User.getUser().getFriends().add(client.getUserSummary());
 				User.getUser().save();
@@ -144,9 +150,20 @@ public class Contacts implements Module
 	{
 		return m_view;
 	}
+	
+	public Network getNetwork()
+	{
+		return m_network;
+	}
+	
+	public Profile getProfile()
+	{
+		return m_profile;
+	}
 
 	Network			m_network;
 	UI				m_ui;
 	ContactsView	m_view;
+	Profile			m_profile;
 	Files			m_files;
 }

@@ -185,7 +185,7 @@ public class UserData
 	 */
 	public String getAvatarFilename()
 	{
-		return getAvatar() == null ? "images/defaultProfilePicture.png" : "users/" + getUsername() + "/files/" + getUsername() + "/" + getAvatar();
+		return getAvatar() == null ? "images/defaultProfilePicture.png" : "users/" + User.getUser().getUsername() + "/files/" + getUsername() + "/" + getAvatar();
 	}
 
 	/**
