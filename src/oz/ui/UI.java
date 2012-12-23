@@ -8,23 +8,25 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UI.
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
  */
 public class UI
 {
 
-	/** The m_content. */
+	/** The content. */
 	private Content	m_content;
 
-	/** The m_display. */
+	/** The display. */
 	private Display	m_display;
 
-	/** The m_header. */
+	/** The header. */
 	private Header	m_header;
 
-	/** The m_shell. */
+	/** The shell. */
 	private Shell	m_shell;
 
 	/**

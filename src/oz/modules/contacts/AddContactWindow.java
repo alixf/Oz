@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Text;
 import oz.data.Address;
 import oz.network.Client;
 
-// TODO: Auto-generated Javadoc
 /**
  * Instances of this class are windows asking necessary information to add a contact.
  * 

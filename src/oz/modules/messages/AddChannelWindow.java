@@ -18,9 +18,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import oz.network.Client;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class AddChannelWindow.
+ * This window is used to add a messages channel
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -28,23 +27,23 @@ import oz.network.Client;
 public class AddChannelWindow
 {
 
-	/** The m_add channel shell. */
+	/** The add channel shell. */
 	Shell					m_addChannelShell;
 
-	/** The m_client buttons. */
+	/** The client buttons. */
 	HashMap<Button, Client>	m_clientButtons;
 
-	/** The m_selected clients. */
+	/** The selected clients. */
 	List<Client>			m_selectedClients;
 
 	/**
-	 * Instantiates a new adds the channel window.
+	 * Instantiates a new window.
 	 * 
-	 * @param m_messages the m_messages
+	 * @param messages the messages module
 	 */
-	public AddChannelWindow(Messages m_messages)
+	public AddChannelWindow(Messages messages)
 	{
-		m_addChannelShell = new Shell(m_messages.getUI().getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
+		m_addChannelShell = new Shell(messages.getUI().getDisplay(), SWT.SHELL_TRIM & (~SWT.RESIZE));
 		Image logo16 = new Image(Display.getCurrent(), "images/logo-16.png");
 		m_addChannelShell.setImage(logo16);
 		m_addChannelShell.setText("Ajouter un fil de discussion");
@@ -55,7 +54,7 @@ public class AddChannelWindow
 		m_selectedClients = new LinkedList<Client>();
 		m_clientButtons = new HashMap<Button, Client>();
 
-		Iterator<Client> it = m_messages.getContactsModule().getContactList().iterator();
+		Iterator<Client> it = messages.getContactsModule().getContactList().iterator();
 		while (it.hasNext())
 		{
 			Client client = it.next();

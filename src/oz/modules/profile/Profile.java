@@ -10,9 +10,8 @@ import oz.modules.Module;
 import oz.network.Client;
 import oz.ui.UI;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Profile.
+ * This module is used to manage user profiles
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -20,16 +19,16 @@ import oz.ui.UI;
 public class Profile implements Module
 {
 
-	/** The m_edit view. */
+	/** The edit view. */
 	private EditView	m_editView;
 
-	/** The m_menu widget. */
+	/** The menu widget. */
 	private MenuWidget	m_menuWidget;
 
-	/** The m_ui. */
+	/** The ui. */
 	private UI			m_ui;
 
-	/** The m_view. */
+	/** The view. */
 	private ProfileView	m_view;
 
 	/**

@@ -16,9 +16,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class SettingsView.
+ * This view is used to show settings
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -32,22 +31,22 @@ public class SettingsView
 	/** The Constant VMARGIN. */
 	private final static int	VMARGIN	= 5;
 
-	/** The m_network port. */
+	/** The network port. */
 	Spinner						m_networkPort;
 
-	/** The m_settings. */
+	/** The settings. */
 	private Settings			m_settings;
 
-	/** The m_shell. */
+	/** The shell. */
 	private Shell				m_shell;
 
-	/** The m_top attachment. */
+	/** The top attachment. */
 	private FormAttachment		m_topAttachment;
 
-	/** The m_tracker address. */
+	/** The tracker address. */
 	Text						m_trackerAddress;
 
-	/** The m_tracker port. */
+	/** The tracker port. */
 	Spinner						m_trackerPort;
 
 	/**

@@ -18,9 +18,8 @@ import oz.User;
 import oz.data.UserData;
 import oz.tools.Images;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ProfileView.
+ * This view is used to show a user
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -28,19 +27,19 @@ import oz.tools.Images;
 public class ProfileView extends Composite
 {
 
-	/** The m_avatar label. */
+	/** The avatar label. */
 	Label	m_avatarLabel;
 
-	/** The m_edit button. */
+	/** The edit button. */
 	Button	m_editButton;
 
-	/** The m_name label. */
+	/** The name label. */
 	Label	m_nameLabel;
 
-	/** The m_separator label. */
+	/** The separator label. */
 	Label	m_separatorLabel;
 
-	/** The m_username label. */
+	/** The username label. */
 	Label	m_usernameLabel;
 
 	/**

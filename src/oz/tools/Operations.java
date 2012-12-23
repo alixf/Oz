@@ -1,8 +1,7 @@
 package oz.tools;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Operations.
+ * This class provides function to manipulate data structures
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -11,11 +10,11 @@ public class Operations
 {
 
 	/**
-	 * Merge byte buffers.
+	 * Merge two byte arrays.
 	 * 
 	 * @param prefix the prefix
 	 * @param suffix the suffix
-	 * @return the byte[]
+	 * @return the resulting byte array
 	 */
 	public static byte[] mergeByteBuffers(byte[] prefix, byte[] suffix)
 	{
@@ -30,19 +29,19 @@ public class Operations
 	/**
 	 * Trim string.
 	 * 
-	 * @param s the s
-	 * @param toTrim the to trim
-	 * @return the string
+	 * @param string the string to be trimmed
+	 * @param toTrim the character which will be trimmed
+	 * @return the trimmed string
 	 */
-	public static String trimString(String s, char toTrim)
+	public static String trimString(String string, char toTrim)
 	{
-		int originalLen = s.length();
-		int len = s.length();
+		int originalLen = string.length();
+		int len = string.length();
 		int st = 0;
-		while ((st < len) && (s.charAt(st) == toTrim))
+		while ((st < len) && (string.charAt(st) == toTrim))
 			st++;
-		while ((st < len) && (s.charAt(len - 1) == toTrim))
+		while ((st < len) && (string.charAt(len - 1) == toTrim))
 			len--;
-		return ((st > 0) || (len < originalLen)) ? s.substring(st, len) : s.toString();
+		return ((st > 0) || (len < originalLen)) ? string.substring(st, len) : string.toString();
 	}
 }

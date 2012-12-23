@@ -19,9 +19,8 @@ import oz.data.UserIdentifier;
 import oz.modules.Files;
 import oz.network.Client;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ContactsView.
+ * This view is used to show contacts
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -35,13 +34,13 @@ class ContactsView extends Composite implements Files.Observer
 	/** The Constant CONTACTSVMARGIN. */
 	private static final int		CONTACTSVMARGIN	= 5;
 
-	/** The m_contacts. */
+	/** The contacts module. */
 	Contacts						m_contacts;
 
-	/** The m_contacts attachment. */
+	/** The contacts attachment. */
 	private FormAttachment			m_contactsAttachment;
 
-	/** The m_widgets. */
+	/** The widgets. */
 	HashMap<String, ContactWidget>	m_widgets;
 
 	/**

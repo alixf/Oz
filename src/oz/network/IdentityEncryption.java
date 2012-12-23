@@ -2,9 +2,8 @@ package oz.network;
 
 import java.nio.channels.SocketChannel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class IdentityEncryption.
+ * This encryption system is the identity encryption (no encryption)
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista

@@ -7,9 +7,8 @@ import oz.data.UserIdentifier;
 import oz.network.Client;
 import oz.network.Network;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ContactRetriever.
+ * This class retrieve contacts from user data
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -17,10 +16,10 @@ import oz.network.Network;
 public class ContactRetriever extends Thread
 {
 
-	/** The m_network. */
+	/** The network. */
 	private Network			m_network;
 
-	/** The m_view. */
+	/** The view. */
 	private ContactsView	m_view;
 
 	/**

@@ -2,9 +2,8 @@ package oz.network;
 
 import java.nio.channels.SocketChannel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Interface EncryptionSystem.
+ * This interface defines an encryption system
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista

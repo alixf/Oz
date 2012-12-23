@@ -11,20 +11,22 @@ import org.eclipse.swt.widgets.Display;
 
 import oz.ui.UI;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class About.
+ * This class is used to display informations about the software
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
  */
 public class About
 {
 
-	/** The m_about window. */
+	/** The window. */
 	private AboutWindow	m_aboutWindow;
 
-	/** The m_settings button. */
+	/** The settings button. */
 	private Button		m_settingsButton;
 
-	/** The m_ui. */
+	/** The ui. */
 	private UI			m_ui;
 
 	/**

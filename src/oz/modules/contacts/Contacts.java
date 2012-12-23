@@ -19,9 +19,8 @@ import oz.network.Client;
 import oz.network.Network;
 import oz.ui.UI;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Contacts.
+ * This module is used to manage contacts
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -29,19 +28,19 @@ import oz.ui.UI;
 public class Contacts implements Module
 {
 
-	/** The m_files. */
+	/** The files module. */
 	Files			m_files;
 
-	/** The m_network. */
+	/** The network. */
 	Network			m_network;
 
-	/** The m_profile. */
+	/** The profile module. */
 	Profile			m_profile;
 
-	/** The m_ui. */
+	/** The ui. */
 	UI				m_ui;
 
-	/** The m_view. */
+	/** The contacts view. */
 	ContactsView	m_view;
 
 	/**

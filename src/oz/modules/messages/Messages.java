@@ -22,9 +22,8 @@ import oz.network.Client;
 import oz.network.Network;
 import oz.ui.UI;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Messages.
+ * This module is used to manage messages
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -44,10 +43,10 @@ public class Messages implements Module
 		public static class UserMessage
 		{
 
-			/** The m_message. */
+			/** The message. */
 			private Message		m_message;
 
-			/** The m_user. */
+			/** The user. */
 			private UserData	m_user;
 
 			/**
@@ -103,13 +102,13 @@ public class Messages implements Module
 			}
 		}
 
-		/** The m_clients. */
+		/** The clients. */
 		private LinkedList<Client>		m_clients;
 
-		/** The m_messages. */
+		/** The messages. */
 		private LinkedList<UserMessage>	m_messages;
 
-		/** The m_unique id. */
+		/** The unique id. */
 		private String					m_uniqueID;
 
 		/**
@@ -183,25 +182,25 @@ public class Messages implements Module
 		}
 	}
 
-	/** The m_channel. */
+	/** The channel. */
 	private Channel				m_channel;
 
-	/** The m_channels. */
+	/** The channels. */
 	private LinkedList<Channel>	m_channels;
 
-	/** The m_contacts. */
+	/** The contacts. */
 	private Contacts			m_contacts;
 
-	/** The m_date format. */
+	/** The date format. */
 	private SimpleDateFormat	m_dateFormat;
 
-	/** The m_network. */
+	/** The network. */
 	private Network				m_network;
 
-	/** The m_ui. */
+	/** The_ui. */
 	private UI					m_ui;
 
-	/** The m_view. */
+	/** The view. */
 	private MessagesView		m_view;
 
 	/**

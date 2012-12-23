@@ -6,9 +6,8 @@ import java.nio.charset.CharacterCodingException;
 
 import oz.security.RSA;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class RSAEncryption.
+ * This encryption method implements RSA Encryption
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -16,10 +15,10 @@ import oz.security.RSA;
 public class RSAEncryption implements EncryptionSystem
 {
 
-	/** The m_network. */
+	/** The network. */
 	private Network	m_network;
 
-	/** The m_rsa. */
+	/** The rsa instance. */
 	private RSA		m_rsa;
 
 	/**

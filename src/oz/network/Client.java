@@ -5,9 +5,8 @@ import java.security.PublicKey;
 
 import oz.data.UserData;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Client.
+ * Instances of this class represent a client (a connected user)
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -15,13 +14,13 @@ import oz.data.UserData;
 public class Client
 {
 
-	/** The m_public key. */
+	/** The public key. */
 	private PublicKey	m_publicKey;
 
-	/** The m_socket. */
+	/** The socket. */
 	private Socket		m_socket;
 
-	/** The m_user data. */
+	/** The user data. */
 	private UserData	m_userData;
 
 	/**

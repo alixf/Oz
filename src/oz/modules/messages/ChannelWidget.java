@@ -16,9 +16,8 @@ import oz.data.UserData;
 import oz.modules.messages.Messages.Channel;
 import oz.tools.Images;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ChannelWidget.
+ * This widget displays a channel.
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -26,16 +25,16 @@ import oz.tools.Images;
 public class ChannelWidget extends Composite
 {
 
-	/** The m_channel. */
+	/** The channel. */
 	Channel		m_channel;
 
-	/** The m_image. */
+	/** The image. */
 	Label		m_image;
 
-	/** The m_message. */
+	/** The message. */
 	Label		m_message;
 
-	/** The m_messages. */
+	/** The messages. */
 	Messages	m_messages;
 
 	/**

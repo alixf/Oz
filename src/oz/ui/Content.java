@@ -5,14 +5,16 @@ import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Content.
+ * This class is used to show content in the main window
+ * 
+ * @author Alix "eolhing" Fumoleau
+ * @author Jean "Jack3113" Batista
  */
 public class Content extends Composite
 {
 
-	/** The m_layout. */
+	/** The layout. */
 	StackLayout	m_layout;
 
 	/**

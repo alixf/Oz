@@ -28,9 +28,8 @@ import org.eclipse.swt.widgets.Text;
 import oz.User;
 import oz.tools.Images;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class EditView.
+ * This view is used to modify informations about the user
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -38,28 +37,28 @@ import oz.tools.Images;
 public class EditView extends Composite
 {
 
-	/** The m_avatar filename. */
+	/** The avatar filename. */
 	String	m_avatarFilename;
 
-	/** The m_avatar label. */
+	/** The avatar label. */
 	Label	m_avatarLabel;
 
-	/** The m_cancel button. */
+	/** The cancel button. */
 	Button	m_cancelButton;
 
-	/** The m_confirm button. */
+	/** The confirm button. */
 	Button	m_confirmButton;
 
-	/** The m_first name text. */
+	/** The first name text. */
 	Text	m_firstNameText;
 
-	/** The m_last name text. */
+	/** The last name text. */
 	Text	m_lastNameText;
 
-	/** The m_separator label. */
+	/** The separator label. */
 	Label	m_separatorLabel;
 
-	/** The m_username text. */
+	/** The username text. */
 	Text	m_usernameText;
 
 	/**

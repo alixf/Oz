@@ -2,7 +2,6 @@ package oz.modules;
 
 import oz.network.Client;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface Module.
  * 

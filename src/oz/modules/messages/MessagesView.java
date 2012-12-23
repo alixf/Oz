@@ -24,9 +24,8 @@ import oz.data.Message;
 import oz.data.UserData;
 import oz.modules.messages.Messages.Channel;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class MessagesView.
+ * This view is used to show messages
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -46,31 +45,31 @@ public class MessagesView extends Composite
 	/** The Constant MESSAGESVMARGIN. */
 	private static final int			MESSAGESVMARGIN	= 5;
 
-	/** The m_channels attachment. */
+	/** The channels attachment. */
 	private FormAttachment				m_channelsAttachment;
 
-	/** The m_channels container. */
+	/** The channels container. */
 	private Composite					m_channelsContainer;
 
-	/** The m_channels scroll container. */
+	/** The channels scroll container. */
 	private ScrolledComposite			m_channelsScrollContainer;
 
-	/** The m_channel widgets. */
+	/** The channel widgets. */
 	private LinkedList<ChannelWidget>	m_channelWidgets;
 
-	/** The m_messages. */
+	/** The messages. */
 	private Messages					m_messages;
 
-	/** The m_messages attachment. */
+	/** The messages attachment. */
 	private FormAttachment				m_messagesAttachment;
 
-	/** The m_messages container. */
+	/** The messages container. */
 	private Composite					m_messagesContainer;
 
-	/** The m_messages input. */
+	/** The messages input. */
 	private Text						m_messagesInput;
 
-	/** The m_messages scroll container. */
+	/** The messages scroll container. */
 	private ScrolledComposite			m_messagesScrollContainer;
 
 	/**

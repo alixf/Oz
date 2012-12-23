@@ -21,9 +21,8 @@ import oz.ui.UI;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Settings.
+ * This class is used to manage software settings
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -31,16 +30,16 @@ import flexjson.JSONSerializer;
 public class Settings
 {
 
-	/** The m_network port. */
+	/** The network port. */
 	private int		m_networkPort;
 
-	/** The m_tracker address. */
+	/** The tracker address. */
 	private String	m_trackerAddress;
 
-	/** The m_tracker port. */
+	/** The tracker port. */
 	private int		m_trackerPort;
 
-	/** The m_ui. */
+	/** The ui. */
 	private UI		m_ui;
 
 	/**

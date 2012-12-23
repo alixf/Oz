@@ -276,7 +276,7 @@ public class RSA
 	/**
 	 * Gets the charset.
 	 * 
-	 * @return the m_charset
+	 * @return the charset
 	 */
 	public String getCharset()
 	{

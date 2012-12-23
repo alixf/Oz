@@ -30,9 +30,8 @@ import oz.tools.Operations;
 import flexjson.JSONDeserializer;
 import flexjson.JSONSerializer;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class Network.
+ * This class is used to manipulate the network.
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -40,40 +39,40 @@ import flexjson.JSONSerializer;
 public class Network extends Thread
 {
 
-	/** The m_charset. */
+	/** The charset. */
 	private Charset						m_charset;
 
-	/** The m_clients. */
+	/** The clients. */
 	private List<Client>				m_clients;
 
-	/** The m_commands. */
+	/** The commands. */
 	private Hashtable<String, Module>	m_commands;
 
-	/** The m_decoder. */
+	/** The decoder. */
 	private CharsetDecoder				m_decoder;
 
-	/** The m_encoder. */
+	/** The encoder. */
 	private CharsetEncoder				m_encoder;
 
-	/** The m_encryption. */
+	/** The encryption system. */
 	private EncryptionSystem			m_encryption;
 
-	/** The m_port. */
+	/** The port. */
 	private int							m_port;
 
-	/** The m_receive buffer size. */
+	/** The receive buffer size. */
 	private long						m_receiveBufferSize;
 
-	/** The m_run. */
+	/** The_run state. */
 	private boolean						m_run;
 
-	/** The m_selector. */
+	/** The selector. */
 	private Selector					m_selector;
 
-	/** The m_separator. */
+	/** The separator. */
 	private String						m_separator;
 
-	/** The m_server socket. */
+	/** The server socket. */
 	private ServerSocket				m_serverSocket;
 
 	/**

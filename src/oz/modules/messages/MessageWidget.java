@@ -13,9 +13,8 @@ import org.eclipse.swt.widgets.Listener;
 
 import oz.data.Message;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class MessageWidget.
+ * This widget displays a message
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -23,19 +22,19 @@ import oz.data.Message;
 public class MessageWidget extends Composite
 {
 
-	/** The m_date. */
+	/** The date. */
 	Label		m_date;
 
-	/** The m_image. */
+	/** The image. */
 	Label		m_image;
 
-	/** The m_message. */
+	/** The message. */
 	Message		m_message;
 
-	/** The m_messages. */
+	/** The messages. */
 	Messages	m_messages;
 
-	/** The m_text. */
+	/** The text. */
 	Label		m_text;
 
 	/**

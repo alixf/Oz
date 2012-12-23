@@ -16,9 +16,8 @@ import oz.data.UserData;
 import oz.tools.Images;
 import oz.ui.UI;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class MenuWidget.
+ * This widget displays the user in the menu
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -26,28 +25,28 @@ import oz.ui.UI;
 public class MenuWidget extends Composite
 {
 
-	/** The Constant HMARGIN. */
+	/** The Horizontal margin of the UI. */
 	private static final int	HMARGIN	= 5;
 
-	/** The Constant VMARGIN. */
+	/** The Vertical margin of the UI. */
 	private static final int	VMARGIN	= 4;
 
-	/** The m_name. */
+	/** The name. */
 	private Label				m_name;
 
-	/** The m_picture. */
+	/** The picture. */
 	private Label				m_picture;
 
-	/** The m_status. */
+	/** The status. */
 	private Label				m_status;
 
-	/** The m_ui. */
+	/** The ui. */
 	private UI					m_ui;
 
-	/** The m_user. */
+	/** The user. */
 	private UserData			m_user;
 
-	/** The m_username. */
+	/** The username. */
 	private Label				m_username;
 
 	/**
@@ -100,7 +99,6 @@ public class MenuWidget extends Composite
 		}
 		catch (UnknownHostException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		layoutData = new FormData();

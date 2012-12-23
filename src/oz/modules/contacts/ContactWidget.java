@@ -15,9 +15,8 @@ import oz.data.UserIdentifier;
 import oz.network.Client;
 import oz.tools.Images;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class ContactWidget.
+ * This widget display a contact
  * 
  * @author Alix "eolhing" Fumoleau
  * @author Jean "Jack3113" Batista
@@ -25,19 +24,19 @@ import oz.tools.Images;
 public class ContactWidget extends Composite
 {
 
-	/** The m_client. */
+	/** The client. */
 	Client		m_client;
 
-	/** The m_contacts. */
+	/** The contacts module. */
 	Contacts	m_contacts;
 
-	/** The m_image. */
+	/** The image. */
 	Label		m_image;
 
-	/** The m_name. */
+	/** The name. */
 	Label		m_name;
 
-	/** The m_username. */
+	/** The username. */
 	Label		m_username;
 
 	/**
