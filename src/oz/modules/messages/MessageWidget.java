@@ -28,7 +28,7 @@ public class MessageWidget extends Composite
 		/*
 		 * Text
 		 */
-		m_text = new Label(this, SWT.NONE);
+		m_text = new Label(this, SWT.NONE | SWT.WRAP);
 		m_text.setText(message.getContent());
 		FormData fd = new FormData();
 		fd.top = new FormAttachment(0, 5);
