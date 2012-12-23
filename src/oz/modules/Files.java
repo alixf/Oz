@@ -49,9 +49,9 @@ public class Files implements Module
 
 		public String toString()
 		{
-			return "{"+client.getUserData().getUsername()+" : "+requestString+"}";
+			return "{" + client.getUserData().getUsername() + " : " + requestString + "}";
 		}
-		
+
 		public Client	client;
 		public String	requestString;
 	}
@@ -81,7 +81,7 @@ public class Files implements Module
 				fos.write(Base64.decodeBase64(file.getContent()));
 				fos.close();
 
-				Observer observer = m_requests.get(new Request(client, ""+file.getName()));
+				Observer observer = m_requests.get(new Request(client, "" + file.getName()));
 				if (observer != null)
 					observer.fileNotify(client, file.getName());
 			}
@@ -93,7 +93,7 @@ public class Files implements Module
 		if (commandCode.equals("GETFILE"))
 		{
 			File file = m_network.parsePacket(command, File.class);
-			Path path = Paths.get("users/"+User.getUser().getUsername()+"/files/"+file.getName());
+			Path path = Paths.get("users/" + User.getUser().getUsername() + "/files/" + file.getName());
 			try
 			{
 				file.setContent(Base64.encodeBase64String(java.nio.file.Files.readAllBytes(path)));
@@ -111,7 +111,7 @@ public class Files implements Module
 	public void addFileRequest(Client client, String request, Observer observer)
 	{
 		File file = new File();
-		file.setName(client.getUserData().getUsername()+"/"+request);
+		file.setName(client.getUserData().getUsername() + "/" + request);
 		try
 		{
 			m_network.send(m_network.makePacket("GETFILE", file), client);

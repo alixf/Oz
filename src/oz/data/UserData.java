@@ -32,7 +32,7 @@ public class UserData
 		m_followers = new LinkedList<UserIdentifier>();
 		m_posts = new LinkedList<Message>();
 	}
-	
+
 	public UserIdentifier getUserIdentifier()
 	{
 		return m_userIdentifier;

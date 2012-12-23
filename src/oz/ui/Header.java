@@ -13,9 +13,9 @@ import org.eclipse.swt.widgets.Shell;
 
 public class Header extends Composite
 {
-	private static final int HMARGIN = 5;
-	private static final int VMARGIN = 5;
-	
+	private static final int	HMARGIN	= 5;
+	private static final int	VMARGIN	= 5;
+
 	public Header(Shell shell)
 	{
 		super(shell, SWT.NONE);
@@ -31,7 +31,7 @@ public class Header extends Composite
 		// Attachments
 		m_leftAttachment = new FormAttachment(0, HMARGIN);
 		m_rightAttachment = new FormAttachment(100, -HMARGIN);
-		
+
 		// Logo
 		Label logoLabel = new Label(this, SWT.NONE);
 		logoLabel.setImage(logo64);
@@ -67,27 +67,27 @@ public class Header extends Composite
 
 		return menuButton;
 	}
-	
+
 	public FormAttachment getLeftAttachment()
 	{
-		 return m_leftAttachment;
+		return m_leftAttachment;
 	}
-	
+
 	public void setLeftAttachment(FormAttachment attachment)
 	{
-		 m_leftAttachment = attachment;
+		m_leftAttachment = attachment;
 	}
-	
+
 	public FormAttachment getRightAttachment()
 	{
-		 return m_rightAttachment;
+		return m_rightAttachment;
 	}
-	
+
 	public void setRightAttachment(FormAttachment attachment)
 	{
-		 m_rightAttachment = attachment;
+		m_rightAttachment = attachment;
 	}
-	
+
 	public FormAttachment getTopAttachment()
 	{
 		return new FormAttachment(0, VMARGIN);
@@ -97,12 +97,12 @@ public class Header extends Composite
 	{
 		return new FormAttachment(m_separatorLabel, -VMARGIN, SWT.TOP);
 	}
-	
+
 	public int getHorizontalMargin()
 	{
 		return HMARGIN;
 	}
-	
+
 	public int getVerticalMargin()
 	{
 		return VMARGIN;

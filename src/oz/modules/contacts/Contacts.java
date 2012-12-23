@@ -67,7 +67,7 @@ public class Contacts implements Module
 		{
 			client.setUserData(m_network.parsePacket(command, UserData.class));
 			client.getUserSummary().setUsername(client.getUserData().getUsername());
-			
+
 			User.getUser().save();
 
 			m_ui.getDisplay().asyncExec(new Runnable()
@@ -88,7 +88,7 @@ public class Contacts implements Module
 				{
 					User.getUser().getFollowers().add(client.getUserSummary());
 					User.getUser().save();
-					
+
 					m_view.createContactWidget(client);
 
 					try
@@ -117,7 +117,7 @@ public class Contacts implements Module
 			{
 				client.getUserData().setUsername(address.getHost() + ":" + address.getPort());
 				client.getUserSummary().setUsername(address.getHost() + ":" + address.getPort());
-				
+
 				User.getUser().getFriends().add(client.getUserSummary());
 				User.getUser().save();
 
@@ -150,12 +150,12 @@ public class Contacts implements Module
 	{
 		return m_view;
 	}
-	
+
 	public Network getNetwork()
 	{
 		return m_network;
 	}
-	
+
 	public Profile getProfile()
 	{
 		return m_profile;

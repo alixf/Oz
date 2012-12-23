@@ -25,7 +25,7 @@ public class Oz
 	@SuppressWarnings("unused")
 	public Oz(int port)
 	{
-		// Load settings	
+		// Load settings
 		m_settings = new Settings();
 		try
 		{
@@ -43,7 +43,7 @@ public class Oz
 
 		// Log user in
 		Login.login();
-		
+
 		// Launch modules
 		if (User.getUser().isValid())
 		{

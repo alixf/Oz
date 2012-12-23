@@ -55,10 +55,10 @@ public class MessageWidget extends Composite
 	}
 
 	@Override
-	public void addListener (int eventType, Listener listener)
+	public void addListener(int eventType, Listener listener)
 	{
 		super.addListener(eventType, listener);
-		for(Control control : getChildren())
+		for (Control control : getChildren())
 			control.addListener(eventType, listener);
 	}
 

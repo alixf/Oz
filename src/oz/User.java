@@ -5,21 +5,21 @@ import oz.data.UserData;
 
 public class User extends UserData
 {
-	private static User instance = new User();
-	
+	private static User	instance	= new User();
+
 	private User()
 	{
 		super();
 		m_password = new String();
 		m_valid = false;
 	}
-	
+
 	public static User getUser()
-	{	
+	{
 		return instance;
 	}
-	
-	@JSON(include=false)
+
+	@JSON(include = false)
 	public String getPassword()
 	{
 		return m_password;
@@ -29,7 +29,7 @@ public class User extends UserData
 	{
 		m_password = password;
 	}
-	
+
 	/**
 	 * @return the m_valid
 	 */
@@ -50,7 +50,7 @@ public class User extends UserData
 	{
 		super.saveTo("users/" + getUsername() + "/" + getUsername() + ".ozp");
 	}
-	
-	private String m_password;
-	private boolean m_valid;
+
+	private String	m_password;
+	private boolean	m_valid;
 }

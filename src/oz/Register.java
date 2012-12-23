@@ -248,8 +248,6 @@ public class Register
 
 					m_shell.close();
 				}
-				else
-					System.err.println(errors);
 			}
 		});
 		cancelButton.addSelectionListener(new SelectionAdapter()
@@ -260,9 +258,6 @@ public class Register
 			}
 		});
 
-		/*
-		 * Pack window
-		 */
 		m_shell.pack();
 	}
 

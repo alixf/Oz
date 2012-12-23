@@ -61,7 +61,7 @@ public class EditView extends Composite
 				profile.show(User.getUser());
 			}
 		});
-		
+
 		/*
 		 * Confirm button
 		 */

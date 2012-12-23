@@ -50,7 +50,7 @@ public class ContactWidget extends Composite
 		 * Username label
 		 */
 		m_username = new Label(this, SWT.NONE);
-		
+
 		m_username.setText(client.getUserData().getUsername());
 		layoutData = new FormData();
 		layoutData.left = new FormAttachment(m_image, 5, SWT.RIGHT);
@@ -85,10 +85,10 @@ public class ContactWidget extends Composite
 	}
 
 	@Override
-	public void addListener (int eventType, Listener listener)
+	public void addListener(int eventType, Listener listener)
 	{
 		super.addListener(eventType, listener);
-		for(Control control : getChildren())
+		for (Control control : getChildren())
 			control.addListener(eventType, listener);
 	}
 

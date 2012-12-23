@@ -70,7 +70,7 @@ public class Group
 	/**
 	 * The name of the group
 	 */
-	private String				m_name;
+	private String					m_name;
 	/**
 	 * The users list of the group
 	 */

@@ -48,7 +48,6 @@ class ContactsView extends Composite implements Files.Observer
 				addWindow.run();
 			}
 		});
-		
 
 		// Retrieve button
 		Button trackerButton = new Button(this, SWT.PUSH);
@@ -69,7 +68,7 @@ class ContactsView extends Composite implements Files.Observer
 		// Attachments
 		m_contactsAttachment = new FormAttachment(addButton, CONTACTSVMARGIN, SWT.BOTTOM);
 	}
-	
+
 	private void retrieveContact()
 	{
 		ContactRetriever cr = new ContactRetriever(m_contacts.getNetwork(), this);
@@ -98,7 +97,7 @@ class ContactsView extends Composite implements Files.Observer
 				m_contacts.getProfile().show(client.getUserData());
 			}
 		});
-		
+
 		layout();
 	}
 

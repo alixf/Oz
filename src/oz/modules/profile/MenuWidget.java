@@ -75,7 +75,7 @@ public class MenuWidget extends Composite
 	public void addListener(int eventType, Listener listener)
 	{
 		super.addListener(eventType, listener);
-		for(Control control : getChildren())
+		for (Control control : getChildren())
 			control.addListener(eventType, listener);
 	}
 
@@ -87,7 +87,7 @@ public class MenuWidget extends Composite
 		m_username.setText("(" + m_user.getUsername() + ")");
 		layout();
 	}
-	
+
 	private UI			m_ui;
 	private UserData	m_user;
 

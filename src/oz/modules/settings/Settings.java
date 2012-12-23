@@ -31,10 +31,10 @@ public class Settings
 	public void setUI(UI ui)
 	{
 		m_ui = ui;
-		
+
 		// Images
 		Image settingsImage = new Image(Display.getCurrent(), "images/gear.png");
-		
+
 		// Settings button
 		final Button settingsButton = new Button(ui.getHeader(), SWT.PUSH);
 		settingsButton.setImage(settingsImage);
@@ -60,13 +60,12 @@ public class Settings
 		});
 	}
 
-
 	private void openSettingsWindow()
 	{
 		SettingsView settingsView = new SettingsView(this);
 		settingsView.open();
 	}
-	
+
 	public Settings(String file) throws IOException
 	{
 		load(file);

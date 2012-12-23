@@ -17,7 +17,7 @@ public class UI
 
 		// Images
 		Image logo16 = new Image(m_display, "images/logo-16.png");
-		
+
 		// Set window properties
 		m_shell.setText("Oz : Share your world");
 		m_shell.setImage(logo16);

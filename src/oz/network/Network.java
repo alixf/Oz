@@ -89,7 +89,7 @@ public class Network extends Thread
 					client.getSocket().setTcpNoDelay(true);
 					client.getUserSummary().setAddress(new Address(socket.getInetAddress().getHostName().toString(), m_port));
 					sendKey(client);
-					
+
 					m_clients.add(client);
 					System.out.println("accept : there is now " + m_clients.size() + " clients");
 
@@ -103,7 +103,7 @@ public class Network extends Thread
 					SocketChannel channel = (SocketChannel) key.channel();
 					Client client = (Client) key.attachment();
 
-					if(!read(channel, client))
+					if (!read(channel, client))
 					{
 						key.cancel();
 						m_clients.remove(client);
@@ -115,12 +115,12 @@ public class Network extends Thread
 		socket.close();
 		System.out.println("Stopped listening to port " + m_port);
 	}
-	
+
 	private boolean read(SocketChannel channel, Client client) throws IOException
 	{
 		ByteBuffer bb = ByteBuffer.allocate(8);
 		int readSize = 0;
-		
+
 		readSize = channel.read(bb);
 		if (readSize < 0) // Client disconnected
 			return false;
@@ -132,7 +132,7 @@ public class Network extends Thread
 
 			System.out.println("Received packet size : " + length + " bytes");
 			int leftToRead = (int) length;
-			while(leftToRead > 0 && readSize > 0)
+			while (leftToRead > 0 && readSize > 0)
 			{
 				ByteBuffer bb2 = ByteBuffer.allocate(Math.min(m_receiveBufferSize, leftToRead));
 				System.out.println("\t allocate :" + Math.min(m_receiveBufferSize, leftToRead));
@@ -141,10 +141,10 @@ public class Network extends Thread
 				leftToRead -= readSize;
 				System.out.println("\t leftToRead :" + readSize);
 				bb2.position(0);
-				command += m_decoder.decode(bb2).toString().substring(0,readSize);
+				command += m_decoder.decode(bb2).toString().substring(0, readSize);
 			}
 			System.out.println("Received packet (raw printing) : " + command);
-			if(!command.substring(0, 4).equals("KEY "))
+			if (!command.substring(0, 4).equals("KEY "))
 				command = m_rsa.decryptCommand(command);
 			parseCommand(client, command);
 		}
@@ -189,11 +189,11 @@ public class Network extends Thread
 				client.getSocket().setTcpNoDelay(true);
 				client.getUserSummary().setAddress(address);
 				sendKey(client);
-				
+
 				channel.configureBlocking(true);
-				read(channel,client);
+				read(channel, client);
 				channel.configureBlocking(false);
-				
+
 				m_clients.add(client);
 				System.out.println("add : there is now " + m_clients.size() + " clients");
 
@@ -217,7 +217,7 @@ public class Network extends Thread
 		{
 			return null;
 		}
-		catch(UnresolvedAddressException e)
+		catch (UnresolvedAddressException e)
 		{
 			return null;
 		}
@@ -227,19 +227,19 @@ public class Network extends Thread
 		}
 		return null;
 	}
-	
+
 	public void sendKey(Client client)
 	{
 		try
 		{
 			String key = m_rsa.getBase64EncodedPublicKey();
 			String command = "KEY " + key;
-			send(command,client);
+			send(command, client);
 		}
 		catch (CharacterCodingException e)
 		{
 			e.printStackTrace();
-		} 
+		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
@@ -252,13 +252,13 @@ public class Network extends Thread
 		{
 			System.out.println("****************** Sending ******************");
 			System.out.println("Packet to send : " + packet);
-			if(client.getPublicKey() != null)
+			if (client.getPublicKey() != null)
 				packet = m_rsa.encryptCommand(packet, client.getPublicKey());
 			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
 			ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
 			System.out.println("Sending packet : " + packet);
 			System.out.println("Size : " + (long) bb.array().length + " bytes");
-			
+
 			ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
 			client.getSocket().getChannel().write(newbb);
 		}
@@ -278,20 +278,20 @@ public class Network extends Thread
 			if (clientList == null)
 				clientList = m_clients;
 			Iterator<Client> it = clientList.iterator();
-			
+
 			while (it.hasNext())
 			{
 				Client client = it.next();
 				System.out.println("Sending packet to " + client.getUserData().getUsername());
-				
-				if(client.getPublicKey() != null)
+
+				if (client.getPublicKey() != null)
 					packet = m_rsa.encryptCommand(packet, client.getPublicKey());
 				ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
 
 				ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
 				System.out.println("Sending packet : " + packet);
 				System.out.println("Size : " + (long) bb.array().length + " bytes");
-				
+
 				ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
 				client.getSocket().getChannel().write(newbb);
 			}

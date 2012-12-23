@@ -98,5 +98,5 @@ public class UserIdentifier
 	/**
 	 * The UUID of the user
 	 */
-	private String m_uuid;
+	private String	m_uuid;
 }

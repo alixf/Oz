@@ -23,6 +23,6 @@ public class Keys implements Module
 		}
 		return false;
 	}
-	
-	private Network m_network;
+
+	private Network	m_network;
 }

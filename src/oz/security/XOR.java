@@ -4,8 +4,8 @@ import java.nio.charset.Charset;
 
 public class XOR
 {
-	private static Charset m_charset = Charset.forName("UTF-8");
-	
+	private static Charset	m_charset	= Charset.forName("UTF-8");
+
 	public static byte[] encrypt(String string, String key)
 	{
 		byte[] stringBytes = string.getBytes(m_charset);

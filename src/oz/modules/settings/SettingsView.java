@@ -92,7 +92,7 @@ public class SettingsView
 		m_topAttachment = new FormAttachment(spinner, VMARGIN, SWT.BOTTOM);
 		return spinner;
 	}
-	
+
 	private Text addStringSetting(String labelString, String defaultValue)
 	{
 		Label label = new Label(m_shell, SWT.NONE);
@@ -104,7 +104,7 @@ public class SettingsView
 		label.setLayoutData(layoutData);
 
 		Text text = new Text(m_shell, SWT.SINGLE | SWT.BORDER);
-		if(defaultValue != null)
+		if (defaultValue != null)
 			text.setText(defaultValue);
 		layoutData = new FormData();
 		layoutData.width = 150;
@@ -137,11 +137,11 @@ public class SettingsView
 		}
 	}
 
-	private Settings 		m_settings;
+	private Settings		m_settings;
 	private Shell			m_shell;
 	private FormAttachment	m_topAttachment;
 
-	Spinner m_networkPort;
-	Text m_trackerAddress;
-	Spinner m_trackerPort;
+	Spinner					m_networkPort;
+	Text					m_trackerAddress;
+	Spinner					m_trackerPort;
 }
