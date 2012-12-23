@@ -29,7 +29,7 @@ import flexjson.JSONSerializer;
 import oz.data.Address;
 import oz.modules.Module;
 import oz.modules.settings.Settings;
-import oz.security.RSA;
+import oz.tools.Operations;
 
 public class Network extends Thread
 {
@@ -44,7 +44,7 @@ public class Network extends Thread
 		m_encoder = m_charset.newEncoder();
 		m_commands = new Hashtable<String, Module>();
 		m_separator = " ";
-		m_rsa = new RSA();
+		m_encryption = new IdentityEncryption();
 	}
 
 	public void run()
@@ -88,15 +88,14 @@ public class Network extends Thread
 					client.setSocket(socket.accept());
 					client.getSocket().setTcpNoDelay(true);
 					client.getUserSummary().setAddress(new Address(socket.getInetAddress().getHostName().toString(), m_port));
-					sendKey(client);
-
 					m_clients.add(client);
-					System.out.println("accept : there is now " + m_clients.size() + " clients");
 
 					// Register client socket
 					SocketChannel sc = client.getSocket().getChannel();
 					sc.configureBlocking(false);
 					sc.register(m_selector, SelectionKey.OP_READ, client);
+
+					m_encryption.onClientConnect(client);
 				}
 				else if (key.isReadable())
 				{
@@ -118,34 +117,39 @@ public class Network extends Thread
 
 	private boolean read(SocketChannel channel, Client client) throws IOException
 	{
-		ByteBuffer bb = ByteBuffer.allocate(8);
-		int readSize = 0;
+		int readSize = -1;
+		ByteBuffer lengthBuffer = ByteBuffer.allocate(8);
+		try
+		{
+			readSize = channel.read(lengthBuffer);
+		}
+		catch (IOException e)
+		{
+			return false;
+		}
 
-		readSize = channel.read(bb);
 		if (readSize < 0) // Client disconnected
 			return false;
 		else
 		{
-			System.out.println("****************** Reception ******************");
 			String command = "";
-			long length = bb.getLong(0);
+			long leftToRead = lengthBuffer.getLong(0);
 
-			System.out.println("Received packet size : " + length + " bytes");
-			int leftToRead = (int) length;
-			while (leftToRead > 0 && readSize > 0)
+			System.out.println("*** Reception : " + leftToRead + " bytes ***");
+
+			while (leftToRead > 0 && readSize >= 0)
 			{
-				ByteBuffer bb2 = ByteBuffer.allocate(Math.min(m_receiveBufferSize, leftToRead));
-				System.out.println("\t allocate :" + Math.min(m_receiveBufferSize, leftToRead));
-				readSize = channel.read(bb2);
-				System.out.println("\t read :" + readSize);
+				ByteBuffer dataBuffer = ByteBuffer.allocate((int) Math.min(m_receiveBufferSize, leftToRead));
+				readSize = channel.read(dataBuffer);
 				leftToRead -= readSize;
-				System.out.println("\t leftToRead :" + readSize);
-				bb2.position(0);
-				command += m_decoder.decode(bb2).toString().substring(0, readSize);
+				System.out.println("read " + readSize + " bytes, left to read : " + leftToRead);
+				dataBuffer.position(0);
+				command += Operations.trimString(m_decoder.decode(dataBuffer).toString(), (char) 0);
 			}
-			System.out.println("Received packet (raw printing) : " + command);
-			if (!command.substring(0, 4).equals("KEY "))
-				command = m_rsa.decryptCommand(command);
+
+			System.out.println("Received packet (raw) : " + command);
+
+			command = m_encryption.onReceive(client, command);
 			parseCommand(client, command);
 		}
 		return true;
@@ -183,19 +187,14 @@ public class Network extends Thread
 			if (socket.isConnected())
 			{
 				System.out.println("connected ...");
+
 				// Create client
 				Client client = new Client();
 				client.setSocket(socket);
 				client.getSocket().setTcpNoDelay(true);
 				client.getUserSummary().setAddress(address);
-				sendKey(client);
-
-				channel.configureBlocking(true);
-				read(channel, client);
 				channel.configureBlocking(false);
-
 				m_clients.add(client);
-				System.out.println("add : there is now " + m_clients.size() + " clients");
 
 				// Register client socket
 				final ReentrantLock selectorLock = new ReentrantLock();
@@ -209,6 +208,8 @@ public class Network extends Thread
 				{
 					selectorLock.unlock();
 				}
+
+				m_encryption.onConnect(client);
 
 				return client;
 			}
@@ -228,39 +229,20 @@ public class Network extends Thread
 		return null;
 	}
 
-	public void sendKey(Client client)
-	{
-		try
-		{
-			String key = m_rsa.getBase64EncodedPublicKey();
-			String command = "KEY " + key;
-			send(command, client);
-		}
-		catch (CharacterCodingException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
 	public void send(String packet, Client client) throws IOException
 	{
 		try
 		{
-			System.out.println("****************** Sending ******************");
-			System.out.println("Packet to send : " + packet);
-			if (client.getPublicKey() != null)
-				packet = m_rsa.encryptCommand(packet, client.getPublicKey());
-			ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-			ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
-			System.out.println("Sending packet : " + packet);
-			System.out.println("Size : " + (long) bb.array().length + " bytes");
+			packet = m_encryption.onSend(client, packet);
 
-			ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
-			client.getSocket().getChannel().write(newbb);
+			ByteBuffer dataBuffer = m_encoder.encode(CharBuffer.wrap(packet));
+			ByteBuffer lengthBuffer = ByteBuffer.allocate(8).putLong(dataBuffer.array().length);
+
+			System.out.println("*** Sending : " + dataBuffer.array().length + " bytes ***");
+			System.out.println("Sending packet (raw) : " + packet);
+
+			ByteBuffer packetBuffer = ByteBuffer.wrap(Operations.mergeByteBuffers(lengthBuffer.array(), dataBuffer.array()));
+			client.getSocket().getChannel().write(packetBuffer);
 		}
 		catch (CharacterCodingException e)
 		{
@@ -270,47 +252,20 @@ public class Network extends Thread
 
 	public void send(String packet, Iterable<Client> clientList) throws IOException
 	{
-		try
+		for (Client client : clientList)
 		{
-			System.out.println("****************** Sending ******************");
-			System.out.println("Packet to send : " + packet);
-
-			if (clientList == null)
-				clientList = m_clients;
-			Iterator<Client> it = clientList.iterator();
-
-			while (it.hasNext())
-			{
-				Client client = it.next();
-				System.out.println("Sending packet to " + client.getUserData().getUsername());
-
-				if (client.getPublicKey() != null)
-					packet = m_rsa.encryptCommand(packet, client.getPublicKey());
-				ByteBuffer bb = m_encoder.encode(CharBuffer.wrap(packet));
-
-				ByteBuffer length = ByteBuffer.allocate(8).putLong((long) bb.array().length);
-				System.out.println("Sending packet : " + packet);
-				System.out.println("Size : " + (long) bb.array().length + " bytes");
-
-				ByteBuffer newbb = ByteBuffer.wrap(RSA.append(length.array(), bb.array()));
-				client.getSocket().getChannel().write(newbb);
-			}
-		}
-		catch (CharacterCodingException e)
-		{
-			e.printStackTrace();
+			send(packet, client);
 		}
 	}
 
 	private boolean parseCommand(Client client, String packet)
 	{
-		System.out.println("****************** Parsing ******************");
 		System.out.println("Parsing command : " + packet);
 
 		Module module = m_commands.get(getCommand(packet));
 		if (module == null)
 		{
-			System.out.println("no module set for command " + getCommand(packet));
+			System.err.println("no module set for command " + getCommand(packet));
 			return false;
 		}
 
@@ -353,8 +308,7 @@ public class Network extends Thread
 	}
 
 	/**
-	 * @param separator
-	 *            the fields separator to set
+	 * @param separator the fields separator to set
 	 */
 	public void setSeparator(String separator)
 	{
@@ -368,7 +322,7 @@ public class Network extends Thread
 
 	private boolean						m_run;
 	private int							m_port;
-	private int							m_receiveBufferSize;
+	private long						m_receiveBufferSize;
 	private Selector					m_selector;
 	private List<Client>				m_clients;
 	private Charset						m_charset;
@@ -376,5 +330,5 @@ public class Network extends Thread
 	private CharsetEncoder				m_encoder;
 	private Hashtable<String, Module>	m_commands;
 	private String						m_separator;
-	private RSA							m_rsa;
+	private EncryptionSystem			m_encryption;
 }

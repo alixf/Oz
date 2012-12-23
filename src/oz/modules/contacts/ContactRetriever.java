@@ -1,19 +1,19 @@
 package oz.modules.contacts;
 
-import java.io.IOException;
+//import java.io.IOException;
 
 import oz.User;
-import oz.data.UserData;
+//import oz.data.UserData;
 import oz.data.UserIdentifier;
-import oz.network.Client;
+//import oz.network.Client;
 import oz.network.Network;
 
 public class ContactRetriever extends Thread
 {
 	ContactRetriever(Network network, ContactsView view)
 	{
-		m_network = network;
-		m_view = view;
+		// m_network = network;
+		// m_view = view;
 	}
 
 	@Override
@@ -47,6 +47,6 @@ public class ContactRetriever extends Thread
 		}
 	}
 
-	private Network			m_network;
-	private ContactsView	m_view;
+	// private Network m_network;
+	// private ContactsView m_view;
 }

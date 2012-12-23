@@ -4,7 +4,6 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -176,37 +175,44 @@ public class Register
 			public void widgetSelected(SelectionEvent event)
 			{
 				boolean error = false;
-				String errorMessage = "";
-				LinkedList<String> errors = new LinkedList<String>();
 				if (usernameText.getText().length() < 4)
 				{
-					errorMessage += "Le nom d'utilisateur doit faire au moins 4 caractères\n";
-					errors.add("Le nom d'utilisateur doit faire au moins 4 caractères");
+
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
+					messageBox.setMessage("Le nom d'utilisateur doit faire au moins 4 caractères");
+					messageBox.open();
 					error = true;
 				}
 				if (firstNameText.getText().length() < 1)
 				{
 
-					errorMessage += "Le prénom ne peut être vide\n";
-					errors.add("Le prénom ne peut être vide");
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
+					messageBox.setMessage("Le prénom ne peut être vide");
+					messageBox.open();
 					error = true;
 				}
 				if (lastNameText.getText().length() < 1)
 				{
-					errorMessage += "Le nom ne peut être vide\n";
-					errors.add("Le nom ne peut être vide");
+
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
+					messageBox.setMessage("Le nom ne peut être vide");
+					messageBox.open();
 					error = true;
 				}
 				if (passwordText.getText().length() < 6)
 				{
-					errorMessage += "Le mot de passe doit faire au moins 6 caractères\n";
-					errors.add("Le mot de passe doit faire au moins 6 caractères");
+
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
+					messageBox.setMessage("Le mot de passe doit faire au moins 6 caractères");
+					messageBox.open();
 					error = true;
 				}
 				if (!passwordText.getText().equals(confirmPasswordText.getText()))
 				{
-					errorMessage += "Les mots de passe ne correspondent pas\n";
-					errors.add("Les mots de passe ne correspondent pas");
+
+					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
+					messageBox.setMessage("Les mots de passe ne correspondent pas");
+					messageBox.open();
 					error = true;
 				}
 
@@ -239,13 +245,6 @@ public class Register
 					}
 
 					m_shell.close();
-				}
-				else
-				{
-					MessageBox messageBox = new MessageBox(m_shell, SWT.ICON_ERROR);
-					messageBox.setMessage(errorMessage);
-					messageBox.open();
-					System.err.println(errors);
 				}
 			}
 		});

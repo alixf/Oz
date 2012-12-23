@@ -7,6 +7,8 @@ import javax.crypto.*;
 
 import org.apache.commons.codec.binary.Base64;
 
+import oz.tools.Operations;
+
 public class RSA
 {
 	public RSA()
@@ -168,7 +170,7 @@ public class RSA
 				// execute the operation
 				scrambled = m_cipher.doFinal(buffer);
 				// add the result to our total result.
-				toReturn = append(toReturn, scrambled);
+				toReturn = Operations.mergeByteBuffers(toReturn, scrambled);
 				// here we calculate the length of the next buffer required
 				int newlength = length;
 
@@ -189,18 +191,8 @@ public class RSA
 		scrambled = m_cipher.doFinal(buffer);
 
 		// final step before we can return the modified data.
-		toReturn = append(toReturn, scrambled);
+		toReturn = Operations.mergeByteBuffers(toReturn, scrambled);
 
-		return toReturn;
-	}
-
-	public static byte[] append(byte[] prefix, byte[] suffix)
-	{
-		byte[] toReturn = new byte[prefix.length + suffix.length];
-		for (int i = 0; i < prefix.length; i++)
-			toReturn[i] = prefix[i];
-		for (int i = 0; i < suffix.length; i++)
-			toReturn[i + prefix.length] = suffix[i];
 		return toReturn;
 	}
 
