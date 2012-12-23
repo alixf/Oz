@@ -227,7 +227,7 @@ public class Register
 
 					JSONSerializer serializer = new JSONSerializer();
 					serializer.exclude("*.class");
-					
+
 					try
 					{
 						File profileFile = new File("users/" + usernameText.getText() + "/" + usernameText.getText() + ".ozp");

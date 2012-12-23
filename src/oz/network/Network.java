@@ -157,7 +157,7 @@ public class Network extends Thread
 
 			System.out.println("Received packet (raw) : " + command);
 			command = m_encryption.onReceive(client, command);
-			if(command != null)
+			if (command != null)
 				parseCommand(client, command);
 		}
 		return true;

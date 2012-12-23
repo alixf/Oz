@@ -25,7 +25,7 @@ public class RSAEncryption implements EncryptionSystem
 		sendKey(client);
 		try
 		{
-			if(!channel.isBlocking())
+			if (!channel.isBlocking())
 				channel.configureBlocking(true);
 			m_network.read(channel, client);
 			channel.configureBlocking(false);
@@ -44,7 +44,7 @@ public class RSAEncryption implements EncryptionSystem
 		else
 		{
 			String key = packet.substring(4);
-			System.out.println("Set client public key : "+key);
+			System.out.println("Set client public key : " + key);
 			client.setPublicKey(RSA.convertBase64EncodedPublicKey(key));
 		}
 		return null;

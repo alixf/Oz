@@ -71,9 +71,9 @@ public class Contacts implements Module
 			client.getUserData().getUserIdentifier().setAddress(address);
 
 			// Add to friends
-			switch(checkAddFriend(client))
+			switch (checkAddFriend(client))
 			{
-			case 0 : // New friend
+			case 0: // New friend
 				m_ui.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
@@ -82,7 +82,7 @@ public class Contacts implements Module
 					}
 				});
 				break;
-			case 2 : // Already existing friend
+			case 2: // Already existing friend
 				m_ui.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
@@ -91,7 +91,8 @@ public class Contacts implements Module
 					}
 				});
 				break;
-			default : break;
+			default:
+				break;
 			}
 
 		}
@@ -102,9 +103,9 @@ public class Contacts implements Module
 			client.getUserData().getUserIdentifier().setAddress(address);
 
 			// Add to friends
-			switch(checkAddFriend(client))
+			switch (checkAddFriend(client))
 			{
-			case 0 : // New friend
+			case 0: // New friend
 				m_ui.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
@@ -113,7 +114,7 @@ public class Contacts implements Module
 					}
 				});
 				break;
-			case 2 : // Already existing friend
+			case 2: // Already existing friend
 				m_ui.getDisplay().asyncExec(new Runnable()
 				{
 					public void run()
@@ -122,7 +123,8 @@ public class Contacts implements Module
 					}
 				});
 				break;
-			default : break;
+			default:
+				break;
 			}
 
 			try
@@ -140,24 +142,24 @@ public class Contacts implements Module
 
 	private int checkAddFriend(Client client)
 	{
-		System.out.println("CHECKADDFRIEND WITH UUID "+client.getUserData().getUserIdentifier().getUUID()+" AND ADDRESS "+client.getUserData().getUserIdentifier().getAddress());
-		
-		if(User.getUser().getUserIdentifier().getUUID().equals(client.getUserData().getUserIdentifier().getUUID()))
+		System.out.println("CHECKADDFRIEND WITH UUID " + client.getUserData().getUserIdentifier().getUUID() + " AND ADDRESS " + client.getUserData().getUserIdentifier().getAddress());
+
+		if (User.getUser().getUserIdentifier().getUUID().equals(client.getUserData().getUserIdentifier().getUUID()))
 			return 1;
-		
-		for(UserIdentifier userID : User.getUser().getFriends())
+
+		for (UserIdentifier userID : User.getUser().getFriends())
 		{
-			if(userID.getUUID().equals(client.getUserData().getUserIdentifier().getUUID()))
+			if (userID.getUUID().equals(client.getUserData().getUserIdentifier().getUUID()))
 			{
 				userID.setAddress(client.getUserData().getUserIdentifier().getAddress());
-				System.out.println("UPDATED FRIEND "+client.getUserData().getUsername());
+				System.out.println("UPDATED FRIEND " + client.getUserData().getUsername());
 				User.getUser().save();
 				return 2;
 			}
 		}
 
 		User.getUser().getFriends().add(client.getUserData().getUserIdentifier());
-		System.out.println("ADDED TO FRIEND "+client.getUserData().getUsername());
+		System.out.println("ADDED TO FRIEND " + client.getUserData().getUsername());
 		User.getUser().save();
 		return 0;
 	}
@@ -173,21 +175,21 @@ public class Contacts implements Module
 			{
 				client.getUserData().setUsername(address.getHost() + ":" + address.getPort());
 				client.getUserData().getUserIdentifier().setUsername(address.getHost() + ":" + address.getPort());
-				
-				//client.getUserData().getUserIdentifier().setAddress(address);
-				System.out.println("CLIENT IS FOUND, ADD CONTACT WITH ADDRESS "+client.getUserData().getUserIdentifier().getAddress());
-				
+
+				// client.getUserData().getUserIdentifier().setAddress(address);
+				System.out.println("CLIENT IS FOUND, ADD CONTACT WITH ADDRESS " + client.getUserData().getUserIdentifier().getAddress());
+
 				m_network.send(packet, client);
 
 				/*
-				m_ui.getDisplay().asyncExec(new Runnable()
-				{
-					public void run()
-					{
-						m_view.createContactWidget(client);
-					}
-				});
-				*/
+				 * m_ui.getDisplay().asyncExec(new Runnable()
+				 * {
+				 * public void run()
+				 * {
+				 * m_view.createContactWidget(client);
+				 * }
+				 * });
+				 */
 			}
 			return client;
 		}
@@ -218,7 +220,7 @@ public class Contacts implements Module
 	{
 		return m_profile;
 	}
-	
+
 	public void retrieveContacts()
 	{
 		ContactRetriever contactRetriever = new ContactRetriever(m_network, m_view);

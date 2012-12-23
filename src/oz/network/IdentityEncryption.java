@@ -10,7 +10,7 @@ public class IdentityEncryption implements EncryptionSystem
 	}
 
 	@Override
-	public void onConnect(SocketChannel channel,Client client)
+	public void onConnect(SocketChannel channel, Client client)
 	{
 	}
 

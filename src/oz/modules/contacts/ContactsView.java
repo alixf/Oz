@@ -90,7 +90,7 @@ class ContactsView extends Composite implements Files.Observer
 		contactWidget.setLayoutData(fd);
 		m_contactsAttachment = new FormAttachment(contactWidget, CONTACTSVMARGIN, SWT.BOTTOM);
 
-		if(client != null)
+		if (client != null)
 		{
 			contactWidget.addListener(SWT.MouseDown, new Listener()
 			{

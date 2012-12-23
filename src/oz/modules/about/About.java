@@ -20,10 +20,10 @@ public class About
 	public void setUI(UI ui)
 	{
 		m_ui = ui;
-		
+
 		// Images
 		Image settingsImage = new Image(Display.getCurrent(), "images/logo-16.png");
-		
+
 		// Settings button
 		final Button settingsButton = new Button(ui.getHeader(), SWT.PUSH);
 		settingsButton.setImage(settingsImage);
@@ -49,12 +49,11 @@ public class About
 		});
 	}
 
-
 	private void openAboutWindow()
 	{
 		AboutView aboutView = new AboutView();
 		aboutView.open();
 	}
 
-	private UI		m_ui;
+	private UI	m_ui;
 }

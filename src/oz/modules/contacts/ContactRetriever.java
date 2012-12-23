@@ -22,10 +22,10 @@ public class ContactRetriever extends Thread
 		for (UserIdentifier user : User.getUser().getFriends())
 		{
 			System.out.println("Add contact : " + user.getUsername() + " : " + user.getAddress());
-			
+
 			final Client client = (user.getAddress() != null) ? m_network.createClient(user.getAddress()) : null;
-			
-			if(client == null)
+
+			if (client == null)
 			{
 				m_view.createContactWidget(user, null);
 			}
@@ -36,6 +36,6 @@ public class ContactRetriever extends Thread
 		}
 	}
 
-	private Network m_network;
-	private ContactsView m_view;
+	private Network			m_network;
+	private ContactsView	m_view;
 }

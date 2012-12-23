@@ -83,10 +83,10 @@ public class Address
 	{
 		return m_host.equals(address.getHost()) && m_port == address.getPort();
 	}
-	
+
 	public String toString()
 	{
-		return "{"+m_host+","+m_port+"}";
+		return "{" + m_host + "," + m_port + "}";
 	}
 
 	/**

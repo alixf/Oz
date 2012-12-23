@@ -58,7 +58,7 @@ public class ContactWidget extends Composite
 		m_username.setLayoutData(layoutData);
 
 		// Avatar request
-		if(m_client != null)
+		if (m_client != null)
 		{
 			m_name.setText(m_client.getUserData().getBiography().getFirstName() + " " + m_client.getUserData().getBiography().getLastName());
 			if (m_client.getUserData().getAvatar() != null)
@@ -79,12 +79,12 @@ public class ContactWidget extends Composite
 
 	public void updateData()
 	{
-		if(m_client != null)
+		if (m_client != null)
 		{
 			m_name.setText(m_client.getUserData().getBiography().getFirstName() + " " + m_client.getUserData().getBiography().getLastName());
 			m_username.setText(m_client.getUserData().getUsername());
 			layout();
-	
+
 			// Avatar request
 			if (m_client.getUserData().getAvatar() != null)
 				m_contacts.addFileRequest(m_client, m_client.getUserData().getAvatar());
@@ -98,12 +98,12 @@ public class ContactWidget extends Composite
 		for (Control control : getChildren())
 			control.addListener(eventType, listener);
 	}
-	
+
 	public void setClient(Client client)
 	{
 		m_client = client;
 	}
-	
+
 	public Client getClient()
 	{
 		return m_client;

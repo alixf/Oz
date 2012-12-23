@@ -20,8 +20,8 @@ import org.eclipse.swt.widgets.Text;
 
 public class AboutView
 {
-	private final static int VMARGIN = 15;
-	private final static int HMARGIN = 15;
+	private final static int	VMARGIN	= 15;
+	private final static int	HMARGIN	= 15;
 
 	public AboutView()
 	{
@@ -30,7 +30,7 @@ public class AboutView
 		m_shell.setImage(logo16);
 		m_shell.setText("Oz : À propos");
 		m_shell.setLayout(new FormLayout());
-		m_shell.setSize(500,500);
+		m_shell.setSize(500, 500);
 		displayAbout();
 
 		m_shell.pack();
@@ -62,7 +62,8 @@ public class AboutView
 		try
 		{
 			return java.net.InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e)
+		}
+		catch (UnknownHostException e)
 		{
 			e.printStackTrace();
 		}
@@ -78,11 +79,13 @@ public class AboutView
 			String IPAddress = IP.nextLine();
 			IP.close();
 			return IPAddress;
-		} catch (MalformedURLException e)
+		}
+		catch (MalformedURLException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -95,9 +98,9 @@ public class AboutView
 		m_shell.open();
 	}
 
-	private Shell m_shell;
+	private Shell	m_shell;
 
-	Spinner m_networkPort;
-	Text m_trackerAddress;
-	Spinner m_trackerPort;
+	Spinner			m_networkPort;
+	Text			m_trackerAddress;
+	Spinner			m_trackerPort;
 }

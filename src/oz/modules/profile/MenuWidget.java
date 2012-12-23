@@ -62,7 +62,8 @@ public class MenuWidget extends Composite
 		try
 		{
 			m_status.setText(java.net.InetAddress.getLocalHost().getHostAddress());
-		} catch (UnknownHostException e)
+		}
+		catch (UnknownHostException e)
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();

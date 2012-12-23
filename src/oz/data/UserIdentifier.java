@@ -91,10 +91,10 @@ public class UserIdentifier
 	{
 		m_uuid = uuid;
 	}
-	
+
 	public String toString()
 	{
-		return "{"+getUsername()+","+getAddress()+","+getUUID()+"}";
+		return "{" + getUsername() + "," + getAddress() + "," + getUUID() + "}";
 	}
 
 	/**
